@@ -41,19 +41,3 @@ c = CrawlerProcess({
 })
 c.crawl(MySpider)
 c.start()
-
-# conn = pyodbc.connect('Driver={SQL Server};'
-#                       'Server=ANISE-TR\SQLEXPRESS;'
-#                       'Database=WebDB;'
-#                       'Trusted_Connection=yes;')
-
-# cursor = conn.cursor()
-# cursor.execute('SELECT * FROM NEWSINFO')
-
-# for row in cursor:
-#     print(row)
-    
-# scrapy startproject myspider
-# scrapy runspider crawlBoCongAn.py
-
-#scrapy crawl crawl_bo_cong_an

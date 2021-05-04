@@ -5,7 +5,8 @@ from scrapy.utils.project import get_project_settings
 
 class MySpider(scrapy.Spider):
     
-    name = "crawl_bo_cong_an" 
+    name = "crawl_news" 
+        
     
     conn = pyodbc.connect('Driver={SQL Server};'
                       'Server=ANISE-TR\SQLEXPRESS;'
@@ -16,7 +17,6 @@ class MySpider(scrapy.Spider):
     cursor.execute('SELECT * FROM NEWSINFO')
     
     for row in cursor:
-        print(row[0])
         start_urls = [row[0]]
 
     def parse(self, response):     

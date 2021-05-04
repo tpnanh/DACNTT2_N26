@@ -5,43 +5,52 @@ go
 use WebDB
 
 go
-create table NEWSINFO(
-	WEBPATH varchar(500) PRIMARY KEY, 
-	HTMLXPATH varchar(300),
-	TITLE nvarchar(100),
-	DOCUMENTNUMBER varchar(20) 
+create table article_info(
+	article_url varchar(500) PRIMARY KEY, 
+	title nvarchar(100),
+	date_time datetime,
+	author nvarchar(50),
+	content nvarchar(4000),
+	tag nvarchar(100),
+	imglink varchar(200),
+	title_html varchar(150),
+	date_time_html varchar(100),
+	author_html varchar(100),
+	content_html varchar(8000),
+	tag_html varchar(100),
+	article_html varchar(8000)
 )
 
 go
-create table DOCUMENTINFO(
-	DOCUMENTNUMBER varchar(20) PRIMARY KEY,
-	DOCUMENTFILE varchar(300),
-	DATEISSUED DATE,
-	SIGNEDBY nvarchar(200),
-	AGENCYISSUED nvarchar(100),
-	DOCUMENTCATEGORY nvarchar (50),
-	DOCUMENTSTATUS nvarchar(30)
+create table article_configuration (
+	article_url varchar(500) PRIMARY KEY,
+	title_xpath varchar(40),
+	date_time_xpath varchar(40),
+	author_xpath varchar(40),
+	content_xpath varchar(40),
+	tag_xpath varchar(40),
+	img_xpath varchar(40)
 )
 
 go
-alter table NEWSINFO add constraint DOCUMENTINFO_DOCUMENTNUMBER_NEWSINFO foreign key (DOCUMENTNUMBER) references DOCUMENTINFO(DOCUMENTNUMBER)
+create table article_link(
+	article_url varchar(500) PRIMARY KEY,
+	ministry nvarchar(100),
+	ministry_webpage varchar(100)
+)
 
-go 
-insert into NEWSINFO values
-	('http://www.moit.gov.vn/web/guest/tin-chi-tiet/-/chi-tiet/viet-nam-to-chuc-thanh-cong-phien-ra-soat-chinh-sach-thuong-mai-lan-thu-hai-tai-wto-22003-22.html',
-	'//div[@id="contentnews"]/p',
-	N'Việt Nam tổ chức thành công Phiên rà soát Chính sách thương mại lần thứ hai tại WTO',
-	''),
-	('http://www.moit.gov.vn/web/guest/tin-chi-tiet/-/chi-tiet/ra-mat-he-thong-canh-bao-thuong-mai-toan-cau-eping-phien-ban-tieng-viet-22000-22.html',
-	'//div[@id="contentnews"]/p',
-	N'Ra mắt Hệ thống cảnh báo thương mại toàn cầu ePing phiên bản tiếng Việt',
-	'')
-	
-go 
-Select * from NEWSINFO
+go
+alter table article_configuration add constraint ai_url_ac foreign key (article_url) references article_info(article_url)
+go
+alter table article_link add constraint ai_url_al foreign key (article_url) references article_info(article_url)
 
-drop table NEWSINFO
+/*go
+alter table article_link
+drop column ministry
+add category nvarchar(50)
+*/
 
+go
 use master
 drop database WebDB
 

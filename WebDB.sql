@@ -6,8 +6,8 @@ use WebDB
 
 go
 create table article_info(
-	article_id varchar(20) PRIMARY KEY,
-	category_id varchar(20),
+	article_id int identity (1,1) PRIMARY KEY,
+	category_id int,
 	article_url varchar(1000),
 	article_title nvarchar(200),
 	article_description nvarchar(500),
@@ -20,15 +20,15 @@ create table article_info(
 
 go
 create table article_img(
-	article_img_id varchar(20),
-	article_id varchar(20) unique, 
+	article_img_id int identity (1,1),
+	article_id int, 
 	article_img_link varchar(500)
 )
 
 go
 create table legislation_info(
-	legislation_id varchar (20) PRIMARY KEY,
-	ministry_id varchar(20),
+	legislation_id int identity (1,1) PRIMARY KEY,
+	ministry_id int,
 	legislation_name varchar(200),	
 	legislation_url varchar(500),	
 	so_hieu_van_ban varchar(20),
@@ -45,7 +45,7 @@ create table legislation_info(
 
 go
 create table legislation_configuration (
-	legislation_id varchar(20) PRIMARY KEY,
+	legislation_id int PRIMARY KEY,
 	legislation_name_xpath varchar(200),
 	legislation_so_hieu_van_ban varchar(200),
 	legislation_ngay_ban_hanh varchar(200),
@@ -61,40 +61,36 @@ create table legislation_configuration (
 
 go
 create table ministry_info(
-	ministry_id varchar(20) PRIMARY KEY,
+	ministry_id int identity (1,1) PRIMARY KEY,
 	ministry_name nvarchar(100)
 )
 
 go
+create table ministry_category_configuration (
+	ministry_id int PRIMARY KEY,		
+	article_url_xpath varchar(200),
+	article_thumbnail_xpath varchar(200),
+	page_rule int,
+	schedule_minute int
+)
+
+go
 create table ministry_articles_configuration (
-	ministry_id varchar(20) PRIMARY KEY,
+	ministry_id int PRIMARY KEY,
 	article_title_xpath varchar(200),
 	article_description_xpath varchar(200),
 	article_time_xpath varchar(200),
 	article_author_xpath varchar(200),
 	article_content_xpath varchar(200),
-	article_tag_xpath varchar(200),
-	article_thumbnail_xpath varchar(200)
-)
-
-go
-create table ministry_category_configuration (
-	ministry_id varchar(20) PRIMARY KEY,		
-	article_url_xpath varchar(200),
-	article_title_xpath varchar(200),
-	article_time_xpath varchar(200),
-	article_description_xpath varchar(200),
-	article_thumbnail_xpath varchar(200),
-	page_rule int,
-	schedule_minute time
+	article_tag_xpath varchar(200)
 )
 
 go
 create table category_info(
-	category_id varchar(20) PRIMARY KEY,
-	ministry_id varchar(20),
+	category_id int identity (1,1) PRIMARY KEY,
+	ministry_id int,
 	category_name nvarchar (200),
-	category_type_id varchar (20),
+	category_type_id int,
 	category_link_root varchar(1000),
 	page_param int
 	
@@ -102,7 +98,7 @@ create table category_info(
 
 go
 create table category_type(
-	category_type_id varchar (20) PRIMARY KEY,
+	category_type_id int identity (1,1) PRIMARY KEY,
 	category_type_name nvarchar(50)
 )
 
@@ -129,6 +125,41 @@ drop column ministry
 add category nvarchar(50)
 */
 
+
+go
+insert into ministry_info(ministry_name) values
+	(N'Bộ Công An'),
+	(N'Bộ Công Thương'),
+	(N'Bộ Nội Vụ')
+
+go
+select * from ministry_info
+
+go
+insert into ministry_category_configuration(ministry_id,article_url_xpath,article_thumbnail_xpath,schedule_minute) values
+	(1,
+	'//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div/article/div[2]/a/@href',	
+	'//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div/article/div[1]/a/img/@src',
+	12
+	)
+
+go
+select * from ministry_category_configuration
+
+go 
+insert into ministry_articles_configuration(ministry_id,article_title_xpath,article_description_xpath,article_time_xpath,
+											article_author_xpath,article_content_xpath) values
+	(1,
+	'//div[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/h1/text()',
+	'//p[@id="change_font_size"]/text()',
+	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
+	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/div[2]/div[2]/text()',
+	'//*[@id="contentnews"]/p/text()'
+	)
+
+go
+select * from ministry_articles_configuration
+
 go
 insert into article_link(article_url, mabo, link_root,loai_link,ten_link,page_param,page_rule,schedule_minute) values
 	('http://www.moit.gov.vn/web/guest/thoi-su','G02','/web/guest/thoi-su','internal','bo cong thuong muc thoi su',2,1, getdate()),
@@ -138,8 +169,6 @@ insert into article_link(article_url, mabo, link_root,loai_link,ten_link,page_pa
 	('http://www.mpi.gov.vn/Pages/ttptktxh.aspx','G05','/Pages/ttptktxh.asp','internal','bo ke hoach va dau tu muc thong tin phat trien kinh te xa hoi',2,1, getdate())
 
 go
-select * from article_link
-go
 INSERT INTO bonganh
     (mabo, tenbo, gioithieuchung, chucnang)
 VALUES
@@ -148,8 +177,6 @@ VALUES
 	('G03', N'Bộ Giáo dục và Đào tạo',N'Bộ Giáo dục và Đào tạo là cơ quan của Chính phủ, thực hiện chức năng quản lý nhà nước đối với giáo dục mầm non, giáo dục phổ thông, trung cấp sư phạm, cao đẳng sư phạm, giáo dục đại học và các cơ sở giáo dục khác',N'quản lý nhà nước đối với giáo dục mầm non, giáo dục phổ thông, trung cấp sư phạm, cao đẳng sư phạm, giáo dục đại học và các cơ sở giáo dục khác về: Mục tiêu, chương trình, nội dung giáo dục; quy chế thi, tuyển sinh và văn bằng, chứng chỉ; phát triển đội ngũ nhà giáo và cán bộ quản lý giáo dục; cơ sở vật chất và thiết bị trường học; bảo đảm chất lượng, kiểm định chất lượng giáo dục; quản lý nhà nước các dịch vụ sự nghiệp công thuộc phạm vi quản lý nhà nước của bộ.' ),
 	('G04', N'Bộ Giao thông vận tải',N'Bộ Giao thông vận tải là cơ quan của Chính phủ, thực hiện chức năng quản lý nhà nước về giao thông vận tải đường bộ',N'quản lý nhà nước về giao thông vận tải đường bộ, đường sắt, đường thủy nội địa, hàng hải, hàng không trong phạm vi cả nước; quản lý nhà nước các dịch vụ công theo quy định của pháp luật.' ),
 	('G05', N'Bộ Kế hoạch và Đầu tư',N'Bộ Kế hoạch và Đầu tư là cơ quan của Chính phủ, thực hiện chức năng quản lý nhà nước về kế hoạch, đầu tư phát triển và thống kê',N'quản lý nhà nước về kế hoạch, đầu tư phát triển và thống kê, bao gồm: Tham mưu tổng hợp về chiến lược, quy hoạch, kế hoạch phát triển kinh tế - xã hội, kế hoạch đầu tư công của quốc gia; cơ chế, chính sách quản lý kinh tế; đầu tư trong nước, đầu tư của nước ngoài vào Việt Nam và đầu tư của Việt Nam ra nước ngoài; khu kinh tế; nguồn hỗ trợ phát triển chính thức (ODA), vốn vay ưu đãi và viện trợ phi chính phủ nước ngoài; đấu thầu; phát triển doanh nghiệp, kinh tế tập thể, hợp tác xã; thống kê; quản lý nhà nước các dịch vụ công trong các ngành, lĩnh vực thuộc phạm vi quản lý nhà nước của Bộ theo quy định của pháp luật.' )
-go
-select * from bonganh 
 
 go
 use master

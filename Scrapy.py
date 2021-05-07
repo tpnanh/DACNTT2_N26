@@ -16,10 +16,11 @@ class MySpider(scrapy.Spider):
     # cursor = conn.cursor()
     # cursor.execute('SELECT * FROM NEWSINFO')
 
-    start_urls = ['http://www.moit.gov.vn/web/guest/thoi-su']
+    # start_urls = ['http://www.moit.gov.vn/web/guest/thoi-su']
+    start_urls = ['http://www.moit.gov.vn/web/guest/tin-chi-tiet/-/chi-tiet/co-hoi-quang-ba-hang-viet-nam-xuat-khau-vao-thi-truong-a-rap-xe-ut-khoi-thi-truong-a-rap-22024-22.html']
 
     def parse(self, response): 
-        url = '//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div/article/div[2]/p[2]/text()'
+        url = '//*[@id="contentnews"]/p/text()'
         stri = response.xpath(url).extract()
         print(stri)
         print("Size: "+str(len(stri)))

@@ -8,31 +8,23 @@ class MySpider(scrapy.Spider):
     name = "crawl_news" 
         
     
-    conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=ANISE-TR\SQLEXPRESS;'
-                      'Database=WebDB;'
-                      'Trusted_Connection=yes;')
+    # conn = pyodbc.connect('Driver={SQL Server};'
+    #                   'Server=ANISE-TR\SQLEXPRESS;'
+    #                   'Database=WebDB;'
+    #                   'Trusted_Connection=yes;')
 
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM NEWSINFO')
-    
-    for row in cursor:
-        start_urls = [row[0]]
+    # cursor = conn.cursor()
+    # cursor.execute('SELECT * FROM NEWSINFO')
 
-    def parse(self, response):     
-        conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=ANISE-TR\SQLEXPRESS;'
-                      'Database=WebDB;'
-                      'Trusted_Connection=yes;')
+    start_urls = ['http://www.moit.gov.vn/web/guest/thoi-su']
 
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM NEWSINFO')
-        
-        for row in cursor:
-            count = len(response.xpath(row[1]))
-            print("Content: ")
-            for i in range(0, count):
-                print(response.xpath(row[1]+'/text()').extract()[i].strip())
+    def parse(self, response): 
+        url = '//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div'
+        count = len(response.xpath(url))
+        print("Content: " + str(count))
+        for i in range(1, count):
+            print(response.xpath(url+'['+str(i)+']/article/div[2]/p[1]/text()').extract())
+                  # .extract()[i].strip())
 
 c = CrawlerProcess(get_project_settings())
 c.crawl(MySpider)

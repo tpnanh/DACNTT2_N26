@@ -19,11 +19,12 @@ class MySpider(scrapy.Spider):
     start_urls = ['http://www.moit.gov.vn/web/guest/thoi-su']
 
     def parse(self, response): 
-        url = '//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div'
-        count = len(response.xpath(url))
-        print("Content: " + str(count))
-        for i in range(1, count):
-            print(response.xpath(url+'['+str(i)+']/article/div[2]/p[1]/text()').extract())
+        url = '//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div/article/div[2]/p[2]/text()'
+        stri = response.xpath(url).extract()
+        print(stri)
+        print("Size: "+str(len(stri)))
+        # for (i in range(stri.size)):
+            
                   # .extract()[i].strip())
 
 c = CrawlerProcess(get_project_settings())

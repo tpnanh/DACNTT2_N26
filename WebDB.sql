@@ -6,79 +6,122 @@ use WebDB
 
 go
 create table article_info(
-	article_url varchar(500) PRIMARY KEY, 
-	title nvarchar(200),
-	date_time date,
-	author nvarchar(50),
-	content text,
-	tag nvarchar(100),
-	imglink varchar(200),
-	summary nvarchar(200),
-	title_html varchar(150),
-	date_time_html varchar(100),
-	author_html varchar(100),
-	content_html varchar(100),
-	tag_html varchar(100),
-	article_html varchar(1000),
-	summary_html varchar(100)
+	article_id varchar(20) PRIMARY KEY,
+	category_id varchar(20),
+	article_url varchar(1000),
+	article_title nvarchar(200),
+	article_description nvarchar(500),
+	article_time varchar(10),
+	article_author nvarchar(100),
+	article_content nvarchar(max),
+	article_tag nvarchar(100),
+	article_thumbnail_link varchar(500)
 )
 
 go
-create table article_configuration (
-	article_url varchar(500) PRIMARY KEY,
-	title_xpath varchar(40),
-	date_time_xpath varchar(40),
-	author_xpath varchar(40),
-	content_xpath varchar(40),
-	tag_xpath varchar(40),
-	img_xpath varchar(40)
-)
-
-
-go
-create table vanbanphapluat(
-	article_url varchar(500) PRIMARY KEY,
-	mabo varchar(20),
-	sohieuvanban varchar(20),
-	ngaybanhanh date,
-	ngayhieuluc date,
-	ngayky datetime,
-	trichyeu nvarchar(100),
-	coquanbanhanh nvarchar(100),
-	nguoiky nvarchar(50),
-	theloai nvarchar(50),
-	tinhtrang nvarchar(50),
-	download_link varchar(100)
+create table article_img(
+	article_img_id varchar(20),
+	article_id varchar(20) unique, 
+	article_img_link varchar(500)
 )
 
 go
-create table bonganh(
-	mabo varchar(20) PRIMARY KEY,
-	tenbo nvarchar(50),
-	gioithieuchung nvarchar(500),
-	chucnang nvarchar(1000)
+create table legislation_info(
+	legislation_id varchar (20) PRIMARY KEY,
+	ministry_id varchar(20),
+	legislation_name varchar(200),	
+	legislation_url varchar(500),	
+	so_hieu_van_ban varchar(20),
+	ngay_ban_hanh varchar(10),
+	ngay_hieu_luc varchar(10),
+	ngay_ky varchar(10),
+	trich_yeu nvarchar(100),
+	co_quan_ban_hanh nvarchar(100),
+	nguoi_ky nvarchar(50),
+	loai_van_ban nvarchar(50),
+	tinh_trang nvarchar(50),
+	link_download varchar(100)
 )
+
 go
-create table article_link(
-	article_url varchar(500) PRIMARY KEY,
-	mabo varchar(20),
-	link_root varchar(100),
-	loai_link varchar(20),
-	ten_link varchar(100),
-	page_param int,
+create table legislation_configuration (
+	legislation_id varchar(20) PRIMARY KEY,
+	legislation_name_xpath varchar(200),
+	legislation_so_hieu_van_ban varchar(200),
+	legislation_ngay_ban_hanh varchar(200),
+	legislation_ngay_hieu_luc varchar(200),
+	legislation_ngay_ky varchar(200),
+	legislation_trich_yeu varchar(200),
+	legislation_co_quan_ban_hanh varchar(200),
+	legislation_nguoi_ky varchar(200),
+	legislation_loai_van_ban varchar(200),
+	legislation_tinh_trang varchar(200),
+	legislation_link_download varchar(200)
+)
+
+go
+create table ministry_info(
+	ministry_id varchar(20) PRIMARY KEY,
+	ministry_name nvarchar(100)
+)
+
+go
+create table ministry_articles_configuration (
+	ministry_id varchar(20) PRIMARY KEY,
+	article_title_xpath varchar(200),
+	article_description_xpath varchar(200),
+	article_time_xpath varchar(200),
+	article_author_xpath varchar(200),
+	article_content_xpath varchar(200),
+	article_tag_xpath varchar(200),
+	article_thumbnail_xpath varchar(200)
+)
+
+go
+create table ministry_category_configuration (
+	ministry_id varchar(20) PRIMARY KEY,		
+	article_url_xpath varchar(200),
+	article_title_xpath varchar(200),
+	article_time_xpath varchar(200),
+	article_description_xpath varchar(200),
+	article_thumbnail_xpath varchar(200),
 	page_rule int,
-	schedule_minute date
+	schedule_minute time
 )
 
 go
-alter table article_configuration add constraint al_url_ac foreign key (article_url) references article_link(article_url)
-go
-alter table article_info add constraint al_url_ai foreign key (article_url) references article_link(article_url)
-go
-alter table vanbanphapluat add constraint al_url_vbpl foreign key (article_url) references article_link(article_url)
-go
-alter table vanbanphapluat add constraint bn_url_vbpl foreign key (mabo) references bonganh(mabo)
+create table category_info(
+	category_id varchar(20) PRIMARY KEY,
+	ministry_id varchar(20),
+	category_name nvarchar (200),
+	category_type_id varchar (20),
+	category_link_root varchar(1000),
+	page_param int
+	
+)
 
+go
+create table category_type(
+	category_type_id varchar (20) PRIMARY KEY,
+	category_type_name nvarchar(50)
+)
+
+go
+alter table article_info add constraint ai_category_id_ci foreign key (category_id) references category_info(category_id)
+go
+alter table category_info add constraint ci_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table legislation_info add constraint li_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table ministry_articles_configuration add constraint mac_ministry_article_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table ministry_category_configuration add constraint mcc_ministry_article_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table article_img add constraint aimg_article_id_ainfo foreign key (article_id) references article_info(article_id)
+go
+alter table legislation_configuration add constraint lc_legislation_id_li foreign key (legislation_id) references legislation_info(legislation_id)
+go
+alter table category_info add constraint ci_category_type_id_ct foreign key (category_type_id) references category_type(category_type_id)
 
 /*go
 alter table article_link
@@ -107,6 +150,7 @@ VALUES
 	('G05', N'Bộ Kế hoạch và Đầu tư',N'Bộ Kế hoạch và Đầu tư là cơ quan của Chính phủ, thực hiện chức năng quản lý nhà nước về kế hoạch, đầu tư phát triển và thống kê',N'quản lý nhà nước về kế hoạch, đầu tư phát triển và thống kê, bao gồm: Tham mưu tổng hợp về chiến lược, quy hoạch, kế hoạch phát triển kinh tế - xã hội, kế hoạch đầu tư công của quốc gia; cơ chế, chính sách quản lý kinh tế; đầu tư trong nước, đầu tư của nước ngoài vào Việt Nam và đầu tư của Việt Nam ra nước ngoài; khu kinh tế; nguồn hỗ trợ phát triển chính thức (ODA), vốn vay ưu đãi và viện trợ phi chính phủ nước ngoài; đấu thầu; phát triển doanh nghiệp, kinh tế tập thể, hợp tác xã; thống kê; quản lý nhà nước các dịch vụ công trong các ngành, lĩnh vực thuộc phạm vi quản lý nhà nước của Bộ theo quy định của pháp luật.' )
 go
 select * from bonganh 
+
 go
 use master
 drop database WebDB

@@ -69,7 +69,7 @@ class MySpider(scrapy.Spider):
                     article_author_xpath =  article_response.xpath(row[i])
                     print("Author: "+str(article_author_xpath))
                 elif (i == 4):
-                    article_content = self.clearSpace(article_response.xpath('//*[@id="contentnews"]//text()'))
+                    article_content = self.clearSpace(article_response.xpath(row[i]))
                     print("Content: "+str(article_content))
             print("\n")
             

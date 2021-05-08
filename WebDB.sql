@@ -154,11 +154,13 @@ insert into ministry_articles_configuration(ministry_id,article_title_xpath,arti
 	'//p[@id="change_font_size"]/text()',
 	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
 	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/div[2]/div[2]/text()',
-	'//*[@id="contentnews"]/p/text()'
+	'//*[@id="contentnews"]//text()'
 	)
 
 go
 select * from ministry_articles_configuration
+
+
 
 go
 insert into article_link(article_url, mabo, link_root,loai_link,ten_link,page_param,page_rule,schedule_minute) values

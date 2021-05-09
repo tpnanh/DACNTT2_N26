@@ -65,6 +65,7 @@ create table ministry_info(
 	ministry_name nvarchar(100)
 )
 
+
 go
 create table ministry_category_configuration (
 	ministry_id int PRIMARY KEY,		
@@ -218,10 +219,6 @@ insert into category_type(category_type_name) values
 
 	(N'Văn bản chính sách mới'),
 	(N'Chỉ đạo điều hành'),
-	(N'Hoạt động của lãnh đạo Bộ'),
-	(N'Hoạt động của các đơn vị thuộc bộ'),
-	(N'Hoạt động của tư pháp địa phương'),
-	(N'Hoạt động của Đảng - Đoàn thể'),
 	(N'Nghiên cứu trao đổi'),
 	(N'Thông tin khác'),
 
@@ -236,6 +233,8 @@ insert into category_type(category_type_name) values
 	(N'Giới thiệu văn bản mới'),
 
 	(N'Tin liên quan'),
+
+	(N'Bản tin chính phủ tuần qua'),
 
 	(N'Hoạt động của Bộ trưởng, Chủ nhiệm'),
 	(N'Hoạt động của Ủy ban Dân tộc'),
@@ -260,7 +259,10 @@ insert into category_type(category_type_name) values
 	(N'Điều tra cơ bản'),
 	(N'Tin Khoa học - Công nghệ quốc tế'),
 
-	(N'Tin tức'),
+	(N'Tin tức')
+
+go
+select * from category_type
 
 go
 insert into ministry_category_configuration(ministry_id,article_url_xpath,article_thumbnail_xpath,schedule_minute) values
@@ -327,9 +329,85 @@ insert into ministry_category_configuration(ministry_id,article_url_xpath,articl
 	--tin video bộ ''
 	(17,
 	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
-	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12)
+	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
+	--phân loại tin tức bộ thông tin vè truyền thông
+	(18,
+	'//*[@id="ctl00_ctl46_g_915af12b_590b_4148_9fd5_0e542a5d896f"]/div/div/h3/a/@href',	
+	'//*[@id="ctl00_ctl46_g_915af12b_590b_4148_9fd5_0e542a5d896f"]/div/div/a/img/@src',12),
+	--chỉ đạo điều hành bộ tư pháp
+	(19,
+	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div/div/div/p/a/@href',	
+	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div/div/div/a/img/@src',12),
+	--văn bản chính sách mới bộ tư pháp
+	(20,
+	'//*[@id="ctl00_ctl35_g_ab713570_0c3c_4d90_9ca3_2ddd2b5fc497"]/div/div/div/div/div/p/a/@href',	
+	'',12),
+	--nghiên cứu trao đổi bộ tư pháp
+	(21,
+	'//*[@id="ctl00_ctl35_g_6eb44992_0f6f_427c_9748_86a2197f142d"]/div/div/div/div/div/p/a/@href',	
+	'//*[@id="ctl00_ctl35_g_6eb44992_0f6f_427c_9748_86a2197f142d"]/div/div/div/div/div/a/img/@src',12),
+	--thông tin khác bộ tư pháp
+	(22,
+	'//*[@id="ctl00_ctl35_g_e985fffc_da66_42b2_bf39_3a39075bc039"]/div/div/div/div/div/p/a/@href',	
+	'//*[@id="ctl00_ctl35_g_e985fffc_da66_42b2_bf39_3a39075bc039"]/div/div/div/div/div/a/img/@src',12),
+	--phân loại bộ vhttdl
+	(23,
+	'//*[@id="mainHtml"]/body/div/div/div/div/div/div/div/a/@href',	
+	'//*[@id="mainHtml"]/body/div/div/div/div/div/div/div/a/img/@src',12),
+	--phân loại bộ xây dựng
+	(24,
+	'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/@href',	
+	'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/img/@src',12),
+	--hoạt động lãnh đạo bộ y tế
+	(25,
+	'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	--tin tổng hợp bộ y tế
+	(26,
+	'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	--thông tin chỉ đạo điều hành bộ y tế
+	(27,
+	'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	--hoạt động của địa phương bộ y tế
+	(28,
+	'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	--điểm tin y tế bộ y tế
+	(29,
+	'//*[@id="p_p_id_101_INSTANCE_sqTagDPp4aRX_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	'//*[@id="p_p_id_101_INSTANCE_sqTagDPp4aRX_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	--chính phủ 
+	(30,
+	'//*[@id="tinkhac"]/table/tbody/tr/td/a/@href',	
+	'//*[@id="tinkhac"]/table/tbody/tr/td/img/@src',12),
+	--viện hàn lâm khoa học công nghệ
+	(31,
+	'//*[@id="ContArticleDiv"]/div/div/a/@href',	
+	'//*[@id="ContArticleDiv"]/div/a/img/@src',12),
+	--tin hợp tác quốc tế viện hàn lâm khoa học xã hội
+	(32,
+	'//*[@id="ctl00_m_g_e0136335_967d_4b76_983c_c60f79107a7f"]/div/div/div/div/p/a/@href',	
+	'//*[@id="ctl00_m_g_e0136335_967d_4b76_983c_c60f79107a7f"]/div/div[2]/div/div/a/img',12),
+	--tin đào tạo viện hàn lâm khoa học xã hội
+	(33,
+	'//*[@id="ctl00_m_g_43975694_b6c8_49c4_b36e_4eedbb2bce01"]/div/div/div/div/p/a/@href',	
+	'//*[@id="ctl00_m_g_43975694_b6c8_49c4_b36e_4eedbb2bce01"]/div/div[2]/div/div/a/img',12),
+	--tin hành chính tổ chức viện hàn lâm khoa học xã hội
+	(34,
+	'//*[@id="ctl00_m_g_7145028f_cb69_4dea_9572_d2a1e41740e8"]/div/div/div/div/p/a/@href',	
+	'//*[@id="ctl00_m_g_7145028f_cb69_4dea_9572_d2a1e41740e8"]/div/div[2]/div/div/a/img',12),
+	--phân loại ủy ban quản lý vốn nhà nước
+	(35,
+	'//*[@id="p_p_id_dsnews_WAR_vnpteportalnewsportlet_INSTANCE_673PJRYyOK4a_"]/div/div/div/h2/a/@href',	
+	'//*[@id="p_p_id_dsnews_WAR_vnpteportalnewsportlet_INSTANCE_673PJRYyOK4a_"]/div/div/div/a/img/@src',12)
+
 go
 select * from ministry_category_configuration
+
+go
+select* from category_info
 
 go 
 insert into ministry_articles_configuration(ministry_id,article_title_xpath,article_description_xpath,article_time_xpath,

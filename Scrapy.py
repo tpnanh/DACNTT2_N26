@@ -16,24 +16,29 @@ class MySpider(scrapy.Spider):
         return cursor
     
     
-    def covertToResponse(self,url):
+    def covertStringToResponse(self,url):
         response = requests.get(url)            
         doc = html.fromstring(response.text)
         return doc
     
     
     def getUrl(self):
-        category_page = self.connectDB().execute('select category_link_root from category_info')
-        for row in category_page:   
-            print("Here: "+str(row[0]))
-            self.parseCategoryResponse(self.covertToResponse(row[0]))
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root from category_info order by ministry_id asc')
+        page_param = self.connectDB().execute('select page_rule from ministry_category_configuration')
+        for row in category_page_info:   
+            print("Here2: "+str(row[0]))
+            print("Here: "+str(row[1]))
+            param = self.getParam('http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur=587')
+            for i in range (1, int(param)):
+                self.parseCategoryResponse(self.covertStringToResponse(row[1]+str(i)), row[0])
+                for page_rule in page_param:
+                    i += page_rule[0]
     
     
-    def parseCategoryResponse(self, response): 
-        category_detail = self.connectDB().execute('select article_url_xpath,article_thumbnail_xpath,category_param_xpath from ministry_category_configuration')
+    def parseCategoryResponse(self, response, ministryId): 
+        category_detail = self.connectDB().execute('select article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = $'+ str(ministryId))
         for row in category_detail:
             for i in range (len(row)):
-                # print("Content: "+str(row[i]))
                 ## i = 0 for article url to save article to DB
                 if (i == 0):                    
                     article_url_xpath = response.xpath(row[i])
@@ -41,17 +46,14 @@ class MySpider(scrapy.Spider):
                         print("Url: "+str(article_url_xpath[url_index]))
                         self.parseArticleResponse(article_url_xpath[url_index])
                 ## i = 1 for article thumbnail       
-                elif (i == 1):
+                else:
                     article_thumbnail_xpath = response.xpath(row[i])
                     print("Thumb: "+str(article_thumbnail_xpath))
-                # else:
-                #     category_param_xpath = response.xpath(row[i])[0]
-                #     self.getParam(category_param_xpath)
                     
                         
                         
     def parseArticleResponse(self, article_url): 
-        article_response = self.covertToResponse(article_url)
+        article_response = self.covertStringToResponse(article_url)
         article_detail = self.connectDB().execute('select article_title_xpath,article_description_xpath,article_time_xpath,article_author_xpath,article_content_xpath from ministry_articles_configuration')
         for row in article_detail:
             article_title = ""
@@ -76,26 +78,16 @@ class MySpider(scrapy.Spider):
                     article_content = self.clearSpace(article_response.xpath(row[i]))
                     print("Content: "+str(article_content))
             print("\n")
-            
-            
-    # def parseCategoryResponse(self, article_thumbnail): 
-    #     article_response = self.covertToResponse(article_thumbnail)
     
-    # def getParam(self, param_url):
-    #     print("Param url: "+str(param_url))
-    #     for i in reversed(len(param_url)):
-    #         count = 0
-    #         print("Param: "+str(count))
-            # if (param_url[i] != "="):
-            #     count +=1
-            #     print("Param: "+str(count))
-            # else:
-            #     print("Param: "+str(count))
-                # return count
+    
+    def getParam(self, param_url):
+        param = ""
+        for i in range(len(param_url),0,-1):
+            if (param_url[i-1] != "="):
+                param += param_url[i-1]
+            else:
+                return param[::-1]
                 
-        # print("Param: "+param)
-        # return param        
-                    
             
     def clearSpace(self, listString):
         return [string for string in listString if string != ' ']
@@ -126,7 +118,7 @@ class MySpider(scrapy.Spider):
                 ('Jenny',66,'Boston')
                 ''')
         conn.commit()
-        
+                
         
 
 p = MySpider()

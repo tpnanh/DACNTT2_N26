@@ -612,51 +612,217 @@ select* from category_info
 
 go 
 insert into ministry_articles_configuration(ministry_id,article_title_xpath,article_description_xpath,article_time_xpath,
-											article_author_xpath,article_content_xpath) values
+											article_author_xpath,article_content_xpath, article_tag_xpath) values
+	
+	--Bộ công thương
 	(1,
 	'//div[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/h1/text()',
 	'//p[@id="change_font_size"]/text()',
 	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
 	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/div[2]/div[2]/text()',
-	'//*[@id="contentnews"]/p/text()'
+	'//*[@id="contentnews"]/p/text()',
+	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/div/header/a[1]/text()'
 	),
+	--Bộ công an
 	(2,
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/h1/text()',
-	'//*[@id="change_font_size"]/text()',
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/div[2]/div[2]/text()',
-	'//*[@id="contentnews"]/p/text()'
-	),
-	(3,
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/h1/text()',
-	'//*[@id="change_font_size"]/text()',
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
-	'',
-	'//*[@id="contentnews"]/text()'
-	),
-	(4,
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/h1/text()',
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[1]/div[1]/text()',
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[2]/text()',
+	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[1]/div[1]/text()',
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[5]/text()',
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[4]/div/text()'
-	),
+	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[4]/div/p/text()',
+	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[1]/ul/li/a/text()'
+	),	
+	--Bộ giáo dục
+	(3,
+	'//*[@id="news-title"]/text()',
+	'//*[@id="news-des"]/text()',
+	'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div[2]/div/div[1]/div/div[1]/p/span[1]/text()',
+	'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div[2]/div/div[1]/div/p/text()',
+	'//*[@id="news-detail"]/div/p/text()',
+	' '
+	),	
+	--Bộ giao thông vận tải
+	(4,
+	'//*[@id="divArticleDescription3"]/h1/text()',
+	'//*[@id="divArticleDescription1"]/p/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_275cd07f_7dd8_4f62_97b3_19577a1ec443_ctl00_pnHide"]/span/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_275cd07f_7dd8_4f62_97b3_19577a1ec443_ctl00_pnNguontin"]/p/font/text()',
+	'//*[@id="divArticleDescription2"]/p/span/span/text()',
+	' '
+	),	
+	--Bộ khoa học công nghệ
 	(5,
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/h1/text()',
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[2]/text()',
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[1]/div[1]/text()',
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[1]/div[1]/text()',
-	'//*[@id="contentnews"]/p/text()'
-	),
+	'//*[@id="divArticleDescription3"]/h1/text()',
+	'//*[@id="divArticleDescription1"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_275cd07f_7dd8_4f62_97b3_19577a1ec443_ctl00_pnNguontin"]/p[1]/font/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_275cd07f_7dd8_4f62_97b3_19577a1ec443_ctl00_pnNguontin"]/p/font/text()',
+	'//*[@id="divArticleDescription2"]/div/p/text()',
+	' '
+	),	
+	--Bộ lao động - thương binh xã hội
 	(6,
-	'//div[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/h1/text()',
-	'//p[@id="change_font_size"]/text()',
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
-	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/div[2]/div[2]/text()',
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[4]/div/text()'
+	'//*[@id="ctl00_ctl50_g_8ad360dc_c37c_41f7_aa64_94b051f219f8"]/div[1]/div[1]/h1/text()',
+	'//*[@id="divArticleDescription"]/p[1]/text()',
+	'//*[@id="ctl00_ctl50_g_8ad360dc_c37c_41f7_aa64_94b051f219f8"]/div[1]/div[1]/p/text()',
+	'//*[@id="divArticleDescription"]/div[10]/strong/em/text()',
+	'//*[@id="divArticleDescription"]/div/text()',
+	' '
+	),	
+	--Bộ ngoại giao
+	(7,
+	'//*[@id="WebPartWPQ1"]/table/tbody/tr[1]/td/text()',
+	'//*[@id="WebPartWPQ1"]/table/tbody/tr[2]/td/div[1]/text()',
+	'//*[@id="WebPartWPQ1"]/table/tbody/tr[1]/td/div[1]/text()',
+	' ',
+	'//*[@id="WebPartWPQ1"]/table/tbody/tr[2]/td/div[2]/div/p/font',
+	' '
+	),	
+	--Bộ nội vụ
+	(8,
+	'//*[@id="news_details"]/div[3]/div/div[1]/h1/text()',
+	'//*[@id="show_description"]/p/text()',
+	'//*[@id="news_details"]/div[3]/div/div[1]/div[1]/p/text()',
+	'//*[@id="show_content"]/p/b/text()',
+	'//*[@id="show_content"]/p/text()',
+	' '
+	),	
+	--Bộ nông nghiệp và phát triển nông thôn
+	(9,
+	'//*[@id="txtTitle"]/text()',
+	'//*[@id="divArticleDescription"]/p[1]/text()',
+	'//*[@id="txtDateString"]/text()',
+	'//*[@id="divArticleDescription"]/p[2]/text()',
+	'//*[@id="ctl00_PlaceHolderMain_ctl00_ctl07__ControlWrapper_RichHtmlField"]/p/text()',
+	'//*[@id="Tags"]/a/span/text()'
+	),	
+	--Bộ quốc phòng
+	(10,
+	'//*[@id="layoutContainers"]/div/table/tbody/tr/td[1]/table/tbody/tr/td/div/div/div[4]/div[1]/h1/span/text()',
+	'//*[@id="layoutContainers"]/div/table/tbody/tr/td[1]/table/tbody/tr/td/div/div/div[4]/div[1]/div[1]/p[1]/text()',
+	'//*[@id="layoutContainers"]/div/table/tbody/tr/td[1]/table/tbody/tr/td/div/div/div[4]/div[1]/h2/text()',
+	'//*[@id="layoutContainers"]/div/table/tbody/tr/td[1]/table/tbody/tr/td/div/div/div[4]/div[1]/div[2]/b/span	/text()',
+	'//*[@id="layoutContainers"]/div/table/tbody/tr/td[1]/table/tbody/tr/td/div/div/div[4]/div[1]/div[1]/p/text()',
+	' '
+	),	
+	--Bộ tài chính
+	(11,
+	'//*[@id="T:oc_5868747166region1:listTmplt:pbl6"]/text()',
+	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p[1]/text()',
+	'//*[@id="T:oc_5868747166region1:listTmplt:pbl33"]/span[1]/text()',
+	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p[11]/span/text()',
+	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p/text()',
+	' '
+	),	
+	--Bộ thông tin truyền thông
+	(12,
+	'//*[@id="news_content"]/div[1]/h1/text()',
+	'//*[@id="divArticleDescription"]/p/text()',
+	'//*[@id="news_content"]/div[1]/div[1]/div[1]/div/text()',
+	'//*[@id="news_content"]/div[1]/p[1]/strong/text()',
+	'//*[@id="divArticleContent"]/p/text()',
+	'//*[@id="news_content"]/div[1]/p[3]/a/text()'
+	),	
+	--Bộ tư pháp
+	(13,
+	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div[2]/div[2]/div/h1/text()',
+	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div[2]/div[2]/div/div[2]/text()',
+	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div[2]/div[2]/div/span/text()',
+	' ',
+	'//*[@id="ctl00_ctl35_g_310b73f7_ae96_416a_bc48_aa60b91a5843"]/div/div/div[2]/div[2]/div/div[4]/div[1]/text()',
+	' '
+	),	
+	--Bộ xây dựng
+	(14,
+	'//*[@id="divArticleDescription3"]/h1/text()',
+	'//*[@id="divArticleDescription1"]/p/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_9c0a5a28_df68_408d_abaa_1ef0666cf35c_ctl00_pnHide"]/div[2]/span/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_9c0a5a28_df68_408d_abaa_1ef0666cf35c_ctl00_pnNguontin"]/p/font/text()',
+	'//*[@id="divArticleDescription2"]/p/text()',
+	' '
+	),	
+	--Bộ y tế
+	(15,
+	'//*[@id="p_p_id_101_INSTANCE_3Yst7YhbkA5j_"]/div/div/div/div[1]/div[1]/h3/text()',
+	'//*[@id="_101_INSTANCE_3Yst7YhbkA5j_753365"]/div[1]/p/strong/text()',
+	'//*[@id="p_p_id_101_INSTANCE_3Yst7YhbkA5j_"]/div/div/div/div[1]/div[2]/div[1]/p/text()',
+	'//*[@id="_101_INSTANCE_3Yst7YhbkA5j_753365"]/div[3]/h2/span/text()',
+	'//*[@id="_101_INSTANCE_3Yst7YhbkA5j_753365"]/div[3]/h2/text()',
+	' '
+	),	
+	--chính phủ
+	(16,
+	'//*[@id="aspnetForm"]/div[9]/div[1]/div[1]/h1/text()',
+	'//*[@id="aspnetForm"]/div[9]/div[1]/div[2]/div[2]/div[1]/text()',
+	'//*[@id="aspnetForm"]/div[9]/div[1]/div[1]/p/text()',
+	'//*[@id="aspnetForm"]/div[9]/div[1]/div[2]/div[2]/div[2]/strong/text()',
+	'///*[@id="aspnetForm"]/div[9]/div[1]/div[2]/div[2]/p/text()',
+	'//*[@id="aspnetForm"]/div[9]/div[1]/div[2]/div[2]/p[2]/span[2]/a/text()'
+	),	
+	--Ủy ban dân tộc
+	(17,
+	'//*[@id="BodyContent_ctl00_ctl01_newsTitle"]/text()',
+	'//*[@id="BodyContent_ctl00_ctl01_newsContent"]/text()',
+	'//*[@id="BodyContent_ctl00_ctl01_lblDate"]/text()',
+	'//*[@id="BodyContent_ctl00_ctl02_lblNguonThongTin"]/text()',
+	'//*[@id="divNewsDetails"]/p/text()',
+	' '
+	),	
+	--ngân hàng
+	(18,
+	'//*[@id="T:oc_7115552043region:pbl6"]/text()',
+	'//*[@id="pbl20"]/text()',
+	'//*[@id="T:oc_7115552043region:j_id__ctru16pc8"]/label/text()',
+	'//*[@id="pbl21"]/div/p/text()',
+	'//*[@id="pbl21"]/div/p/span/text()',
+	' '
+	),	
+	--văn phòng chính phủ
+	(19,
+	'//*[@id="ctl00_bodyContent_lbHeadline"]/text()',
+	'//*[@id="primarycontent"]/div[2]/div[4]/p/text()',
+	'//*[@id="ctl00_bodyContent_lbDate"]/text()',
+	' ',
+	'//*[@id="primarycontent"]/div[2]/p/text()',
+	' '
+	),	
+	--Bảo hiểm xã hội
+	(20,
+	'//*[@id="ctl00_ctl39_g_39077cd2_a1b4_4fab_a70a_fa7caf624e92"]/div[2]/div[2]/div[2]/div[1]/p/text()',
+	'//*[@id="contenttin"]/p[1]/text()',
+	'//*[@id="ctl00_ctl39_g_39077cd2_a1b4_4fab_a70a_fa7caf624e92"]/div[2]/div[2]/div[2]/div[2]/div/p/text()',
+	'//*[@id="contenttin"]/p/text()',
+	'//*[@id="contenttin"]/div/p/text()',
+	' '
+	),	
+	--ủy ban quản lý vốn nhà nước
+	(21,
+	'//*[@id="testabc"]/div[1]/h1/text()',
+	'//*[@id="testabc"]/p/strong/text()',
+	'//*[@id="testabc"]/div[1]/p/text()',
+	'//*[@id="testabc"]/div[2]/p/text()',
+	'//*[@id="testabc"]/div[2]/div/p/text()',
+	' '
+	),	
+	--viện hàn lâm khcn
+	(22,
+	'//*[@id="contentnews"]/h1/text()',
+	'//*[@id="contentnews"]/div[2]/text()',
+	'/html/body/div/header/section/div/text()',
+	'//*[@id="contentnews"]/div[5]/div[1]/text()',
+	'//*[@id="contentnews"]/div[4]/p/text()',
+	' '
+	),	
+	--viện hàn lâm khxh
+	(23,
+	'//*[@id="ctl00_m_g_f5a086cc_d90c_4742_8d72_0b1dd429f5b4"]/div[2]/div/div/div/div/div/h1/text()',
+	'//*[@id="ctl00_m_g_f5a086cc_d90c_4742_8d72_0b1dd429f5b4"]/div[2]/div/div/div/div/div/div[1]/p[2]/text()',
+	'//*[@id="ctl00_m_g_f5a086cc_d90c_4742_8d72_0b1dd429f5b4"]/div[2]/div/div/div/div/div/div[1]/p[1]/text()',
+	'//*[@id="anhnoidungdetail"]/p/strong/text()',
+	'//*[@id="anhnoidungdetail"]/p/text()',
+	' '
 	)
-
 go
+<<<<<<< HEAD
 select * from ministry_articles_configuration
 
 <<<<<<< HEAD
@@ -703,6 +869,53 @@ select article_url_xpath,article_thumbnail_xpath from ministry_category_configur
 
 =======
 >>>>>>> bb4582a270eea43ed81bb305e1ebc0afed7f6256
+=======
+insert into legislation_configuration(legislation_id, legislation_name_xpath, legislation_so_hieu_van_ban, legislation_ngay_ban_hanh, legislation_ngay_hieu_luc, 
+			legislation_ngay_ky, legislation_trich_yeu, legislation_co_quan_ban_hanh, legislation_nguoi_ky, 
+			legislation_loai_van_ban, legislation_tinh_trang, legislation_link_download) values
+	--Bộ công thương
+	(1,
+	'//*[@id="p_p_id_ELegalDocumentView_WAR_ELegalDocumentportlet_INSTANCE_ixT9f4WbWm6A_"]/div/div/section/h4/text()',
+	'//*[@id="table_pna"]/tbody/tr[1]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[2]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[3]/td[2]/text()',
+	'', -- không hiển thị ngày ký
+	'//*[@id="table_pna"]/tbody/tr[5]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[6]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[7]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[8]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[9]/td[2]/text()',
+	'//*[@id="table_pna"]/tbody/tr[10]/td[2]/div/div/a/@href'
+	),
+	--Bộ công an
+	(2,
+	'//*[@id="parentHorizontalTab"]/div/div[2]/div[1]/div[1]/a/text()',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[6]/td[2]/text()',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[7]/td[2]/text()',
+	'', -- không hiển thị ngày ký
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[1]/td/text()',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[4]/td[2]',	
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[5]/td[2]',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[3]/td[2]/text()',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[8]/td[2]/text()',
+	'//*[@id="A2"]/@href'
+	),
+	--Bộ giáo dục
+	(3,
+	'//*[@id="ctl00_ctl24_g_025164b8_2c99_46cb_ad7d_e00c79535b91"]/div/div[2]/div/div[2]/div[1]/a/h5/text()',
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[2]/td[4]/text()',
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[4]/td[4]/text()',
+	'', -- không hiển thị ngày ký
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[1]/td/text()',
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[4]/td[2]/span[1]/text()',
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[4]/td[2]/span[2]/text()',
+	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[3]/td[2]/text()',
+	'//*[@id="content_1"]/div/div/div[1]/ul/li[1]/text()',
+	'//*[@id="ctl00_ctl24_g_a9eee66b_a86f_4cc0_b32d_539fafedbf9b"]/div[1]/div[1]/div/div/ul/li[3]/a/@href'
+	),
+>>>>>>> e10b9628b8e46c438666f8a9a563b9bb46bd754a
 go
 use master
 drop database WebDB

@@ -76,7 +76,7 @@ create table ministry_info(
 
 go
 create table ministry_category_configuration (
-	ministry_id int PRIMARY KEY,		
+	ministry_id int,		
 	article_url_xpath varchar(200),
 	article_thumbnail_xpath varchar(200),
 	page_rule int,
@@ -86,7 +86,7 @@ create table ministry_category_configuration (
 
 go
 create table ministry_articles_configuration (
-	ministry_id int PRIMARY KEY,
+	ministry_id int,
 	article_title_xpath varchar(200),
 	article_description_xpath varchar(200),
 	article_time_xpath varchar(200),
@@ -327,7 +327,7 @@ VALUES
 (1,N'Người tốt, việc tốt - Bộ Công An',13,'http://bocongan.gov.vn/tin-tuc-su-kien/nguoi-tot-viec-tot-21.html?Page='),
 (1,N'Hoạt động xã hội - Bộ Công An',14,'http://bocongan.gov.vn/tin-tuc-su-kien/hoat-dong-xa-hoi-25.html?Page='),
 
-(3,N'Tin tức sự kiện - Bộ Nội vụ',57,'https://www.moha.gov.vn/tin-tuc-su-kien.html?page='), --còn nhiều trang mà khum có nút kéo đến trang cuối :<
+(3,N'Tin tức sự kiện - Bộ Nội vụ',57,'https://www.moha.gov.vn/tin-tuc-su-kien.html?page=1'), --còn nhiều trang mà khum có nút kéo đến trang cuối :<
 
 (4,N'Thông cáo báo chí - Bộ Giáo dục và Đào tạo',15,'https://moet.gov.vn/tintuc/Pages/thong-cao-bao-chi.aspx?date=&EventID=0&Page='),
 (4,N'Thông báo - Bộ Giáo dục và Đào tạo',16,'https://moet.gov.vn/tintuc/Pages/Thongbao.aspx?date=&EventID=0&Page='),
@@ -376,28 +376,28 @@ VALUES
 (8,N'Chăm sóc người có công và công tác xã hội - Các vấn đề khác - Bộ Lao động - Thương Binh và Xã hội',57,'http://www.molisa.gov.vn/Pages/tintuc/chuyenmuc.aspx?ChuyenMucID=11518&page='),
 
 
-(9,N'Tin tức sự kiện - Bộ Ngoại giao',58,'https://lanhsuvietnam.gov.vn/Lists/ChuyenMuc/ChuyenMuc/ChuyenMuc.aspx?List=b6a96952%2D5329%2D4042%2D901b%2D2af247f16b68&ID=16',1 ),-----không lấy được param
+--(9,N'Tin tức sự kiện - Bộ Ngoại giao',58,'https://lanhsuvietnam.gov.vn/Lists/ChuyenMuc/ChuyenMuc/ChuyenMuc.aspx?List=b6a96952%2D5329%2D4042%2D901b%2D2af247f16b68&ID=16',1 ),-----không lấy được param
 
-(10,N'Tin tổng hợp - Bộ Nông nghiệp và phát triển nông thôn',17,'https://www.mard.gov.vn/Pages/tin-hoat-dong.aspx',344),
-(10,N'Nông nghiệp - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',60,'https://www.mard.gov.vn/Pages/tin-tuc-tin-hoat-dong.aspx#',439),
-(10,N'Lâm nghiệp - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',61,'https://www.mard.gov.vn/Pages/tin-tuc-tin-lam-nghiep.aspx',178),
-(10,N'Thủy lợi - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',62,'https://www.mard.gov.vn/Pages/tin-tuc-tin-thuy-loi.aspx',314),
-(10,N'Phòng chống thiên tai - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',63,'https://www.mard.gov.vn/Pages/phong-chong-thien-tai.aspx',106),
-(10,N'Thủy sản - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',64,'https://www.mard.gov.vn/Pages/tin-tuc-tin-thuy-san.aspx',282),
-(10,N'Quản lý chất lượng - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',65,'https://www.mard.gov.vn/Pages/tin-tuc-tin-quan-ly-chat-luong-va-ve-sinh-attp.aspx',34),
-(10,N'Chế biến và thị trường - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',66,'https://www.mard.gov.vn/Pages/tin-tuc-tin-che-bien.aspx',398),
-(10,N'Phát triển nông thôn - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',67,'https://www.mard.gov.vn/Pages/tin-tuc-tin-phat-trien-nong-thon.aspx',18),
-(10,N'Khuyến nông - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',68,'https://www.mard.gov.vn/Pages/tin-tuc-tin-khuyen-nong.aspx',405),
-(10,N'Tin địa phương - Bộ Nông nghiệp và phát triển nông thôn',20,'https://www.mard.gov.vn/Pages/danh-sach-tin-dia-phuong.aspx',170),
-(10,N'Tin video - Bộ Nông nghiệp và phát triển nông thôn',18,'https://www.mard.gov.vn/Pages/danh-sach-tin-video.aspx',50),
+--(10,N'Tin tổng hợp - Bộ Nông nghiệp và phát triển nông thôn',17,'https://www.mard.gov.vn/Pages/tin-hoat-dong.aspx',344),
+--(10,N'Nông nghiệp - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',60,'https://www.mard.gov.vn/Pages/tin-tuc-tin-hoat-dong.aspx#',439),
+--(10,N'Lâm nghiệp - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',61,'https://www.mard.gov.vn/Pages/tin-tuc-tin-lam-nghiep.aspx',178),
+--(10,N'Thủy lợi - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',62,'https://www.mard.gov.vn/Pages/tin-tuc-tin-thuy-loi.aspx',314),
+--(10,N'Phòng chống thiên tai - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',63,'https://www.mard.gov.vn/Pages/phong-chong-thien-tai.aspx',106),
+--(10,N'Thủy sản - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',64,'https://www.mard.gov.vn/Pages/tin-tuc-tin-thuy-san.aspx',282),
+--(10,N'Quản lý chất lượng - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',65,'https://www.mard.gov.vn/Pages/tin-tuc-tin-quan-ly-chat-luong-va-ve-sinh-attp.aspx',34),
+--(10,N'Chế biến và thị trường - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',66,'https://www.mard.gov.vn/Pages/tin-tuc-tin-che-bien.aspx',398),
+--(10,N'Phát triển nông thôn - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',67,'https://www.mard.gov.vn/Pages/tin-tuc-tin-phat-trien-nong-thon.aspx',18),
+--(10,N'Khuyến nông - Tin chuyên ngành - Bộ Nông nghiệp và phát triển nông thôn',68,'https://www.mard.gov.vn/Pages/tin-tuc-tin-khuyen-nong.aspx',405),
+--(10,N'Tin địa phương - Bộ Nông nghiệp và phát triển nông thôn',20,'https://www.mard.gov.vn/Pages/danh-sach-tin-dia-phuong.aspx',170),
+--(10,N'Tin video - Bộ Nông nghiệp và phát triển nông thôn',18,'https://www.mard.gov.vn/Pages/danh-sach-tin-video.aspx',50),
 
 (11,N'Tin tức sự kiện - Bộ Quốc phòng',58,'http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwPi9Du7O3qYmPsYGFj4uJsaeDp6hAZZBhobGzgaE9Ifrh8FVoLPBLACPE7088jPTdUvyA2NMMgyUQQAfwOf3g!!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_FANR8B1A081F00I32T4LDI2064/ren/p=WCM_PI=1/p=ns_Z7_FANR8B1A081F00I32T4LDI2064_WCM_PreviousPageSize.4e92abb3-6db2-476b-85b7-8c31f62282a0=10/p=ns_Z7_FANR8B1A081F00I32T4LDI2064_WCM_Page.4e92abb3-6db2-476b-85b7-8c31f62282a0=/p=CTX=QCPmodQCPsa-mod-siteQCPsa-ttsk/-/'),
 
-(12,N'Tin tức sự kiện - Bộ Tài chính',58,'https://www.mof.gov.vn/webcenter/portal/tttc/r/o/ttsk?_afrLoop=2000043207816979#%40%3F_afrLoop%3D2000043207816979%26centerWidth%3D100%2525%26leftWidth%3D0%2525%26rightWidth%3D0%2525%26showFooter%3Dfalse%26showHeader%3Dfalse%26_adf.ctrl-state%3D1akhre069w_206',465 ),-----không lấy được param
-(12,N'Thông cáo báo chí - Bộ Tài chính',24,'https://www.mof.gov.vn/webcenter/portal/tttc/r/o/thongcaobaochi?_afrLoop=2000261991867489#%40%3F_afrLoop%3D2000261991867489%26centerWidth%3D100%2525%26leftWidth%3D0%2525%26rightWidth%3D0%2525%26showFooter%3Dfalse%26showHeader%3Dfalse%26_adf.ctrl-state%3D1akhre069w_272',26 ),-----không lấy được param
+--(12,N'Tin tức sự kiện - Bộ Tài chính',58,'https://www.mof.gov.vn/webcenter/portal/tttc/r/o/ttsk?_afrLoop=2000043207816979#%40%3F_afrLoop%3D2000043207816979%26centerWidth%3D100%2525%26leftWidth%3D0%2525%26rightWidth%3D0%2525%26showFooter%3Dfalse%26showHeader%3Dfalse%26_adf.ctrl-state%3D1akhre069w_206',465 ),-----không lấy được param
+--(12,N'Thông cáo báo chí - Bộ Tài chính',24,'https://www.mof.gov.vn/webcenter/portal/tttc/r/o/thongcaobaochi?_afrLoop=2000261991867489#%40%3F_afrLoop%3D2000261991867489%26centerWidth%3D100%2525%26leftWidth%3D0%2525%26rightWidth%3D0%2525%26showFooter%3Dfalse%26showHeader%3Dfalse%26_adf.ctrl-state%3D1akhre069w_272',26 ),-----không lấy được param
 
 --(13,N'Hội nhập quốc tế - Bộ Tài nguyên và Môi trường',39,'https://monre.gov.vn/Pages/ChuyenMuc.aspx?cm=H%E1%BB%99i%20nh%E1%BA%ADp%20qu%E1%BB%91c%20t%E1%BA%BF',42 ), -----không lấy được param
-(13,N'Tham vấn chính sách TN&MT - Bộ Tài nguyên và Môi trường',70,'https://monre.gov.vn/Pages/ChuyenMuc.aspx?cm=Tham%20v%E1%BA%A5n%20ch%C3%ADnh%20s%C3%A1ch%20TN%EF%BC%86MT',1000 ),-----không lấy được param
+--(13,N'Tham vấn chính sách TN&MT - Bộ Tài nguyên và Môi trường',70,'https://monre.gov.vn/Pages/ChuyenMuc.aspx?cm=Tham%20v%E1%BA%A5n%20ch%C3%ADnh%20s%C3%A1ch%20TN%EF%BC%86MT',1000 ),-----không lấy được param
 
 
 (14,N'Bưu chính - Bộ Thông tin và Truyền thông',71,'https://www.mic.gov.vn/mic_2020/Pages/ChuyenMuc/PhanTrang/1747/1/Buu-chinh.html'),
@@ -410,11 +410,11 @@ VALUES
 (15,N'Văn bản chính sách mới - Bộ Tư pháp',77,'https://moj.gov.vn/qt/tintuc/Pages/van-ban-chinh-sach-moi.aspx?Date=&Page='),
 (15,N'Chỉ đạo điều hành - Bộ Tư pháp',78,'https://moj.gov.vn/qt/tintuc/Pages/chi-dao-dieu-hanh.aspx?Date=&Page='),
 
-(16,N'Bộ với các đơn vị - Bộ Văn hóa - Thể thao và Du lịch',81,'https://bvhttdl.gov.vn/hoat-dong-ky-niem-ngay-quoc-te-bao-tang-18-5-2021-20210507084003259.htm',1 ), -----không lấy được param
-(16,N'Bộ với các địa phương - Bộ Văn hóa - Thể thao và Du lịch',82,'https://bvhttdl.gov.vn/tin-tuc-va-su-kien/bo-voi-cac-dia-phuong/trang-1150.htm',1150 ),-----không lấy được param
-(16,N'Giao lưu - Hợp tác quốc tế - Bộ Văn hóa - Thể thao và Du lịch',83,'https://bvhttdl.gov.vn/g20-ung-ho-sang-kien-di-chuyen-quoc-te-an-toan-de-khoi-dong-du-lich-20210506162341549.htm',1 ), -----không lấy được param
-(16,N'Điểm báo - Bộ Văn hóa - Thể thao và Du lịch',84,'https://bvhttdl.gov.vn/diem-bao-hoat-dong-nganh-van-hoa-the-thao-va-du-lich-ngay-7-5-2021-20210507122302558.htm',1 ), -----không lấy được param
-(16,N'Thông tin - trao đổi - Bộ Văn hóa - Thể thao và Du lịch',85,'https://bvhttdl.gov.vn/van-dung-tu-tuong-ho-chi-minh-vao-cong-tac-kiem-tra-cua-dang-hien-nay-20210505073502755.htm',1 ), -----không lấy được param
+--(16,N'Bộ với các đơn vị - Bộ Văn hóa - Thể thao và Du lịch',81,'https://bvhttdl.gov.vn/hoat-dong-ky-niem-ngay-quoc-te-bao-tang-18-5-2021-20210507084003259.htm',1 ), -----không lấy được param
+--(16,N'Bộ với các địa phương - Bộ Văn hóa - Thể thao và Du lịch',82,'https://bvhttdl.gov.vn/tin-tuc-va-su-kien/bo-voi-cac-dia-phuong/trang-1150.htm',1150 ),-----không lấy được param
+--(16,N'Giao lưu - Hợp tác quốc tế - Bộ Văn hóa - Thể thao và Du lịch',83,'https://bvhttdl.gov.vn/g20-ung-ho-sang-kien-di-chuyen-quoc-te-an-toan-de-khoi-dong-du-lich-20210506162341549.htm',1 ), -----không lấy được param
+--(16,N'Điểm báo - Bộ Văn hóa - Thể thao và Du lịch',84,'https://bvhttdl.gov.vn/diem-bao-hoat-dong-nganh-van-hoa-the-thao-va-du-lich-ngay-7-5-2021-20210507122302558.htm',1 ), -----không lấy được param
+--(16,N'Thông tin - trao đổi - Bộ Văn hóa - Thể thao và Du lịch',85,'https://bvhttdl.gov.vn/van-dung-tu-tuong-ho-chi-minh-vao-cong-tac-kiem-tra-cua-dang-hien-nay-20210505073502755.htm',1 ), -----không lấy được param
 
 (17,N'Tin tổng hợp - Bộ Xây dựng',17,'https://moc.gov.vn/vn/chuyen-muc/1173/tin-hoat-dong.aspx?page='),
 (17,N'Tin hoạt động - Bộ Xây dựng',86,'https://moc.gov.vn/vn/chuyen-muc/1184/tin-tong-hop.aspx?page='),
@@ -469,156 +469,166 @@ go
 select * from category_info;
 
 go
-insert into ministry_category_configuration(ministry_id,article_url_xpath,article_thumbnail_xpath,schedule_minute,article_param_xpath) values
+insert into ministry_category_configuration(ministry_id,article_url_xpath,article_thumbnail_xpath,page_rule,schedule_minute,article_param_xpath) values
 	--phân loại tin tức bộ công thương
-	(1,
+	(2,
 	'//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div/article/div[2]/a/@href',	
 	'//div[@id="p_p_id_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_"]/div/div/div/section/div/article/div[1]/a/img/@src',
-	12,
+	1,12,
 	'//*[@id="_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_ocerSearchContainerPageIterator"]/div/ul//a/@href'),
 	--phân loại tin tức bộ công an
-	(2,
+	(1,
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div/div/h2/a/@href',	
-	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div/div/div/a/img/@src',12,
+	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div/div/div/a/img/@src',1,12,
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[11]/div/a/@href'),
 	--thông cáo báo chí - tin tổng hợp bộ giáo dục
-	(3,
+	(4,
 	'//*[@id="ctl00_ctl24_g_23a2051e_3a08_46a4_9f3f_d0ee1b5fb62b"]/div/div/div/ul/li/div/h2/a/@href',	
-	'//*[@id="ctl00_ctl24_g_23a2051e_3a08_46a4_9f3f_d0ee1b5fb62b"]/div/div/div/ul/li/a/img/@src',12,
+	'//*[@id="ctl00_ctl24_g_23a2051e_3a08_46a4_9f3f_d0ee1b5fb62b"]/div/div/div/ul/li/a/img/@src',1,12,
 	'//*[@id="ctl00_ctl24_g_23a2051e_3a08_46a4_9f3f_d0ee1b5fb62b"]/div/div[2]/div[2]/div/a/@href'),
 	--thông báo bộ giáo dục
 	(4,
 	'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div/div/div/ul/li/div/h2/a/@href',	
-	'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div/div[2]/div/ul/li/a/img/@src',12,
+	'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div/div[2]/div/ul/li/a/img/@src',1,12,
 	'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div/div[2]/div[2]/div/a/@href'),
 	--tin video bộ giáo dục
-	--(6,
+	--(4,
 	--'//*[@id="ctl00_ctl24_g_92a2c5f4_d49d_478b_9f6f_b3920bf66eb9"]/div/div/div/div/ul/li/div/div/div/p/a/@href',	
 	--'//*[@id="ctl00_ctl24_g_92a2c5f4_d49d_478b_9f6f_b3920bf66eb9"]/div/div/div/div/ul/li/div/div/div/a/img/@src',12),
 	----tin audio bộ giáo dục
-	--(7,
+	--(4,
 	--'//*[@id="ctl00_ctl24_g_fcf11fda_52ab_4c10_b110_b18f8d5a6e0a"]/div/div/div/div/ul/li/div/div/div/p/a/@href',	
 	--'//*[@id="ctl00_ctl24_g_fcf11fda_52ab_4c10_b110_b18f8d5a6e0a"]/div/div/div/div/ul/li/div/div/div/a/img/@src',12),
 	--phân loại bộ gtvt
-	--(8,
+	--(5,
 	--'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
 	--'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/div/div/a/img/@src',12),
 	--công trình giao thông bộ gtvt
-	(9,
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_rptNhomTinTuc_ctl00_pnlShowNhomTin"]/div/div/ul/li/a/@href',	
-	' ',12),--không có ảnh ----không lấy được param
+	--(5,
+	--'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_rptNhomTinTuc_ctl00_pnlShowNhomTin"]/div/div/ul/li/a/@href',	
+	--' ',12),--không có ảnh ----không lấy được param
 	--phân loại bộ khoa học và công nghệ
-	(10,
+	(7,
 	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/div/a/@href',	
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/div/a/img/@src',12,
+	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/div/a/img/@src',1,12,
 	'//*[@class="Paging"]/select/option/@value'),
 	--phân loại bộ lao động thương binh và xã hội
-	(11,
+	(8,
 	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
-	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12,
+	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',1,12,
 	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/ul[2]/li[8]/a/@href'),
 	--người có công bộ lao động thương binh và xã hội
-	(12,
+	(8,
 	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/h2/a/@href',	
-	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/a/img/@src',12,
+	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/a/img/@src',1,12,
 	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/ul[2]/li[8]/a/@href'),
 	--tin tức-sự kiện bộ nội vụ
-	(13,
-	'//*[@id="list_news"]/div[1]/div/div/ul/li/p/a/@href',	
-	'//*[@id="list_news"]/div/div/div/ul/li/a/img/@src',12), ---không lấy được param
+	--(3,
+	--'//*[@id="list_news"]/div[1]/div/div/ul/li/p/a/@href',	
+	--'//*[@id="list_news"]/div/div/div/ul/li/a/img/@src',12), ---không lấy được param
 	--tin tức-sự kiện bộ quốc phòng
-	(14,
+	(11,
 	'//*[@id="listArticle"]/div/div/h1/a/@href',	
-	'//*[@id="listArticle"]/div/div[1]/a/img/@src',12,
+	'//*[@id="listArticle"]/div/div[1]/a/img/@src',1,12,
 	'//*[@class="page"]/a/@href'),
 	--tin tức-sự kiện bộ tài chính
-	(15,
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
-	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
-	--tin địa phương bộ ''
-	(16,
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
-	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
-	--tin video bộ ''
-	(17,
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
-	'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
+	--(12,
+	--'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
+	--'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
+	----tin địa phương bộ ''
+	--(12,
+	--'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
+	--'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
+	----tin video bộ ''
+	--(12,
+	--'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
+	--'//*[@id="ctl00_ctl50_g_6a4a1e4e_6f66_405a_92c1_d219946bfcba"]/div/div/div/div/a/img/@src',12),
 	--phân loại tin tức bộ thông tin và truyền thông
-	(18,
+	(14,
 	'//*[@id="ctl00_ctl46_g_915af12b_590b_4148_9fd5_0e542a5d896f"]/div/div/h3/a/@href',	
-	'//*[@id="ctl00_ctl46_g_915af12b_590b_4148_9fd5_0e542a5d896f"]/div/div/a/img/@src',12,
+	'//*[@id="ctl00_ctl46_g_915af12b_590b_4148_9fd5_0e542a5d896f"]/div/div/a/img/@src',1,12,
 	'//*[@id="ctl00_ctl46_g_915af12b_590b_4148_9fd5_0e542a5d896f"]/div[2]/div[2]/ul/li[7]/a/@href'),
 	--chỉ đạo điều hành bộ tư pháp
-	(19,
+	(15,
 	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div/div/div/p/a/@href',	
-	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div/div/div/a/img/@src',12),
+	'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div/div/div/div/div/a/img/@src',1,12,
+	'//*[@id="ctl00_ctl35_g_ab713570_0c3c_4d90_9ca3_2ddd2b5fc497"]/div[2]/div/div[2]/div/div[10]/div/a/@href'),
 	--văn bản chính sách mới bộ tư pháp
-	(20,
+	(15,
 	'//*[@id="ctl00_ctl35_g_ab713570_0c3c_4d90_9ca3_2ddd2b5fc497"]/div/div/div/div/div/p/a/@href',	
-	'',12),
+	'',1,12,'//*[@id="ctl00_ctl35_g_7165e992_2505_4b19_ad5f_44b0d061a060"]/div[2]/div/div[2]/div/div[10]/div/a/@href')
 	--nghiên cứu trao đổi bộ tư pháp
-	(21,
-	'//*[@id="ctl00_ctl35_g_6eb44992_0f6f_427c_9748_86a2197f142d"]/div/div/div/div/div/p/a/@href',	
-	'//*[@id="ctl00_ctl35_g_6eb44992_0f6f_427c_9748_86a2197f142d"]/div/div/div/div/div/a/img/@src',12),
-	--thông tin khác bộ tư pháp
-	(22,
-	'//*[@id="ctl00_ctl35_g_e985fffc_da66_42b2_bf39_3a39075bc039"]/div/div/div/div/div/p/a/@href',	
-	'//*[@id="ctl00_ctl35_g_e985fffc_da66_42b2_bf39_3a39075bc039"]/div/div/div/div/div/a/img/@src',12),
-	--phân loại bộ vhttdl
-	(23,
-	'//*[@id="mainHtml"]/body/div/div/div/div/div/div/div/a/@href',	
-	'//*[@id="mainHtml"]/body/div/div/div/div/div/div/div/a/img/@src',12),
-	--phân loại bộ xây dựng
-	(24,
-	'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/@href',	
-	'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/img/@src',12),
-	--hoạt động lãnh đạo bộ y tế
-	(25,
-	'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div/a/img/@src',12),
-	--tin tổng hợp bộ y tế
-	(26,
-	'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div/a/img/@src',12),
-	--thông tin chỉ đạo điều hành bộ y tế
-	(27,
-	'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div/a/img/@src',12),
-	--hoạt động của địa phương bộ y tế
-	(28,
-	'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div/a/img/@src',12),
-	--điểm tin y tế bộ y tế
-	(29,
-	'//*[@id="p_p_id_101_INSTANCE_sqTagDPp4aRX_"]/div/div/div/div/div/div/div/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_sqTagDPp4aRX_"]/div/div/div/div/div/div/div/a/img/@src',12),
-	--chính phủ 
-	(30,
-	'//*[@id="tinkhac"]/table/tbody/tr/td/a/@href',	
-	'//*[@id="tinkhac"]/table/tbody/tr/td/img/@src',12),
-	--viện hàn lâm khoa học công nghệ
-	(31,
-	'//*[@id="ContArticleDiv"]/div/div/a/@href',	
-	'//*[@id="ContArticleDiv"]/div/a/img/@src',12),
-	--tin hợp tác quốc tế viện hàn lâm khoa học xã hội
-	(32,
-	'//*[@id="ctl00_m_g_e0136335_967d_4b76_983c_c60f79107a7f"]/div/div/div/div/p/a/@href',	
-	'//*[@id="ctl00_m_g_e0136335_967d_4b76_983c_c60f79107a7f"]/div/div[2]/div/div/a/img',12),
-	--tin đào tạo viện hàn lâm khoa học xã hội
-	(33,
-	'//*[@id="ctl00_m_g_43975694_b6c8_49c4_b36e_4eedbb2bce01"]/div/div/div/div/p/a/@href',	
-	'//*[@id="ctl00_m_g_43975694_b6c8_49c4_b36e_4eedbb2bce01"]/div/div[2]/div/div/a/img',12),
-	--tin hành chính tổ chức viện hàn lâm khoa học xã hội
-	(34,
-	'//*[@id="ctl00_m_g_7145028f_cb69_4dea_9572_d2a1e41740e8"]/div/div/div/div/p/a/@href',	
-	'//*[@id="ctl00_m_g_7145028f_cb69_4dea_9572_d2a1e41740e8"]/div/div[2]/div/div/a/img',12),
-	--phân loại ủy ban quản lý vốn nhà nước
-	(35,
-	'//*[@id="p_p_id_dsnews_WAR_vnpteportalnewsportlet_INSTANCE_673PJRYyOK4a_"]/div/div/div/h2/a/@href',	
-	'//*[@id="p_p_id_dsnews_WAR_vnpteportalnewsportlet_INSTANCE_673PJRYyOK4a_"]/div/div/div/a/img/@src',12)
+	--(15,
+	--'//*[@id="ctl00_ctl35_g_6eb44992_0f6f_427c_9748_86a2197f142d"]/div/div/div/div/div/p/a/@href',	
+	--'//*[@id="ctl00_ctl35_g_6eb44992_0f6f_427c_9748_86a2197f142d"]/div/div/div/div/div/a/img/@src',12),
+	----thông tin khác bộ tư pháp
+	--(15,
+	--'//*[@id="ctl00_ctl35_g_e985fffc_da66_42b2_bf39_3a39075bc039"]/div/div/div/div/div/p/a/@href',	
+	--'//*[@id="ctl00_ctl35_g_e985fffc_da66_42b2_bf39_3a39075bc039"]/div/div/div/div/div/a/img/@src',12),
+	----phân loại bộ vhttdl
+	--(16,
+	--'//*[@id="mainHtml"]/body/div/div/div/div/div/div/div/a/@href',	
+	--'//*[@id="mainHtml"]/body/div/div/div/div/div/div/div/a/img/@src',12),
+	----phân loại bộ xây dựng
+	--(17,
+	--'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/@href',	
+	--'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/img/@src',12),
+	----hoạt động lãnh đạo bộ y tế
+	--(18,
+	--'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	--'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	----tin tổng hợp bộ y tế
+	--(18,
+	--'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	--'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	----thông tin chỉ đạo điều hành bộ y tế
+	--(18,
+	--'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	--'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	----hoạt động của địa phương bộ y tế
+	--(18,
+	--'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	--'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	----điểm tin y tế bộ y tế
+	--(18,
+	--'//*[@id="p_p_id_101_INSTANCE_sqTagDPp4aRX_"]/div/div/div/div/div/div/div/h3/a/@href',	
+	--'//*[@id="p_p_id_101_INSTANCE_sqTagDPp4aRX_"]/div/div/div/div/div/div/div/a/img/@src',12),
+	----chính phủ 
+	--(22,
+	--'//*[@id="tinkhac"]/table/tbody/tr/td/a/@href',	
+	--'//*[@id="tinkhac"]/table/tbody/tr/td/img/@src',12),
+	----viện hàn lâm khoa học công nghệ
+	--(24,
+	--'//*[@id="ContArticleDiv"]/div/div/a/@href',	
+	--'//*[@id="ContArticleDiv"]/div/a/img/@src',12),
+	----tin hợp tác quốc tế viện hàn lâm khoa học xã hội
+	--(25,
+	--'//*[@id="ctl00_m_g_e0136335_967d_4b76_983c_c60f79107a7f"]/div/div/div/div/p/a/@href',	
+	--'//*[@id="ctl00_m_g_e0136335_967d_4b76_983c_c60f79107a7f"]/div/div[2]/div/div/a/img',12),
+	----tin đào tạo viện hàn lâm khoa học xã hội
+	--(25,
+	--'//*[@id="ctl00_m_g_43975694_b6c8_49c4_b36e_4eedbb2bce01"]/div/div/div/div/p/a/@href',	
+	--'//*[@id="ctl00_m_g_43975694_b6c8_49c4_b36e_4eedbb2bce01"]/div/div[2]/div/div/a/img',12),
+	----tin hành chính tổ chức viện hàn lâm khoa học xã hội
+	--(25,
+	--'//*[@id="ctl00_m_g_7145028f_cb69_4dea_9572_d2a1e41740e8"]/div/div/div/div/p/a/@href',	
+	--'//*[@id="ctl00_m_g_7145028f_cb69_4dea_9572_d2a1e41740e8"]/div/div[2]/div/div/a/img',12),
+	----phân loại ủy ban quản lý vốn nhà nước
+	--(26,
+	--'//*[@id="p_p_id_dsnews_WAR_vnpteportalnewsportlet_INSTANCE_673PJRYyOK4a_"]/div/div/div/h2/a/@href',	
+	--'//*[@id="p_p_id_dsnews_WAR_vnpteportalnewsportlet_INSTANCE_673PJRYyOK4a_"]/div/div/div/a/img/@src',12)
 
 go
 select * from ministry_category_configuration
+
+go
+select ministry_id,article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = 1 or ministry_id = 2 or ministry_id = 4 or ministry_id = 8 or ministry_id = 15 order by ministry_id asc
+
+go
+select ministry_id,page_rule,article_param_xpath from ministry_category_configuration
+
+go
+select article_title_xpath,article_description_xpath,article_time_xpath,article_author_xpath,article_content_xpath from ministry_articles_configuration where ministry_id = 1
 
 go
 select* from category_info
@@ -628,7 +638,7 @@ insert into ministry_articles_configuration(ministry_id,article_title_xpath,arti
 											article_author_xpath,article_content_xpath, article_tag_xpath) values
 	
 	--Bộ công thương
-	(1,
+	(2,
 	'//div[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/h1/text()',
 	'//p[@id="change_font_size"]/text()',
 	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/article/p[1]/text()',
@@ -637,7 +647,7 @@ insert into ministry_articles_configuration(ministry_id,article_title_xpath,arti
 	'//*[@id="p_p_id_CmsViewChiTietBaiViet_WAR_CmsViewEcoITportlet_"]/div/div/div/section[1]/div/header/a[1]/text()'
 	),
 	--Bộ công an
-	(2,
+	(1,
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/h1/text()',
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[2]/text()',
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div[1]/div[1]/text()',
@@ -836,21 +846,18 @@ insert into ministry_articles_configuration(ministry_id,article_title_xpath,arti
 	)
 
 go
-insert into category_info (ministry_id,category_name,category_type_id,category_link_root) values
-	(1, N'Thời sự - Bộ Công Thương',1, 'http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur='),
-	(2, N'Thời sự - Bộ Công Thương',1, 'https://moet.gov.vn/tintuc/Pages/Thongbao.aspx?date=&EventID=0&Page='),
-	(3, N'Thời sự - Bộ Công Thương',1, 'http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur='),
-	(1, N'Thời sự - Bộ Công Thương',1, 'http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur=')
+select ministry_id,category_link_root from category_info order by ministry_id asc
+
+--go
+--insert into category_info (ministry_id,category_name,category_type_id,category_link_root) values
+--	(1, N'Thời sự - Bộ Công Thương',1, 'http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur='),
+--	(2, N'Thời sự - Bộ Công Thương',1, 'https://moet.gov.vn/tintuc/Pages/Thongbao.aspx?date=&EventID=0&Page='),
+--	(3, N'Thời sự - Bộ Công Thương',1, 'http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur='),
+--	(1, N'Thời sự - Bộ Công Thương',1, 'http://www.moit.gov.vn/web/guest/thoi-su?p_p_id=CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_delta=10&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_keywords=&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_advancedSearch=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_andOperator=true&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_resetCur=false&_CmsViewTinTrangChuyenMuc_WAR_CmsViewEcoITportlet_INSTANCE_8sMB0Z1SkloP_cur=')
 
 
 go
 select * from category_info 
-
-go
-select ministry_id,category_link_root from category_info order by ministry_id asc
-
-go
-select article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = 2
 
 --go
 --insert into article_link(article_url, mabo, link_root,loai_link,ten_link,page_param,page_rule,schedule_minute) values

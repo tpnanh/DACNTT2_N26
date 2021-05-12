@@ -23,22 +23,22 @@ class MySpider(scrapy.Spider):
     
     
     def getUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root from category_info where ministry_id = 1 or ministry_id = 2 or ministry_id = 4 or ministry_id = 8 or ministry_id = 15 order by ministry_id ')        
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 1 or ministry_id = 2 or ministry_id = 4 or ministry_id = 15 or ministry_id = 17 order by ministry_id ')        
         for row in category_page_info:   
-            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,ministry_id from ministry_category_configuration where ministry_id = $'+str(row[0]))
-            print("Here2: "+str(row[0]))
-            print("Here: "+str(row[1]))            
+            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,ministry_id from ministry_category_configuration where ministry_id = $'+str(row[0])+" and category_id = $"+str(row[2])) 
+            gotParam = False
             for page_info in page_param_info:
-                url = self.covertStringToResponse(row[1]).xpath(page_info[1])
-                print("Here3: "+str(page_info[0])+", "+str(page_info[1]))                
+                if (gotParam == False):
+                    url = self.covertStringToResponse(row[1]).xpath(page_info[1])
+                    gotParam = True        
                 param = self.getParam(str(url[len(url)-1]))
-                for i in range (1,2):
+                for i in range (1,2):                    
                     self.parseCategoryResponse(self.covertStringToResponse(row[1]+str(i)), row[0])                    
                     i += page_info[0]
-    
+
     
     def parseCategoryResponse(self, response, ministryId): 
-        category_detail = self.connectDB().execute('select ministry_id,article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = $'+str(ministryId))
+        category_detail = self.connectDB().execute(' select ministry_id,article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = $'+str(ministryId))
         for row in category_detail:
             for i in range (len(row)):
                 ## i = 1 for article url to save article to DB                
@@ -50,13 +50,15 @@ class MySpider(scrapy.Spider):
                             article_url_xpaths[url_index] = "http://bocongan.gov.vn"+str(article_url_xpaths[url_index])
                         ##bo gddt
                         elif (ministryId == 4):
-                            article_url_xpaths[url_index] = "https://moet.gov.vn/tintuc/Pages/Thongbao.aspx?"+str(article_url_xpaths[url_index])
+                            article_url_xpaths[url_index] = "https://moet.gov.vn/tintuc/Pages/Thongbao.aspx"+str(article_url_xpaths[url_index])
+                        ##bo tu phap
+                        elif (ministryId == 15):
+                            article_url_xpaths[url_index] = "https://moj.gov.vn"+str(article_url_xpaths[url_index])
                         print("Url: "+str(article_url_xpaths[url_index]))
                         self.parseArticleResponse(article_url_xpaths[url_index], ministryId)
                 ## i = 2 for article thumbnail       
-                elif (i == 2):
+                elif (i == 2 and row[i] and not row[i].isspace()):
                     article_thumbnail_xpath = response.xpath(row[i])
-                    print("Thumb: "+str(article_thumbnail_xpath))
                     
                         
                         
@@ -70,21 +72,22 @@ class MySpider(scrapy.Spider):
             article_author_xpath = ""
             article_content = ""
             for i in range (len(row)):
-                if (i == 0):
-                    article_title = article_response.xpath(row[i])
-                    print("Title: "+str(article_title))
-                elif (i == 1):
-                    article_description = article_response.xpath(row[i])
-                    print("Des: "+str(article_description))
-                elif (i == 2):
-                    article_time = article_response.xpath(row[i])
-                    print("Time: "+str(article_time))
-                elif (i == 3):
-                    article_author_xpath =  article_response.xpath(row[i])
-                    print("Author: "+str(article_author_xpath))
-                elif (i == 4):
-                    article_content = self.clearSpace(article_response.xpath(row[i]))
-                    print("Content: "+str(article_content))
+                if row[i] and not row[i].isspace():
+                    if (i == 0):
+                        article_title = article_response.xpath(row[i])
+                        print("Title: "+str(article_title))
+                    elif (i == 1):
+                        article_description = article_response.xpath(row[i])
+                        print("Des: "+str(article_description))
+                    elif (i == 2):
+                        article_time = article_response.xpath(row[i])
+                        print("Time: "+str(article_time))
+                    elif (i == 3):                        
+                        article_author_xpath =  article_response.xpath(row[i])
+                        print("Author: "+str(article_author_xpath))
+                    elif (i == 4):
+                        article_content = self.clearSpace(article_response.xpath(row[i]))
+                        print("Content: "+str(article_content))
             print("\n")
     
     

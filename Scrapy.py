@@ -23,16 +23,23 @@ class MySpider(scrapy.Spider):
     
     
     def getUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 1 or ministry_id = 2 or ministry_id = 4 or ministry_id = 15 or ministry_id = 17 order by ministry_id ')        
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 8')        
         for row in category_page_info:   
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,ministry_id from ministry_category_configuration where ministry_id = $'+str(row[0])+" and category_id = $"+str(row[2])) 
+            print("in no ra2: "+str(row[2]))
+            
             gotParam = False
-            for page_info in page_param_info:
+            for page_info in page_param_info:                   
                 if (gotParam == False):
                     url = self.covertStringToResponse(row[1]).xpath(page_info[1])
-                    gotParam = True        
-                param = self.getParam(str(url[len(url)-1]))
-                for i in range (1,2):                    
+                    print("in no ra: "+str(url))
+                    
+                    if (row[0]!=7):    
+                        param = self.getParam(str(url[len(url)-1]))
+                    else:                   
+                        param = int(url[len(url)-1])
+                    gotParam = True  
+                for i in range (1,param):                    
                     self.parseCategoryResponse(self.covertStringToResponse(row[1]+str(i)), row[0])                    
                     i += page_info[0]
 

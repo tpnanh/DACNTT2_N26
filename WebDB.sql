@@ -512,8 +512,8 @@ insert into ministry_category_configuration(ministry_id, category_id, article_ur
 	------
 	(6, 
 	22,
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/h3/a/@href',	
-	'//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_pnListNews"]/div/div/div/a/img/@src',
+	'//*[@id="ctl00_m_g_45af182b_e81a_47a7_9b57_88db2a9182ec_ctl00_dlList"]/tr/td/a/@href',	
+	'//*[@id="ctl00_m_g_45af182b_e81a_47a7_9b57_88db2a9182ec_ctl00_dlList"]/tr/td/div/img/@src',
 	1,
 	12,
 	''),	
@@ -1304,9 +1304,9 @@ insert into ministry_articles_configuration(ministry_id,article_title_xpath,arti
 	),	
 	--viện hàn lâm khxh
 	(24,
-	'//*[@id="ctl00_m_g_f5a086cc_d90c_4742_8d72_0b1dd429f5b4"]/div[2]/div/div/div/div/div/h1/text()',
-	'//*[@id="ctl00_m_g_f5a086cc_d90c_4742_8d72_0b1dd429f5b4"]/div[2]/div/div/div/div/div/div[1]/p[2]/text()',
-	'//*[@id="ctl00_m_g_f5a086cc_d90c_4742_8d72_0b1dd429f5b4"]/div[2]/div/div/div/div/div/div[1]/p[1]/text()',
+	'//*[@class="box-news"]/div/div/div/div/h1/text()',
+	'//*[@class="box-news"]/div/div/div/div/div/p[2]/text()',
+	'//*[@class="box-news"]/div/div/div/div/div/p[1]/text()',
 	'//*[@id="anhnoidungdetail"]/p/strong/text()',
 	'//*[@id="anhnoidungdetail"]/p/text()'
 	),

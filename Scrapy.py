@@ -23,7 +23,7 @@ class MySpider(scrapy.Spider):
     
     
     def getUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 25 ')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 1 ')
         for row in category_page_info:   
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,ministry_id from ministry_category_configuration where ministry_id = $'+str(row[0])+' and category_id = $'+str(row[2]) )        
             for page_info in page_param_info:    
@@ -32,32 +32,30 @@ class MySpider(scrapy.Spider):
                 if (page_info[1]==""):
                     print
                 else: 
-                    #get url with param
-                     
+                    #get url with param  
                     url = self.covertStringToResponse(row[1]).xpath(page_info[1])
-                    print("url: "+ str(page_info[1]))                  
+                                     
                     if (row[0]==7):    
                         param = int(url[len(url)-1])
                     elif (row[0]==14):
                         param = self.getMicParam(str(url[len(url)-1]))  
+                    elif (row[0]==24):
+                        param = self.getVassParam(str(url[len(url)-1]))  
                     else:
                         param = self.getParam(str(url[len(url)-1]))
-                    print("Param = "+str(param))
                 for i in range (1,1+1): 
                     ##ministry 6, 11 doesn't use param
                     if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):
                         articleUrl = row[1]                        
                     else:
-                        ##ministry 8 remove default last param before crawl by param
-                        if (row[0]==8):
-                            row[1] = row[1][:-1]
-                            
+                        ##ministry 8, 14 need to be removed default last param before crawl by param
+                        if (row[0]==8 or row[0]==24):
+                            row[1] = row[1][:-1]                            
                         if (row[0]==14):
                             startPoint = self.getMicStartpoint(str(url))
                             endPoint = self.getMicEndpoint(str(url))
                             articleUrl = startPoint + str(i) + endPoint
-                            articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]                            
-                            print("art: "+ str(articleUrl))
+                            articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]       
                         else: 
                             articleUrl = row[1]+str(i) 
                     self.parseCategoryResponse(self.covertStringToResponse(articleUrl), row[0])                    
@@ -78,7 +76,10 @@ class MySpider(scrapy.Spider):
                         ##bo gddt
                         elif (ministryId == 4):
                             article_url_xpaths[url_index] = "https://moet.gov.vn/tintuc/Pages/Thongbao.aspx"+str(article_url_xpaths[url_index])
-                        ##bo ke hoach va dau tu
+                        ##bo ldtbxh
+                        elif (ministryId == 6):                            
+                            article_url_xpaths[url_index] = "http://www.mpi.gov.vn/Pages/"+str(article_url_xpaths[url_index])
+                        ##bo ldtbxh
                         elif (ministryId == 8):                            
                             article_url_xpaths[url_index] = "http://www.molisa.gov.vn"+str(article_url_xpaths[url_index])
                         ##bo nong nghiep
@@ -87,6 +88,9 @@ class MySpider(scrapy.Spider):
                         ##bo quoc phong
                         elif (ministryId == 11):                            
                             article_url_xpaths[url_index] = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwPi9Du7O3qYmPsYGFj4uJsaeDp6hAZZBhobGzgaE9Ifrh8FVoLPBLACPE7088jPTdUvyA2NMMgyUQQAfwOf3g!!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_FANR8B1A081F00I32T4LDI2064/ren/p=WCM_PI=1/p=ns_Z7_FANR8B1A081F00I32T4LDI2064_WCM_PreviousPageSize.4e92abb3-6db2-476b-85b7-8c31f62282a0=10/p=ns_Z7_FANR8B1A081F00I32T4LDI2064_WCM_Page.4e92abb3-6db2-476b-85b7-8c31f62282a0=/p=CTX=QCPmodQCPsa-mod-siteQCPsa-ttsk/-/"+str(article_url_xpaths[url_index])
+                        ##bo 
+                        elif (ministryId == 12):                            
+                            article_url_xpaths[url_index] = "ttps://www.mof.gov.vn"+str(article_url_xpaths[url_index])
                         ##bo thong tin truyen thong
                         elif (ministryId == 14):
                             article_url_xpaths[url_index] = "https://www.mic.gov.vn"+str(article_url_xpaths[url_index])
@@ -106,9 +110,9 @@ class MySpider(scrapy.Spider):
                         elif (ministryId == 22):
                             article_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn/tintuc/Pages/linh-vuc-bao-hiem-y-te.aspx"+str(article_url_xpaths[url_index])
                         ##vien han lam khcn
-                        # elif (ministryId == 24):
-                        #     article_url_xpaths[url_index] = "https://vass.gov.vn"+str(article_url_xpaths[url_index])
-                        print("Url: "+str(article_url_xpaths[url_index]))
+                        elif (ministryId == 23):
+                            article_url_xpaths[url_index] = "https://vast.gov.vn"+str(article_url_xpaths[url_index])
+
                         self.parseArticleResponse(article_url_xpaths[url_index], ministryId)
                 ## i = 2 for article thumbnail       
                 elif (i == 2 and row[i] and not row[i].isspace()):
@@ -144,6 +148,7 @@ class MySpider(scrapy.Spider):
                         if (ministryId==11):
                             article_content = article_content[2:]
                         print("Content: "+str(article_content))
+            self.saveArticleToDB(ministryId,article_title,article_description,article_time,article_author_xpath,article_content)
             print("\n")
     
     
@@ -187,6 +192,14 @@ class MySpider(scrapy.Spider):
             else: 
                 count += 1 
                 
+    def getVassParam(self, param_url):
+        param = ""
+        for i in range(len(param_url),0,-1):
+            if (param_url[i-1] != "."):
+                param += param_url[i-1]
+            else:
+                return int(param[::-1])
+                
             
     def clearSpace(self, listString):
         return [string for string in listString if string != ' ']
@@ -204,19 +217,14 @@ class MySpider(scrapy.Spider):
         return '{0:02}/{1:02}/{2}'.format(dt.day, dt.month, dt.year)
     
     
-    def saveArticleToDB(self):
-        conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=ANISE-TR\SQLEXPRESS;'
-                          'Database=WebDB;'
-                          'Trusted_Connection=yes;')    
-        cursor = conn.cursor()        
-        cursor.execute('''
-                INSERT INTO WebDB.dbo.article_info (Name, Age, City)
+    def saveArticleToDB(self, ministry_id,article_url,article_title,article_description,article_time,article_author, article_content):        
+        self.connectDB().execute('''
+                INSERT INTO WebDB.dbo.article_info (ministry_id,article_url,article_title,article_description,article_time,
+                                                    article_author, article_content)
                 VALUES
-                ('Bob',55,'Montreal'),
-                ('Jenny',66,'Boston')
+                (ministry_id,article_url,article_title,article_description,article_time, article_author, article_content)
                 ''')
-        conn.commit()
+        self.connectDB().commit()
                 
         
 

@@ -23,10 +23,10 @@ class MySpider(scrapy.Spider):
         legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_id from legislationinfo where ministry_id = 7')        
         
         for row in legislation_page_info:   
-            page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath ,ministry_id from ministry_legislation_configuration where ministry_id = $'+str(row[0])+" and legislation_id = $"+str(row[2])) 
-            print(row[0])
-            print(row[1])
-            print(row[2])
+            page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_configuration where ministry_id = $'+str(row[0])+" and legislation_id = $"+str(row[2])) 
+            #print(row[0])
+            #print(row[1])
+            #print(row[2])
             
             gotParam = False
             

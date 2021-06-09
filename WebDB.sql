@@ -593,6 +593,7 @@ insert into ministry_legislation_configuration(ministry_id, legislation_id, legi
 	
 
 	--văn bản pháp quy bộ công thương
+	(2,2,
 	'//*[@class="text_detail"]/div[1]/a/@href',
 	1,12,
 	''), --xài không có được hic
@@ -1420,7 +1421,7 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 
 	-- tự nhiên coi không được má :)
 	--Bộ khcn văn bản pháp quy
-	(7,
+	--(7,
 	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
 	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
 	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
@@ -1435,7 +1436,7 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 	--),
 
 	--Bộ lao động văn bản pháp quy -- giống i bộ khcn luôn, nên đâu có lấy xpath đúng được :)
-	(8,
+	--(8,
 	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
 	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
 	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
@@ -1522,7 +1523,7 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 	--'//*[@id="thuoctinh"]/table/tbody/tr[2]/td[2]/text()',
 	--'//*[@id="thuoctinh"]/table/tbody/tr[9]/td[2]/text()',
 	--'--//*[@id="taive"]/table/tbody/tr/td/a/@href' 
-	),
+	--),
 	--Bộ quốc phòng không có văn bản chỉ đạo điều hành
 	--Bộ thông tin truyền thông văn bản qppl
 	(14,

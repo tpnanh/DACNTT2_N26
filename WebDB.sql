@@ -140,28 +140,7 @@ create table category_type(
 	category_type_name nvarchar(100)
 )
 
-go
-alter table article_info add constraint ai_category_id_ci foreign key (category_id) references category_info(category_id)
-go
-alter table category_info add constraint ci_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
-go
-alter table legislation_info add constraint li_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
-go
-alter table ministry_articles_configuration add constraint mac_ministry_article_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
-go
-alter table ministry_category_configuration add constraint mlc_ministry_legislation_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
-go
-alter table ministry_legislation_configuration add constraint mcc_ministry_article_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
-go
-alter table article_img add constraint aimg_article_id_ainfo foreign key (article_id) references article_info(article_id)
-go
-alter table legislation_configuration add constraint lc_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
-go
-alter table category_info add constraint ci_category_type_id_ct foreign key (category_type_id) references category_type(category_type_id)
-go
-alter table legislationinfo add constraint li_legislation_type_id_lt foreign key (legislation_type_id) references legislation_type(legislation_type_id)
-go 
-alter table ministry_category_configuration add constraint mcc_category_id_ci foreign key (category_id) references category_info(category_id) 
+select ministry_id, legislation_url_xpath from ministry_legislation_configuration where ministry_id = 1
 
 go
 insert into ministry_info(ministry_name) values
@@ -496,6 +475,8 @@ insert into legislation_type(legislation_type_name) values
 	(N'Văn bản chỉ đạo của ngành'),
 	(N'Văn bản ngoài ngành')
 
+select ministry_id,legislation_link_root, legislation_id from legislationinfo where ministry_id = 1
+
 go	
 INSERT INTO legislationinfo(ministry_id,legislation_name,legislation_type_id,legislation_link_root)
 VALUES
@@ -504,8 +485,8 @@ VALUES
 
 (1,N'Văn bản quy phạm pháp luật -  Bộ công an',4,'http://bocongan.gov.vn/van-ban/van-ban-quy-pham.html'),
 
-(4,N'Văn bản quy phạm pháp luật -  Bộ giáo dục và đào tạo',4,'https://moet.gov.vn/van-ban/vanban/Pages/default.aspx'),
-(4,N'Văn bản chỉ đạo, điều hành -  Bộ giáo dục và đào tạo',5,'https://moet.gov.vn/van-ban/vbdh/Pages/default.aspx'),
+(4,N'Văn bản quy phạm pháp luật -  Bộ giáo dục và đào tạo',4,'https://moet.gov.vn/van-ban/vanban/Pages/default.aspx?Page='),
+(4,N'Văn bản chỉ đạo, điều hành -  Bộ giáo dục và đào tạo',5,'https://moet.gov.vn/van-ban/vbdh/Pages/default.aspx?Page='),
 
 (5,N'Văn bản chỉ đạo điều hành - Bộ giao thông vận tải',6,'https://mt.gov.vn/vn/Pages/Vanbanphapluat.aspx?TypeVB=0'),
 (5,N'Văn bản pháp luật - Bộ giao thông vận tải',7,'https://mt.gov.vn/vn/Pages/VBPL.aspx?node=VB&item=78'),
@@ -516,12 +497,12 @@ VALUES
 (7,N'Văn bản chỉ đạo, điều hành - Bộ khoa học công nghệ',5,'http://www.most.gov.vn/vn/Pages/Vanbanphapluat.aspx'),
 (7,N'Văn bản pháp quy - Bộ giao khoa học công nghệ',1,'https://www.most.gov.vn/vn/Pages/VBPQ.aspx?Machuyende=VB&ChudeID=73'),
 
-(8,N'Văn bản chỉ đạo điều hành - Bộ lao động - thương binh và xã hội',5,'http://www.molisa.gov.vn/Pages/VanBan/ChiDaoDieuHanh.aspx'),
+(8,N'Văn bản chỉ đạo điều hành - Bộ lao động - thương binh và xã hội',5,'http://www.molisa.gov.vn/Pages/VanBan/ChiDaoDieuHanh.aspx?Page='),
 (8,N'Văn bản quy phạm pháp luật - Bộ lao động - thương binh và xã hội',4,'http://www.molisa.gov.vn/Pages/VanBan/vbpq.aspx'),
 
 --bộ ngoại giao không có văn bản
 --bộ nông nghiệp trong có trang văn bản để lấy link
-(3,N'Văn bản quy phạm pháp luật - Bộ nội vụ',4,'https://doc.moha.gov.vn/'),
+(3,N'Văn bản quy phạm pháp luật - Bộ nội vụ',4,'https://doc.moha.gov.vn/Default.aspx?TabID=1736&p='),
 
 (11,N'Văn bản pháp luật - Bộ quốc phòng',7,'http://www.mod.gov.vn/wps/portal/qlcd/vbpl/searchhome'),
 
@@ -534,10 +515,10 @@ VALUES
 (14,N'Văn bản chỉ đạo điều hành - Bộ thông tin và truyền thông',5,'https://www.mic.gov.vn/mic_2020/Pages/VanBan/danhsachvanban.aspx?LVB=100'),
 (14,N'Văn bản quy phạm pháp luật - Bộ thông tin và truyền thông',4,'https://www.mic.gov.vn/mic_2020/Pages/VanBan/danhsachvanban.aspx?LVB=100'),
 
-(15,N'Văn bản chính sách mới - Bộ tư pháp',8,'https://moj.gov.vn/qt/tintuc/Pages/van-ban-chinh-sach-moi.aspx'),
+(15,N'Văn bản chính sách mới - Bộ tư pháp',8,'https://moj.gov.vn/qt/tintuc/Pages/van-ban-chinh-sach-moi.aspx?Date=&Page='),
 
-(16,N'Văn bản chỉ đạo điều hành - Bộ văn hóa thể thao và du lịch',5,'https://bvhttdl.gov.vn/van-ban-quan-ly.htm?nhom=2'),
-(16,N'Văn bản quy phạm pháp luật - Bộ văn hóa thể thao và du lịch',4,'https://bvhttdl.gov.vn/van-ban-quan-ly.htm?nhom=1'),
+(16,N'Văn bản chỉ đạo điều hành - Bộ văn hóa thể thao và du lịch',5,'https://bvhttdl.gov.vn/van-ban-quan-ly.htm?coquan=0&nhom=2&theloai=0&linhvuc=0&year=0&keyword=&pageIndex=	'),
+(16,N'Văn bản quy phạm pháp luật - Bộ văn hóa thể thao và du lịch',4,'https://bvhttdl.gov.vn/van-ban-quan-ly.htm?coquan=0&nhom=1&theloai=0&linhvuc=0&year=0&keyword=&pageIndex='),
 
 (17,N'Văn bản pháp quy - Bộ xây dựng',1,'http://vbpl.vn/boxaydung/Pages/Home.aspx'),
 (17,N'Văn bản điều hành - Bộ xây dựng',2,'https://moc.gov.vn/vn/Pages/Vanbanphapluat.aspx?TypeVB=1'),
@@ -545,18 +526,18 @@ VALUES
 --bộ ý tế không có văn bản
 --chính phủ không có văn bản
 
-(20,N'Văn bản chỉ đạo điều hành - Ủy ban dân tộc',5,'http://csdl.ubdt.gov.vn/noidung/Pages/vanbanden.aspx'),
+(20,N'Văn bản chỉ đạo điều hành - Ủy ban dân tộc',5,'http://csdl.ubdt.gov.vn/noidung/Pages/vanbanden.aspx?type=adv&RowPerPage=10&UrlListProcess=/noidung/vanbandt/Lists/UBDTVanBanDen&PageStep=2&vbdLoaiVanBan=0&vbdLinhvuc=0&vbdCoQuanBanHanh=0&vbdTrichYeu=&vbdToanVan=&vbdSoKyHieu=&TuNgay=&DenNgay=&vbdDanToc=0&vbdDiaBanApDung=&Page='),
 
 (21,N'Văn bản quy phạm pháp luật - Ngân hàng nhà nước',4,'https://www.sbv.gov.vn/webcenter/portal/vi/menu/trangchu/csdlvbpl?_afrLoop=24714175539752224#%40%3F_afrLoop%3D24714175539752224%26centerWidth%3D100%2525%26leftWidth%3D0%2525%26rightWidth%3D0%2525%26showFooter%3Dfalse%26showHeader%3Dfalse%26_adf.ctrl-state%3Doxc7pzry7_90'),
 
 (22,N'Hệ thống văn bản - Văn phòng chính phủ',5,'http://vpcp.chinhphu.vn/documents/z6.vgp'),
 
-(23,N'Văn bản chỉ đạo của Ngành - Bảo hiểm xã hội',9,'https://baohiemxahoi.gov.vn/vanban/pages/default.aspx?DanhMucBanHanh=3'),
-(23,N'Văn bản ngoài Ngành - Bảo hiểm xã hội',10,'https://baohiemxahoi.gov.vn/vanban/pages/default.aspx?DanhMucBanHanh=4'),
+(23,N'Văn bản chỉ đạo của Ngành - Bảo hiểm xã hội',9,'https://baohiemxahoi.gov.vn/vanban/Pages/default.aspx?LinhVuc=0&DanhMucBanHanh=3&CoQuanBanHanh=0&order=ID&TypeOfOrder=False&tenvanban=&NgayBanHanh=&FormSearch=&selectedChekBox=&LoaiNgayThang=0&FromDate=&ToDate=&NamBanHanh=0&Page='),
+(23,N'Văn bản ngoài Ngành - Bảo hiểm xã hội',10,'https://baohiemxahoi.gov.vn/vanban/Pages/default.aspx?LinhVuc=0&DanhMucBanHanh=4&CoQuanBanHanh=0&order=ID&TypeOfOrder=False&tenvanban=&NgayBanHanh=&FormSearch=&selectedChekBox=&LoaiNgayThang=0&FromDate=&ToDate=&NamBanHanh=0&Page='),
 
 --viện hàn lâm khcn và viện hàn lâm khxh không có văn bản
 
-(26,N'Văn bản pháp luật - Ủy ban quản lý vốn nhà nước tại doanh nghiệp',7,'http://cmsc.gov.vn/web/guest/van-ban-phap-quy')
+(26,N'Văn bản pháp luật - Ủy ban quản lý vốn nhà nước tại doanh nghiệp',7,'http://cmsc.gov.vn/van-ban-phap-quy?p_p_id=dsvanbanphapquy_WAR_vnpteportalappportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=_118_INSTANCE_EWtJ5M5YE6wZ__column-1&p_p_col_count=1&_dsvanbanphapquy_WAR_vnpteportalappportlet_keyword=&_dsvanbanphapquy_WAR_vnpteportalappportlet_loaiVanBanId=0&_dsvanbanphapquy_WAR_vnpteportalappportlet_coQuanBanHanhId=0&_dsvanbanphapquy_WAR_vnpteportalappportlet_linhVucId=0&_dsvanbanphapquy_WAR_vnpteportalappportlet_startDate=&_dsvanbanphapquy_WAR_vnpteportalappportlet_endDate=&_dsvanbanphapquy_WAR_vnpteportalappportlet_delta=10&_dsvanbanphapquy_WAR_vnpteportalappportlet_keywords=&_dsvanbanphapquy_WAR_vnpteportalappportlet_advancedSearch=false&_dsvanbanphapquy_WAR_vnpteportalappportlet_andOperator=true&_dsvanbanphapquy_WAR_vnpteportalappportlet_resetCur=false&_dsvanbanphapquy_WAR_vnpteportalappportlet_cur=')
 
 
 --go
@@ -583,6 +564,8 @@ VALUES
 	--'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div/div[2]/div/ul/li/a/img/@src',1,12,
 	--'//*[@id="ctl00_ctl24_g_6da89d83_0a02_4a66_8493_6a1e08bf2cba"]/div/div[2]/div[2]/div/a/@href')
 
+select ministry_id,legislation_link_root, legislation_id from legislationinfo where ministry_id = 3
+
 go 
 insert into ministry_legislation_configuration(ministry_id, legislation_id, legislation_url_xpath, page_rule, schedule_minute, legislation_param_xpath) values
 	--văn bản bộ công an
@@ -596,12 +579,12 @@ insert into ministry_legislation_configuration(ministry_id, legislation_id, legi
 	(2,2,
 	'//*[@class="text_detail"]/div[1]/a/@href',
 	1,12,
-	''), --xài không có được hic
+	'//*[@id="pagination"]/span/a/@href'), --xài không có được hic
 	--văn bản điều hành bộ công thương
 	(2, 2,
-	'//*[@id="p_p_id_ELegalDocumentView_WAR_ELegalDocumentportlet_INSTANCE_bxuLX3gTZKHk_"]/div/div/div/div/table/tbody/tr/td/div/a/@href',
+	'//*[@class="text_detail"]/div[1]/a/@href',
 	1,12,
-	''), --cũng dậy
+	'//*[@id="pagination"]/span/a/@href'), --cũng dậy
 	
 
 	--văn bản quy phạm phát luật bộ giáo dục
@@ -618,9 +601,9 @@ insert into ministry_legislation_configuration(ministry_id, legislation_id, legi
 
 	--văn bản điều hành bộ gtvt
 	(5, 2,
-	'//*[@id="ctl00_SPWebPartManager1_g_569fbeb1_01d4_4873_8b11_a35db6593460"]/div/div/div/table/tr/td/div/a/@href',
+	'//*[@class="css-vanban"]/a/@href',
 	1,12,
-	'//*[@id="ctl00_SPWebPartManager1_g_569fbeb1_01d4_4873_8b11_a35db6593460_ctl00_lkLast2"]/@href'),
+	''),
 	--văn bản pháp quy bộ gtvt xpath url khác nhau
 
 
@@ -1353,12 +1336,13 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[7]/td[2]/text()',
 	'', -- không hiển thị ngày ký
 	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[1]/td/text()',
-	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[4]/td[2]',	
-	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[5]/td[2]',
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[4]/td[2]/text()',	
+	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[5]/td[2]/text()',
 	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[3]/td[2]/text()',
 	'//*[@id="parentHorizontalTab"]/div/div[2]/table/tbody/tr[8]/td[2]/text()',
 	'//*[@id="A2"]/@href'
 	),
+
 	--Bộ giáo dục -- văn bản quy phạm pháp luật 
 	(4,
 	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[1]/td/text()',
@@ -1387,6 +1371,36 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 	'//*[@id="content_2"]/div/div/div[2]/table/tbody/tr[3]/td[2]/text()',
 	'//*[@id="content_1"]/div/div/div[1]/ul/li[1]/text()',
 	'//*[@id="ctl00_ctl24_g_a9eee66b_a86f_4cc0_b32d_539fafedbf9b"]/div[1]/div[1]/div/div/ul/li[3]/a/@href' -- bấm tải về hiện ra màn hình giống drive á, rồi phải bấm nút tải về nữa á m
+	),
+
+	--Bộ gtvt -- văn bản điều hành
+	(5,
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4"]/div[1]/ul/li[4]/a/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblSoKyHieu"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNgayBanHanh"]/text()',
+	'', --không có ngày hiệu lực
+	'', -- không hiển thị ngày ký
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNoiDung"]/text()',
+	'//*[@id="row_donvibanhanh_chinh"]/td[2]/text()',
+	'//*[@id="row_donvibanhanh_chinh"]/td[3]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblLoaiVanBan"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblHieuluc"]/text()',
+	'//*[@id="row_file"]/td[2]/span/strong/a/@href'
+	),
+
+	--Bộ gtvt -- văn bản pháp quy
+	(5,
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[4]/text()', --không có ngày hiệu lực
+	'', -- không hiển thị ngày ký
+	'', -- không có trích yếu
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[2]/a/text()',
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[4]/text()',
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[2]/a/text()',
+	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[9]/td/text()',
+	'//*[@class="fileAttack"]/@href'
 	),
 	
 	--Bộ kế họoch và đâu tư, link download và các thuộc tính nằm khác trang
@@ -1467,7 +1481,7 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 
 	--Bộ nội vụ văn bản vi phạm pháp luật --link thuộc tính và link tải khác nhau
 	(3,
-	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@class="tab-content"]/table/tbody/tr[2]/td[2]/text()',
 	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[2]/td[2]/text()',
 	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[2]/td[4]/text()',
 	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[3]/td[4]/text()',	
@@ -1652,6 +1666,43 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[8]/td[2]/a/@href' -- mở ra cửa sổ như drive -> nhấn nút tải
 	)
 
+
+go
+alter table article_info add constraint ai_category_id_ci foreign key (category_id) references category_info(category_id)
+go
+alter table category_info add constraint ci_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table legislation_info add constraint li_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table ministry_articles_configuration add constraint mac_ministry_article_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table ministry_category_configuration add constraint mlc_ministry_legislation_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table ministry_legislation_configuration add constraint mcc_ministry_article_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table article_img add constraint aimg_article_id_ainfo foreign key (article_id) references article_info(article_id)
+go
+alter table legislation_configuration add constraint lc_ministry_id_mi foreign key (ministry_id) references ministry_info(ministry_id)
+go
+alter table category_info add constraint ci_category_type_id_ct foreign key (category_type_id) references category_type(category_type_id)
+go
+alter table legislationinfo add constraint li_legislation_type_id_lt foreign key (legislation_type_id) references legislation_type(legislation_type_id)
+go 
+alter table ministry_category_configuration add constraint mcc_category_id_ci foreign key (category_id) references category_info(category_id) 
+
+/*
+go
+sp_who
+USE [master];
+
+DECLARE @kill varchar(8000) = '';  
+SELECT @kill = @kill + 'kill ' + CONVERT(varchar(5), session_id) + ';'  
+FROM sys.dm_exec_sessions
+WHERE database_id  = db_id('WebDB')
+
+EXEC(@kill);
+
 go
 use master
 drop database WebDB
+*/

@@ -334,7 +334,7 @@ select * from category_info
 
 go
 insert into ministry_category_configuration(ministry_id, category_id, article_url_xpath, article_thumbnail_xpath, page_rule, schedule_minute, article_param_xpath) values
-	--phân loại tin tức bộ công thương, xpath nút cuối cùng giống nhau, category id 1-7
+
 	(1, 
 	1,
 	'//*[@id="ctl00_ctl30_g_a823d20f_9452_45d0_bad1_428f6d2d36fe"]/div/div[2]/div/div/h2/a/@href',	
@@ -512,8 +512,8 @@ insert into ministry_category_configuration(ministry_id, category_id, article_ur
 	------
 	(6, 
 	22,
-	'//*[@id="ctl00_m_g_45af182b_e81a_47a7_9b57_88db2a9182ec_ctl00_dlList"]/tr/td/a/@href',	
-	'//*[@id="ctl00_m_g_45af182b_e81a_47a7_9b57_88db2a9182ec_ctl00_dlList"]/tr/td/div/img/@src',
+	'//*[@class="myforumtext"]/table/tr/td/a/@href',	
+	'//*[@class="myforumtext"]/table/tr/td/div/img/@src',
 	1,
 	12,
 	''),	
@@ -1212,7 +1212,7 @@ insert into ministry_articles_configuration(ministry_id,article_title_xpath,arti
 	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p[1]/text()',
 	'//*[@id="T:oc_5868747166region1:listTmplt:pbl33"]/span[1]/text()',
 	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p[11]/span/text()',
-	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p/text()'
+	'//*[@id="T:oc_5868747166region1:listTmplt:pbl8"]/div[3]/div/div/p/span/text()'
 	),	
 	--Bộ Tài nguyên và Môi trường
 	(13,
@@ -1323,7 +1323,7 @@ go
 select * from ministry_articles_configuration
 
 go
-insert into legislation_configuration(legislation_id, legislation_name_xpath, legislation_so_hieu_van_ban, legislation_ngay_ban_hanh, legislation_ngay_hieu_luc, 
+insert into legislation_configuration( legislation_name_xpath, legislation_so_hieu_van_ban, legislation_ngay_ban_hanh, legislation_ngay_hieu_luc, 
 			legislation_ngay_ky, legislation_trich_yeu, legislation_co_quan_ban_hanh, legislation_nguoi_ky, 
 			legislation_loai_van_ban, legislation_tinh_trang, legislation_link_download) values
 	--Bộ công thương - vb quy pham pháp luật
@@ -1469,6 +1469,9 @@ insert into legislation_configuration(legislation_id, legislation_name_xpath, le
 	'', --không có tình trạng
 	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[10]/td[2]/p/a/@href'
 	)
+
+go
+select * from article_info
 
 go
 use master

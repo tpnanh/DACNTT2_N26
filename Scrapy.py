@@ -3,6 +3,20 @@ import scrapy
 import requests
 from lxml import html 
 import datetime
+import requests
+import lxml
+from io import StringIO, BytesIO
+from lxml import html, etree
+from selenium import webdriver
+from selenium.webdriver import Chrome
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup
+import time
+from requests_html import HTML
+from requests.exceptions import RequestException
 
 class MySpider(scrapy.Spider):    
     name = "crawl_news"         
@@ -23,14 +37,22 @@ class MySpider(scrapy.Spider):
     
     
     def getUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 1 ')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 21')
         for row in category_page_info:   
-            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,ministry_id from ministry_category_configuration where ministry_id = $'+str(row[0])+' and category_id = $'+str(row[2]) )        
-            for page_info in page_param_info:    
-                print("urk2: "+str(row))
+            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath from ministry_category_configuration where ministry_id = $'+str(row[0])+' and category_id = $'+str(row[2]) )        
+            for page_info in page_param_info:   
                 #if there's no get param link
                 if (page_info[1]==""):
-                    print
+                    try:
+                        list_baiviet = self.crawlBySelenium(row[1],page_info[2], row[0])
+                    except RequestException as e:
+                        print(e)
+                        
+                    try:
+                        for baiviet in list_baiviet:
+                            self.parseArticleResponse(baiviet, row[0])
+                    except RequestException as e:
+                        print(e)
                 else: 
                     #get url with param  
                     url = self.covertStringToResponse(row[1]).xpath(page_info[1])
@@ -43,21 +65,21 @@ class MySpider(scrapy.Spider):
                         param = self.getVassParam(str(url[len(url)-1]))  
                     else:
                         param = self.getParam(str(url[len(url)-1]))
-                for i in range (1,1+1): 
-                    ##ministry 6, 11 doesn't use param
-                    if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):
-                        articleUrl = row[1]                        
-                    else:
-                        ##ministry 8, 14 need to be removed default last param before crawl by param
-                        if (row[0]==8 or row[0]==24):
-                            row[1] = row[1][:-1]                            
-                        if (row[0]==14):
-                            startPoint = self.getMicStartpoint(str(url))
-                            endPoint = self.getMicEndpoint(str(url))
-                            articleUrl = startPoint + str(i) + endPoint
-                            articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]       
-                        else: 
-                            articleUrl = row[1]+str(i) 
+                    for i in range (1,1+1): 
+                        ##ministry 6, 11 doesn't use param
+                        if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):
+                            articleUrl = row[1]                        
+                        else:
+                            ##ministry 8, 14 need to be removed default last param before crawl by param
+                            if (row[0]==8 or row[0]==24):
+                                row[1] = row[1][:-1]                            
+                            if (row[0]==14):
+                                startPoint = self.getMicStartpoint(str(url))
+                                endPoint = self.getMicEndpoint(str(url))
+                                articleUrl = startPoint + str(i) + endPoint
+                                articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]       
+                            else: 
+                                articleUrl = row[1]+str(i) 
                     self.parseCategoryResponse(self.covertStringToResponse(articleUrl), row[0])                    
                     i += page_info[0]
 
@@ -66,8 +88,9 @@ class MySpider(scrapy.Spider):
         category_detail = self.connectDB().execute(' select ministry_id,article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = $'+str(ministryId))
         for row in category_detail:            
             for i in range (len(row)):
-                ## i = 1 for article url to save article to DB                
-                if (i == 1):                       
+                ## i = 1 for article url xpath to query the article url               
+                if (i == 1):              
+                    ## response is category url
                     article_url_xpaths = response.xpath(row[i])
                     for url_index in range (len(article_url_xpaths)):                        
                         ##bo cong an
@@ -87,7 +110,7 @@ class MySpider(scrapy.Spider):
                             article_url_xpaths[url_index] = "http://www.mard.gov.vn"+str(article_url_xpaths[url_index])
                         ##bo quoc phong
                         elif (ministryId == 11):                            
-                            article_url_xpaths[url_index] = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwPi9Du7O3qYmPsYGFj4uJsaeDp6hAZZBhobGzgaE9Ifrh8FVoLPBLACPE7088jPTdUvyA2NMMgyUQQAfwOf3g!!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_FANR8B1A081F00I32T4LDI2064/ren/p=WCM_PI=1/p=ns_Z7_FANR8B1A081F00I32T4LDI2064_WCM_PreviousPageSize.4e92abb3-6db2-476b-85b7-8c31f62282a0=10/p=ns_Z7_FANR8B1A081F00I32T4LDI2064_WCM_Page.4e92abb3-6db2-476b-85b7-8c31f62282a0=/p=CTX=QCPmodQCPsa-mod-siteQCPsa-ttsk/-/"+str(article_url_xpaths[url_index])
+                            article_url_xpaths[url_index] = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwNC-sP1o8BKnN0dPUzMfQwMLHzcTQ08HT1CgywDjY0NHI2hCvBY4eeRn5uqX5AbYZBl4qgIANgfRb4!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/"+str(article_url_xpaths[url_index])
                         ##bo 
                         elif (ministryId == 12):                            
                             article_url_xpaths[url_index] = "ttps://www.mof.gov.vn"+str(article_url_xpaths[url_index])
@@ -113,6 +136,7 @@ class MySpider(scrapy.Spider):
                         elif (ministryId == 23):
                             article_url_xpaths[url_index] = "https://vast.gov.vn"+str(article_url_xpaths[url_index])
 
+                        ##article_url_xpaths[url_index] is detail article url
                         self.parseArticleResponse(article_url_xpaths[url_index], ministryId)
                 ## i = 2 for article thumbnail       
                 elif (i == 2 and row[i] and not row[i].isspace()):
@@ -127,7 +151,7 @@ class MySpider(scrapy.Spider):
             article_title = ""
             article_description = ""
             article_time = ""
-            article_author_xpath = ""
+            article_author = ""
             article_content = ""
             for i in range (len(row)):
                 if row[i] and not row[i].isspace():
@@ -141,15 +165,17 @@ class MySpider(scrapy.Spider):
                         article_time = article_response.xpath(row[i])
                         print("Time: "+str(article_time))
                     elif (i == 3):                        
-                        article_author_xpath =  article_response.xpath(row[i])
-                        print("Author: "+str(article_author_xpath))
+                        article_author =  article_response.xpath(row[i])
+                        print("Author: "+str(article_author))
                     elif (i == 4):
                         article_content = self.clearSpace(article_response.xpath(row[i]))
                         if (ministryId==11):
                             article_content = article_content[2:]
                         print("Content: "+str(article_content))
-            self.saveArticleToDB(ministryId,article_title,article_description,article_time,article_author_xpath,article_content)
-            print("\n")
+            # self.saveArticleToDB(ministryId,article_url, article_title,article_description,article_time,article_author,article_content)
+            print("\n -----------------")
+            # self.select()
+            # print("\n -----------------")
     
     
     def getParam(self, param_url):
@@ -217,15 +243,112 @@ class MySpider(scrapy.Spider):
         return '{0:02}/{1:02}/{2}'.format(dt.day, dt.month, dt.year)
     
     
-    def saveArticleToDB(self, ministry_id,article_url,article_title,article_description,article_time,article_author, article_content):        
-        self.connectDB().execute('''
-                INSERT INTO WebDB.dbo.article_info (ministry_id,article_url,article_title,article_description,article_time,
-                                                    article_author, article_content)
-                VALUES
-                (ministry_id,article_url,article_title,article_description,article_time, article_author, article_content)
-                ''')
-        self.connectDB().commit()
+    def saveArticleToDB(self, ministry_id, article_url, article_title,article_description,article_time,article_author, article_content):   
+        try:
+            conn = pyodbc.connect('Driver={SQL Server};'
+                              'Server=ANISE-TR\SQLEXPRESS;'
+                              'Database=WebDB;'
+                              'Trusted_Connection=yes;')  
+            value =  [(ministry_id, article_url, article_title[0],article_description[0],article_time[0],article_author[0], "")]
+            print ("hu: "+str(value[0]))
+            conn.cursor().execute("""                                  
+                                  INSERT INTO WebDB.dbo.article_info 
+                                  (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content) 
+                                  VALUES (?, ?, ?, ?, ?, ?, ?)""", value[0])
+            conn.commit()
+
+        except Exception as e:
+            print(e)        
+        finally:
+            conn.cursor().close()
+            conn.close()
+        
+    def select(self):
+        article = self.connectDB().execute('select * from article_info')
+        for row in article:
+            print("Row: "+str(row))
+            
+            
+    def read_config(self):
+    	chrome_options = webdriver.ChromeOptions()
+    	chrome_options.add_argument('--no-sandbox')
+    	chrome_options.add_argument('--headless')
+    	driver = webdriver.Chrome('chromedriver', options=chrome_options)
+    	return driver
+            
+    def crawlBySelenium(self, categoryUrl, detailUrlXpath, ministryId):
+        driver = self.read_config()
+        driver.get(categoryUrl)#link tin chứa tức
+        WebDriverWait(driver,5)
+        
+        list_baiviet = []#danh sách bài viết
+        count = 1
+        html = HTML(html=driver.page_source)
+        list_baiviet = html.xpath(detailUrlXpath)#crawl đầu tiên
+        print("ur: "+str(list_baiviet))
+
+        while True:
+            try:
+                try:
+                    
+                    nextBtnXpath = ""
+                    if (ministryId == 3):
+                        nextBtnXpath = '/html/body/form/div[3]/main/div/div/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div/ul/li[3]'
+                    if (ministryId == 5):    
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+                    if (ministryId == 6):
+                        nextBtnXpath = '/html/body/form/div[8]/div/div[3]/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/div/div/div/table/tbody/tr/td[1]/div/div/span[2]/a[1]'    
+                    if (ministryId == 7):
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+                    if (ministryId == 11):    
+                        nextBtnXpath = '//*[@id="pc1623250410559_nextPage"]'
+                    if (ministryId == 12):
+                        nextBtnXpath = '//*[@id="T:oc_1601563139region1:listTmplt:cil5"]'
+                    if (ministryId == 16):
+                        nextBtnXpath = '//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div[22]/ul/li[5]/a'
+                    if (ministryId == 18):
+                        nextBtnXpath = '//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div[23]/ul/li[4]/a'
+                    if (ministryId == 19):
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+                    if (ministryId == 20):
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+                    if (ministryId == 21):
+                        nextBtnXpath = '//*[@class="x28y"]/div[4]/a'
+                    if (ministryId == 23):
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+
+                    element = driver.find_element_by_xpath(nextBtnXpath)#tìm nút next
+                    element.click()# thực hiện click để chuyển trang
+                    time.sleep(2)# ngủ 2s để load bài mới
+                except Exception as e:#nếu crawl hết dừng
+                    print(e)
+                    break
+                count += 1
+                if count == 3:#crawl 2 lần, tắt đi để crawl hết
+                    break
                 
+                html = HTML(html=driver.page_source)#page thành HTML để xpath
+                tmp = html.xpath(detailUrlXpath)#lấy bài mới
+                for url in tmp:
+                    
+                    if (ministryId==11):
+                        url = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwNC-sP1o8BKnN0dPUzMfQwMLHzcTQ08HT1CgywDjY0NHI2hCvBY4eeRn5uqX5AbYZBl4qgIANgfRb4!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/"+str(url)
+                    elif (ministryId == 12):                            
+                        url = "https://www.mof.gov.vn"+str(url)
+                    elif (ministryId == 16):
+                        url = "https://bvhttdl.gov.vn"+str(url)
+                    elif (ministryId == 21):
+                        url = "https://www.sbv.gov.vn"+str(url)
+                    elif (ministryId == 23):
+                        url = "https://www.sbv.gov.vn"+str(url)
+
+                    self.parseArticleResponse(url, ministryId)                
+                
+                list_baiviet.extend(tmp)#thêm vào tập link 
+            except Exception as e:#gặp sự cố dừng
+                print(e)
+                break            
+        return list_baiviet                
         
 
 p = MySpider()

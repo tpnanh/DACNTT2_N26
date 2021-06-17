@@ -1637,7 +1637,20 @@ insert into legislation_configuration(ministry_id, legislation_name_xpath, legis
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[2]/tr/td[2]/a/@href' 
 	),
 
-	-- Ngân hàng không lấy xpath được tại vì show nguyên cái văn bản lun
+	-- Ngân hàng
+	(21,
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[4]/text()',
+	'', -- không hiển thị ngày ký
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[2]/a/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[4]/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[2]/a/text()',
+	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[9]/td/text()',
+	'//*[@id="divShowDialogDownload"]/ul/li[2]/span/a/@href' 
+	),
 	-- VP chính phủ khum có show văn bản
 	-- Bảo hiểm xã hội vb nói chung
 	(23,
@@ -1696,7 +1709,7 @@ go
 alter table ministry_category_configuration add constraint mcc_category_id_ci foreign key (category_id) references category_info(category_id) 
 
 
-select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_configuration where ministry_id = 5
+select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_configuration where ministry_id = 21
 select ministry_id, legislation_url_xpath from ministry_legislation_configuration where ministry_id = 21
 
 /*

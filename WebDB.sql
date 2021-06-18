@@ -1709,8 +1709,8 @@ go
 alter table ministry_category_configuration add constraint mcc_category_id_ci foreign key (category_id) references category_info(category_id) 
 
 
-select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_configuration where ministry_id = 21
-select ministry_id, legislation_url_xpath from ministry_legislation_configuration where ministry_id = 21
+select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_configuration where ministry_id = 12
+select ministry_id, legislation_url_xpath from ministry_legislation_configuration where ministry_id = 12
 
 /*
 go

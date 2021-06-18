@@ -20,31 +20,25 @@ class MySpider(scrapy.Spider):
     
     
     def getUrl(self):
-        legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_id from legislationinfo where ministry_id = 22') 
+        legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_id from legislationinfo where ministry_id = 12') 
         
         for row in legislation_page_info:   
             page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_configuration where ministry_id = $'+str(row[0]))
             #print(row[0])
-            print(row[1])
+            #print(row[1])
             #print(row[2])
             
             for page_info in page_param_info:    
-                print("urk2: "+str(row))
+                #print("urk2: "+str(row))
                 #if there's no get param link
-                print(page_info[1])
+                #print(page_info[1])
                 if (page_info[1]==""):
                     print
                 else:
                     #get url with param
                     url = self.covertStringToResponse(row[1]).xpath(page_info[1])
-                    print(str(url))
-                    if (row[0]==14):
-                        param = self.getMicParam(str(url[len(url)-1]))
-                        print(param)
-                    elif (row[0]==24):
-                        param = self.getVassParam(str(url[len(url)-1]))
-                        print(param)
-                    elif (row[0]==2 or row[0]==8 and row[2]==12 or row[0]==8 and row[2]==13 or row[0]==11 or row[0]==14 or row[0]==21 or row[0]==22):
+                    #print(str(url))
+                    if (row[0]==2 or row[0]==12 or row[0]==8 or row[0]==13 or row[0]==11 or row[0]==14 or row[0]==21 or row[0]==22):
                         param = 0
                     else:
                         param = self.getParam(str(url[len(url)-1]))
@@ -52,7 +46,7 @@ class MySpider(scrapy.Spider):
                 
                 for i in range (2,5): 
                     ##ministries don't use param
-                    if (row[0]==5 or row[0]==2 or row[0]==13 or row[0]==6 or row[0]==7 or row[0]==4 or row[0]==14 or row[0]==16 or row[0]==19 or row[0]==21 or row[0]==22):
+                    if (row[0]==5 or row[0]==2 or row[0]==13 or row[0]==6 or row[0]==7 or row[0]==4 or row[0]==12 or row[0]==14 or row[0]==16 or row[0]==19 or row[0]==21 or row[0]==22):
                         legislationUrl = row[1]
                         self.parseCategoryResponse(self.covertStringToResponse(legislationUrl), row[0])
                     else:                         
@@ -107,7 +101,8 @@ class MySpider(scrapy.Spider):
                             url_quocphong = str(legislation_url_xpaths[url_index])                            
                             legislation_url_xpaths[url_index] = "http://www.mod.gov.vn"+ url_quocphong[:-32] + str(legislation_url_xpaths[url_index]) #crawl được xíu thì Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
                         ##bo 
-                        elif (ministryId == 12):                            
+                        elif (ministryId == 12):
+                            print("legislation_url_xpaths bo ldxh" + legislation_url_xpaths[url_index])                            
                             legislation_url_xpaths[url_index] = "https://www.mof.gov.vn"+str(legislation_url_xpaths[url_index]) #cannot get xpath
                         ##bo thong tin truyen thong
                         elif (ministryId == 14):
@@ -132,14 +127,15 @@ class MySpider(scrapy.Spider):
                             print("http://vbpl.vn/nganhangnhanuoc/Pages/vbpq-thuoctinh.aspx?dvid=326&" + str(legislation_url_xpaths[url_index])[-22:-9] + "&Keyword=")
                             legislation_url_xpaths[url_index] = "http://vbpl.vn/nganhangnhanuoc/Pages/vbpq-thuoctinh.aspx?dvid=326&" + str(legislation_url_xpaths[url_index])[-22:-9] + "&Keyword="  #done
                         ##bo y te
-                        elif (ministryId == 22):
-                            legislation_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn"+str(legislation_url_xpaths[url_index])
-                        ##vien han lam khcn
                         elif (ministryId == 23):
-                            legislation_url_xpaths[url_index] = "https://vast.gov.vn"+str(legislation_url_xpaths[url_index])
+                            print(str(legislation_url_xpaths[url_index]))
+                            legislation_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn"+str(legislation_url_xpaths[url_index])
                         ##uy ban quan ly von dau tu
                         elif (ministryId == 26):
-                            legislation_url_xpaths[url_index] = "http://cmsc.gov.vn/"+str(legislation_url_xpaths[url_index])
+                            print(str(legislation_url_xpaths[url_index]))
+                            if(str(legislation_url_xpaths[url_index]).startswith("/doc")):
+                                continue
+                            legislation_url_xpaths[url_index] = str(legislation_url_xpaths[url_index])  #done - cannot get xpath of link download yet
 
                         self.parselegislationResponse(legislation_url_xpaths[url_index], ministryId)
                     

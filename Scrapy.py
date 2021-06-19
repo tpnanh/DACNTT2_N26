@@ -36,7 +36,7 @@ class MySpider(scrapy.Spider):
         return doc
     
     
-    def getUrl(self):
+    def getArticleUrl(self):
         category_page_info = self.connectDB().execute('select ministry_id,category_link_root, category_id from category_info where ministry_id = 12')
         for row in category_page_info:   
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath from ministry_category_configuration where ministry_id = $'+str(row[0])+' and category_id = $'+str(row[2]) )        
@@ -84,7 +84,7 @@ class MySpider(scrapy.Spider):
                     i += page_info[0]
 
     
-    def parseCategoryResponse(self, response, ministryId): 
+    def parseArticleCategoryResponse(self, response, ministryId): 
         category_detail = self.connectDB().execute(' select ministry_id,article_url_xpath,article_thumbnail_xpath from ministry_category_configuration where ministry_id = $'+str(ministryId))
         for row in category_detail:            
             for i in range (len(row)):
@@ -361,4 +361,4 @@ class MySpider(scrapy.Spider):
         
 
 p = MySpider()
-p.getUrl()
+p.getArticleUrl()

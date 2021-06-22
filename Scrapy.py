@@ -271,13 +271,12 @@ class MySpider(scrapy.Spider):
                         
     def parseLegislationResponse(self, legislation_url, ministryId): 
         legislation_response = self.covertStringToResponse(legislation_url)
-        legislation_detail = self.connectDB().execute('select legislation_name_xpath, legislation_so_hieu_van_ban_xpath, legislation_ngay_ban_hanh_xpath, legislation_ngay_hieu_luc_xpath, legislation_ngay_ky_xpath, legislation_trich_yeu_xpath, legislation_co_quan_ban_hanh_xpath, legislation_nguoi_ky_xpath, legislation_loai_van_ban_xpath, legislation_tinh_trang_xpath, legislation_link_download_xpath from ministry_legislation_detail_configuration where ministry_id = $'+str(ministryId))
+        legislation_detail = self.connectDB().execute('select legislation_name_xpath, legislation_so_hieu_van_ban_xpath, legislation_ngay_ban_hanh_xpath, legislation_ngay_hieu_luc_xpath, legislation_trich_yeu_xpath, legislation_co_quan_ban_hanh_xpath, legislation_nguoi_ky_xpath, legislation_loai_van_ban_xpath, legislation_tinh_trang_xpath, legislation_link_download_xpath from ministry_legislation_detail_configuration where ministry_id = $'+str(ministryId))
         for row in legislation_detail:
             legislation_name = ""
             legislation_sohieu = ""
             legislation_ngaybanhanh = ""
             legislation_ngayhieuluc = ""
-            legislation_ngayky = ""
             legislation_trichyeu = ""
             legislation_coquanbanhanh = ""
             legislation_nguoiky = ""
@@ -291,38 +290,35 @@ class MySpider(scrapy.Spider):
                     if row[i] and not row[i].isspace():
                         if (i == 0):
                             legislation_name = legislation_response.xpath(row[i])
-                            # print("Name: "+str(legislation_name))
+                            print("Name: "+str(legislation_name))
                         elif (i == 1):
                             legislation_sohieu = legislation_response.xpath(row[i])
-                            # print("Số hiệu: "+str(legislation_sohieu))
+                            print("Số hiệu: "+str(legislation_sohieu))
                         elif (i == 2):
                             legislation_ngaybanhanh = legislation_response.xpath(row[i])
-                            # print("Ngày ban hành: "+str(legislation_ngaybanhanh))
+                            print("Ngày ban hành: "+str(self.clearSpace(legislation_ngaybanhanh)))
                         elif (i == 3):                        
                             legislation_ngayhieuluc =  legislation_response.xpath(row[i])
-                            # print("Ngày hiệu lực: "+str(legislation_ngayhieuluc))
+                            print("Ngày hiệu lực: "+str(legislation_ngayhieuluc))
                         elif (i == 4):
-                            legislation_ngayky = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Ngày ký: "+str(legislation_ngayky))
-                        elif (i == 5):
                             legislation_trichyeu = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Trích yếu: "+str(legislation_trichyeu))
-                        elif (i == 6):
+                            print("Trích yếu: "+str(legislation_trichyeu))
+                        elif (i == 5):
                             legislation_coquanbanhanh = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Cơ quan ban hành: "+str(legislation_coquanbanhanh))
-                        elif (i == 7):
+                            print("Cơ quan ban hành: "+str(legislation_coquanbanhanh))
+                        elif (i == 6):
                             legislation_nguoiky = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Người ký: "+str(legislation_nguoiky))
-                        elif (i == 8):
+                            print("Người ký: "+str(legislation_nguoiky))
+                        elif (i == 7):
                             legislation_loaivanban = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Loại văn bản: "+str(legislation_loaivanban))
-                        elif (i == 9):
+                            print("Loại văn bản: "+str(legislation_loaivanban))
+                        elif (i == 8):
                             legislation_tinhtrang = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Tình trạng: "+str(legislation_tinhtrang))
-                        elif (i == 10):
+                            print("Tình trạng: "+str(legislation_tinhtrang))
+                        elif (i == 9):
                             legislation_link = self.clearSpace(legislation_response.xpath(row[i]))
-                            # print("Link: "+str(legislation_link))
-            self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_ngayky, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
+                            print("Link: "+str(legislation_link))
+            self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
             print("\n")
     
     
@@ -409,37 +405,39 @@ class MySpider(scrapy.Spider):
             print(e)        
         finally:
             conn.cursor().close()
-            conn.close()
+            conn.close()                       
             
-    def saveLegislationToDb(self, ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, ngay_ky, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download):   
-        try:
-            print ("hu: "+str(ngay_ky[0]))
-            # value =  [(ministry_id, legislation_url, legislation_name[0],so_hieu_van_ban[0],ngay_ban_hanh[0],ngay_hieu_luc[0], ngay_ky[0], trich_yeu[0], co_quan_ban_hanh[0], nguoi_ky[0], loai_van_ban[0], tinh_trang[0], link_download[0])]
+    def saveLegislationToDb(self, ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download):   
+        try:            
+            # print ("hu: "+str(value))
+            conn = pyodbc.connect('Driver={SQL Server};'
+                              'Server=ANISE-TR\SQLEXPRESS;'
+                              'Database=WebDB;'
+                              'Trusted_Connection=yes;')  
+            value =  [(ministry_id, legislation_url, legislation_name[0],so_hieu_van_ban[0],ngay_ban_hanh[0],self.returnNullData(ngay_hieu_luc), self.returnNullData(trich_yeu), co_quan_ban_hanh[0], nguoi_ky[0], loai_van_ban[0], self.returnNullData(tinh_trang), self.returnNullData(link_download))]
             
-            # conn = pyodbc.connect('Driver={SQL Server};'
-            #                   'Server=ANISE-TR\SQLEXPRESS;'
-            #                   'Database=WebDB;'
-            #                   'Trusted_Connection=yes;')  
-            
-            
-            
-            # conn.cursor().execute("""                                  
-            #                       INSERT INTO WebDB.dbo.legislation_info 
-            #                       (ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, ngay_ky, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download) 
-            #                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", value[0])
-            # conn.commit()
+            conn.cursor().execute("""                                  
+                                  INSERT INTO WebDB.dbo.legislation_info 
+                                  (ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download) 
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", value[0])
+            conn.commit()
 
         except Exception as e:
             print(e)        
-        # finally:
-        #     conn.cursor().close()
-        #     conn.close()
+        finally:
+            conn.cursor().close()
+            conn.close()
         
     def select(self):
         article = self.connectDB().execute('select * from legislation_info ')
         for row in article:
             print("Row: "+str(row))
             
+    def returnNullData(self, data):
+        if (data == ""):
+            return ""
+        else:
+            return data[0]            
             
     def read_config(self):
     	chrome_options = webdriver.ChromeOptions()

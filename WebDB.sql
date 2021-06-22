@@ -102,17 +102,17 @@ go
 create table legislation_info(
 	legislation_id int identity (1,1) PRIMARY KEY,
 	ministry_id int,
-	legislation_name varchar(200),	
+	legislation_name nvarchar(500),	
 	legislation_url varchar(500),	
 	so_hieu_van_ban varchar(20),
-	ngay_ban_hanh varchar(10),
-	ngay_hieu_luc varchar(10),
-	trich_yeu nvarchar(100),
+	ngay_ban_hanh varchar(100),
+	ngay_hieu_luc nvarchar(100),
+	trich_yeu nvarchar(500),
 	co_quan_ban_hanh nvarchar(100),
 	nguoi_ky nvarchar(50),
 	loai_van_ban nvarchar(50),
 	tinh_trang nvarchar(50),
-	link_download varchar(100)
+	link_download nvarchar(300)
 )
 
 go

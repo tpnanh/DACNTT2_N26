@@ -1821,8 +1821,16 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 
 go
 use WebDB
-select * from article_info
-select * from legislation_info
+select * from article_info 
+
+select * from legislation_info 
+
+select * from article_category_info where ministry_id = 1
+
+select * from ministry_article_category_configuration where ministry_id = 1
+
+go
+delete from article_info 
 
 go
 use master

@@ -95,7 +95,8 @@ create table article_info(
 	article_description nvarchar(500),
 	article_time varchar(10),
 	article_author nvarchar(100),
-	article_content nvarchar(max)
+	article_content nvarchar(max),
+	article_thumbnail varchar(1000)
 )
 
 go
@@ -1821,7 +1822,7 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 
 go
 use WebDB
-select * from article_info 
+select * from article_info order by article_time desc
 
 select * from legislation_info 
 
@@ -1832,7 +1833,7 @@ select * from ministry_article_category_configuration where ministry_id = 1
 go
 delete from article_info 
 
-go
-use master
-drop database WebDB
+--go
+--use master
+--drop database WebDB
 

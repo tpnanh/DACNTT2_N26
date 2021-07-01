@@ -30,7 +30,7 @@ class MySpider(scrapy.Spider):
     def getArticleUrl(self):
         category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_id from article_category_info where ministry_id = 1')
         for row in category_page_info:  
-            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath from ministry_article_category_configuration where ministry_id = 1 and article_category_type_id = $' + str(row[2]))        
+            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = 1 and article_category_type_id = $' + str(row[2]))        
             for page_info in page_param_info:   
                 #if there's no get param link
                 if (page_info[1]==""):
@@ -71,61 +71,67 @@ class MySpider(scrapy.Spider):
                                 articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]       
                             else: 
                                 articleUrl = row[1]+str(i) 
-                    self.parseArticleCategoryResponse(self.covertStringToResponse(articleUrl), row[0], page_info[2])                    
-                    # i += page_info[0]
+                    self.parseArticleCategoryResponse(self.covertStringToResponse(articleUrl), row[0], page_info[2], page_info[3])                    
 
     
-    def parseArticleCategoryResponse(self, response, ministryId, article_url_xpath): 
+    def parseArticleCategoryResponse(self, response, ministryId, article_url_xpath, article_thumbnail_xpath): 
         article_url_xpaths = response.xpath(article_url_xpath)
+        article_thumbnail_url = response.xpath(article_thumbnail_xpath)
+        
+        startPoint = ""
+        
         for url_index in range (len(article_url_xpaths)):                        
             ##bo cong an
             if (ministryId == 1):
-                article_url_xpaths[url_index] = "http://bocongan.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "http://bocongan.gov.vn"
             ##bo gddt
             elif (ministryId == 4):
-                article_url_xpaths[url_index] = "https://moet.gov.vn/tintuc/Pages/Thongbao.aspx"+str(article_url_xpaths[url_index])
+               startPoint = "https://moet.gov.vn/tintuc/Pages/Thongbao.aspx"
             ##bo ldtbxh
             elif (ministryId == 6):                            
-                article_url_xpaths[url_index] = "http://www.mpi.gov.vn/Pages/"+str(article_url_xpaths[url_index])
+                startPoint = "http://www.mpi.gov.vn/Pages/"
             ##bo ldtbxh
             elif (ministryId == 8):                            
-                article_url_xpaths[url_index] = "http://www.molisa.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "http://www.molisa.gov.vn"
             ##bo nong nghiep
             elif (ministryId == 10):                            
-                article_url_xpaths[url_index] = "http://www.mard.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "http://www.mard.gov.vn"
             ##bo quoc phong
             elif (ministryId == 11):                            
-                article_url_xpaths[url_index] = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwNC-sP1o8BKnN0dPUzMfQwMLHzcTQ08HT1CgywDjY0NHI2hCvBY4eeRn5uqX5AbYZBl4qgIANgfRb4!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/"+str(article_url_xpaths[url_index])
+                startPoint = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwNC-sP1o8BKnN0dPUzMfQwMLHzcTQ08HT1CgywDjY0NHI2hCvBY4eeRn5uqX5AbYZBl4qgIANgfRb4!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/"
             ##bo 
             elif (ministryId == 12):                            
-                article_url_xpaths[url_index] = "https://www.mof.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "https://www.mof.gov.vn"
             ##bo thong tin truyen thong
             elif (ministryId == 14):
-                article_url_xpaths[url_index] = "https://www.mic.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "https://www.mic.gov.vn"
             ##bo tu phap
             elif (ministryId == 15):
-                article_url_xpaths[url_index] = "https://moj.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "https://moj.gov.vn"
             ##bo vh, tt & dl
             elif (ministryId == 16):
-                article_url_xpaths[url_index] = "https://bvhttdl.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "https://bvhttdl.gov.vn"
             ##uy ban dan toc
             elif (ministryId == 20):
-                article_url_xpaths[url_index] = "http://cema.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "http://cema.gov.vn"
             ##ngan hang nnvn
             elif (ministryId == 21):
-                article_url_xpaths[url_index] = "https://www.sbv.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "https://www.sbv.gov.vn"
             ##bo y te
             elif (ministryId == 22):
-                article_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn/tintuc/Pages/linh-vuc-bao-hiem-y-te.aspx"+str(article_url_xpaths[url_index])
+                startPoint = "https://baohiemxahoi.gov.vn/tintuc/Pages/linh-vuc-bao-hiem-y-te.aspx"
             ##vien han lam khcn
             elif (ministryId == 23):
-                article_url_xpaths[url_index] = "https://vast.gov.vn"+str(article_url_xpaths[url_index])
+                startPoint = "https://vast.gov.vn"
+                
+            article_url_xpaths[url_index] = startPoint + str(article_url_xpaths[url_index])
+            article_thumbnail_url[url_index] = startPoint + str(article_thumbnail_url[url_index])
 
             ##article_url_xpaths[url_index] is detail article url
-            self.parseArticleResponse(article_url_xpaths[url_index], ministryId)                    
+            self.parseArticleResponse(article_url_xpaths[url_index], article_thumbnail_url[url_index], ministryId)                    
                         
                         
-    def parseArticleResponse(self, article_url, ministryId):         
+    def parseArticleResponse(self, article_url, article_thumbnail, ministryId):         
         article_response = self.covertStringToResponse(article_url)
         article_detail = self.connectDB().execute('select article_title_xpath,article_description_xpath,article_time_xpath,article_author_xpath,article_content_xpath from ministry_article_detail_configuration where ministry_id = $'+str(ministryId))
         
@@ -149,7 +155,7 @@ class MySpider(scrapy.Spider):
                 content = content + i
 
         if (article_title != [] and len(content) > 10):  
-            self.saveArticleToDb(ministryId,article_url, article_title,article_description,article_time,article_author,content)
+            self.saveArticleToDb(ministryId,article_url, article_title,article_description,article_time,article_author,content, article_thumbnail)
         print("\n -----------------")
         
     
@@ -374,19 +380,19 @@ class MySpider(scrapy.Spider):
         return '{0:02}/{1:02}/{2}'.format(dt.day, dt.month, dt.year)
     
     
-    def saveArticleToDb(self, ministry_id, article_url, article_title,article_description,article_time,article_author, article_content):   
+    def saveArticleToDb(self, ministry_id, article_url, article_title,article_description,article_time,article_author, article_content, article_thumbnail):   
         try:
             conn = pyodbc.connect('Driver={SQL Server};'
                               'Server=ANISE-TR\SQLEXPRESS;'
                               'Database=WebDB;'
                               'Trusted_Connection=yes;')  
                 
-            value =  [(ministry_id, article_url, article_title[0],article_description[0],article_time[0],article_author[0], article_content)]
+            value =  [(ministry_id, article_url, article_title[0],article_description[0],self.covertStringFromArticleToSqlFormat(article_time[0]),article_author[0], article_content, article_thumbnail)]
           
             conn.cursor().execute("""                                  
                                   INSERT INTO WebDB.dbo.article_info 
-                                  (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content) 
-                                  VALUES (?, ?, ?, ?, ?, ?, ?)""", value[0])
+                                  (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content, article_thumbnail) 
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", value[0])
             conn.commit()
 
         except Exception as e:

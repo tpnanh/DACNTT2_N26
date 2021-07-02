@@ -151,10 +151,11 @@ class MySpider(scrapy.Spider):
         content = ""
         
         for i in article_content:
-            if ("\r" not in i or "\t" not in i or "\n" not in i or "\0" not in i or "\xa0" not in i):
+            if ("\t" not in i or "\0" not in i or "\xa0" not in i):
                 content = content + i
 
         if (article_title != [] and len(content) > 10):  
+            content = content.replace("  ", "\n")
             self.saveArticleToDb(ministryId,article_url, article_title,article_description,article_time,article_author,content, article_thumbnail)
         print("\n -----------------")
         

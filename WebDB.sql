@@ -1817,12 +1817,12 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[4]/td[2]/text()',
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[7]/td[2]/text()',
 	'', -- không hiển thị tình trạng
-	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[8]/td[2]/a/@href' -- mở ra cửa sổ như drive -> nhấn nút tải
+	'//*[@id="p_p_id_dsvanbanphaspquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[8]/td[2]/a/@href' -- mở ra cửa sổ như drive -> nhấn nút tải
 	)
 
 go
 use WebDB
-select * from article_info order by article_time desc
+select * from article_info 
 
 select * from legislation_info 
 

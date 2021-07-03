@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>	
+	<title>DA-26</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script>
+		
+		
+	</script>
+</head>
+
+<body>
+
+	<style>
+		*{
+			font-family: "Times New Roman", Times, serif;			
+		}
+		.article{
+			margin-left: 400px;
+			margin-right: 400px;
+		}
+		.articleTitle{
+			margin-top: 50px;
+			margin-bottom: 30px;
+			font-weight: bold;
+			text-align: center;
+			line-height:40px;
+		}
+		.imageTime{
+			display: inline-block;
+			float: left;
+			margin-right: 10px;
+			vertical-align: bottom;
+			width: 16px;
+			opacity: 0.8;
+		}
+		.articleTime{
+			font-size: 17px;
+		}
+		.articleDes{
+			font-weight: bold;
+			font-size: 17px;
+			line-height: 25px;
+			margin-top: 20px;
+		}
+		.imageArticle{
+			margin-top: 20px;
+			margin-bottom: 30px;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			width: 700px;
+		}
+		.articleContent{
+			font-size: 17px;
+			border-spacing: 3px;
+			line-height: 26px;
+			white-space: pre-wrap;
+		}
+		.articleAuthor{
+			font-weight: bold;
+			float: right;
+			font-size: 17px;
+			margin-top: 20px;
+			margin-bottom: 50px;
+		}
+	</style>
+
+	<div class = "article">	
+		<h2 class="articleTitle">{{item.3}}</h2>
+		<img class="imageTime" src="../static/img/time.png" alt="Clock">
+		<p class="articleTime">{{item.5}}</p>
+		<h5 class="articleDes">{{item.4}}</h5>
+		<img class="imageArticle" src={{item.8}} alt={{item.8}}>		
+		<p class="articleContent">{{item.7}}</p>
+		<p class="articleAuthor">{{item.6}}</p>
+	</div>
+
+</body>
+
+</html>

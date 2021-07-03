@@ -8,78 +8,126 @@ from django.template.defaulttags import register
 from django.core.paginator import Paginator
 from django.shortcuts import render
 import math
-import sys
-# sys.setrecursionlimit(10000)
-from django import template
-register = template.Library()
 
 def index(request):
-	# getArticleUrl()
-	article_table = showArticleData()
+    # getArticleUrl()
 
-	articleResponse = []
-	articleSubResponse = []
-	articleList = []
-	count = 0
+    legislation_table = showLegislationData()
+    article_table = showArticleData()
 
-	for i in article_table:
-		articleSubResponse.append(i)
-		articleList.append(i)
-		count += 1		
+    articleResponse = []
+    articleSubResponse = []
+    articleList = []
 
-		if ( (article_table.index(i) == len(article_table) - 1) and (len(articleResponse) + 1) > len(article_table)/10 ):
-			articleResponse.append(articleSubResponse)
-			break
+    legislationResponse = []
+    legislationSubResponse = []
+    legislationList = []
 
-		if (count == 10):
-			count = 0
-			articleResponse.append(articleSubResponse)
-			articleSubResponse = []
+    count = 0
+    #article
+    for i in article_table:
+        articleSubResponse.append(i)
+        articleList.append(i)
+        count += 1        
+        if ( (article_table.index(i) == len(article_table) - 1) and (len(articleResponse) + 1) > len(article_table)/10 ):
+            articleResponse.append(articleSubResponse)
+            break
+        if (count == 10):
+            count = 0
+            articleResponse.append(articleSubResponse)
+            articleSubResponse = []
 
-	article = {}
+    article = {}
 
-	for i in range (0, len(articleResponse)):
-		article['article ' + str (i)] = articleResponse[i]
+    for i in range (0, len(articleResponse)):
+        article['article ' + str (i)] = articleResponse[i]
 
-	page = request.GET.get('page', 1)
-	paginator = Paginator(articleList, 10)
-	contacts = paginator.page(page)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(articleList, 10)
+    contacts = paginator.page(page)
 
-	# print(str(math.ceil(len(article_table)/10) + 1))
+    count = 0
+    #legislation
+    for i in legislation_table:
+        legislationSubResponse.append(i)
+        legislationList.append(i)
+        count += 1      
+        if ( (legislation_table.index(i) == len(legislation_table) - 1) and (len(legislationResponse) + 1) > len(legislation_table)/10 ):
+            legislationResponse.append(legislationSubResponse)
+            break
+        if (count == 10):
+            count = 0
+            legislationResponse.append(legislationSubResponse)
+            legislationSubResponse = []
 
-	content = {'article' : article, 'contacts': contacts}
-	return render (request, 'index.html', content)
+    legislation = {}
 
-def createArticle(request):
-	articleId = request.GET.get('id')
-	conn = pyodbc.connect('Driver={SQL Server};'
-							  'Server=ANISE-TR\SQLEXPRESS;'
-							  'Database=WebDB;'
-							  'Trusted_Connection=yes;')    
-	cursor = conn.cursor()
-	cursor.execute('''SELECT * FROM article_info where article_id = $ ''' + str(articleId))
-	item = cursor.fetchone()
-	contents = {'item' : item}
-	return render (request, 'article.html', contents)
+    for i in range (0, len(legislationResponse)):
+        legislation['legislation ' + str (i)] = legislationResponse[i]
+
+    pageLegislation = request.GET.get('page', 1)
+    paginatorLegislation = Paginator(legislationList, 10)
+    legislationContacts = paginatorLegislation.page(pageLegislation)
+
+
+    content = {'article' : article, 'contacts': contacts, 'legislation':legislation, 'legislationContacts':legislationContacts}
+    return render (request, 'index.html', content)
+
+def getArticle(request):
+    articleId = request.GET.get('id')
+    conn = pyodbc.connect('Driver={SQL Server};'
+                              'Server=ANISE-TR\SQLEXPRESS;'
+                              'Database=WebDB;'
+                              'Trusted_Connection=yes;')    
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM article_info where article_id = $ ''' + str(articleId))
+    item = cursor.fetchone()
+    contents = {'item' : item}
+    return render (request, 'article.html', contents)
+
+
+def getLegislation(request):
+    legislationId = request.GET.get('id')
+    print("ll: "+str(legislationId))
+    conn = pyodbc.connect('Driver={SQL Server};'
+                              'Server=ANISE-TR\SQLEXPRESS;'
+                              'Database=WebDB;'
+                              'Trusted_Connection=yes;')    
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM legislation_info where legislation_id = $ ''' + str(legislationId))
+    item = cursor.fetchone()
+    contents = {'item' : item}
+    return render (request, 'legislation.html', contents)
 
    
-def showArticleData ():
-	conn = pyodbc.connect('Driver={SQL Server};'
-							  'Server=ANISE-TR\SQLEXPRESS;'
-							  'Database=WebDB;'
-							  'Trusted_Connection=yes;')    
-	cursor = conn.cursor()
-	cursor.execute('''SELECT * FROM article_info order by article_time desc''')
+def showArticleData():
+    conn = pyodbc.connect('Driver={SQL Server};'
+                              'Server=ANISE-TR\SQLEXPRESS;'
+                              'Database=WebDB;'
+                              'Trusted_Connection=yes;')    
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM article_info order by article_time desc''')
+    row = cursor.fetchall()
+    return row
 
-	row = cursor.fetchall()
-	return row 
 
-# def getArticleDetail (request):	
-# 	article = request.GET.get('article')
-# 	connectDB().execute('''SELECT * FROM article_info ''')
-# 	row = cursor.fetchall()
-# 	content = {'row' : row}
-# 	return render (request, 'article.html', content)
+def showLegislationData():
+    conn = pyodbc.connect('Driver={SQL Server};'
+                              'Server=ANISE-TR\SQLEXPRESS;'
+                              'Database=WebDB;'
+                              'Trusted_Connection=yes;')    
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM legislation_info''')
+    row = cursor.fetchall()
+    return row 
+
+
+def getArticleDetail (request):    
+    article = request.GET.get('article')
+    connectDB().execute('''SELECT * FROM article_info ''')
+    row = cursor.fetchall()
+    content = {'row' : row}
+    return render (request, 'article.html', content)
 
 def connectDB():    
     conn = pyodbc.connect('Driver={SQL Server};'
@@ -508,11 +556,11 @@ def returnNullData( data):
         return data[0]            
         
 def read_config(self):
-	chrome_options = webdriver.ChromeOptions()
-	chrome_options.add_argument('--no-sandbox')
-	chrome_options.add_argument('--headless')
-	driver = webdriver.Chrome('chromedriver', options=chrome_options)
-	return driver
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--headless')
+    driver = webdriver.Chrome('chromedriver', options=chrome_options)
+    return driver
         
 def crawlBySelenium( categoryUrl, detailUrlXpath, ministryId):
     driver = read_config()

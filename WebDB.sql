@@ -105,7 +105,7 @@ create table legislation_info(
 	ministry_id int,
 	legislation_name nvarchar(500),	
 	legislation_url varchar(500),	
-	so_hieu_van_ban varchar(20),
+	so_hieu_van_ban varchar(20) unique,
 	ngay_ban_hanh varchar(100),
 	ngay_hieu_luc nvarchar(100),
 	trich_yeu nvarchar(500),
@@ -1321,13 +1321,13 @@ VALUES
 go 
 insert into ministry_legislation_category_configuration (ministry_id, legislation_category_type_id, legislation_url_xpath, page_rule, legislation_param_xpath) values
 	--văn bản bộ công an
-	(1, 3,
+	(1, 4,
 	'//*[@id="parentHorizontalTab"]/div/div/div/div/a/@href',
 	1,
 	''),	
 
 	--văn bản pháp quy bộ công thương
-	(2,2,
+	(2,1,
 	'//*[@class="text_detail"]/div[1]/a/@href',
 	1,
 	'//*[@id="pagination"]/span/a/@href'), --xài không có được hic
@@ -1343,7 +1343,7 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	1,
 	'//*[@class="pagination"]/ul/li[7]/a/@href'),	
 
-	--văn bản quy phạm phát luật bộ giáo dục
+	--văn bản quy phạm pháp luật bộ giáo dục
 	(4, 4,
 	'//*[@id="ctl00_ctl24_g_025164b8_2c99_46cb_ad7d_e00c79535b91"]/div/div/div/div/div/a/@href',
 	1,
@@ -1817,21 +1817,25 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[4]/td[2]/text()',
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[7]/td[2]/text()',
 	'', -- không hiển thị tình trạng
-	'//*[@id="p_p_id_dsvanbanphaspquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[8]/td[2]/a/@href' -- mở ra cửa sổ như drive -> nhấn nút tải
+	'//*[@id="p_p_id_dsvanbanphaspquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[8]/td[2]/a/@href' 
 	)
+	-- mở ra cửa sổ như drive -> nhấn nút tải
 
 go
 use WebDB
 select * from article_info 
 
-select * from legislation_info 
+select * from ministry_legislation_category_configuration where ministry_id = 1
+
+use WebDB
+select * from article_info, legislation_info 
 
 select * from article_category_info where ministry_id = 1
 
 select * from ministry_article_category_configuration where ministry_id = 1
 
 go
-delete from article_info 
+delete from legislation_info 
 
 --go
 --use master

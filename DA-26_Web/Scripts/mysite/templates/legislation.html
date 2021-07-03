@@ -24,8 +24,11 @@
 		.legistrationName{
 			margin-top: 50px;
 			margin-bottom: 30px;
+			margin-left: 200px;
+			margin-right: 200px;
 			font-weight: bold;
 			text-align: center;
+			line-height: 40px;
 		}
 		table, th, td {
 		    border: 1px solid black;
@@ -47,51 +50,43 @@
 	</style>
 
 	<div class = "legistration">		
-		<h2 class="legistrationName">Văn bản 2017</h2>
+		<h2 class="legistrationName">{{item.2}}</h2>
 		<table>
 			<tr>
 				<th>Số hiệu văn bản</th>
-				<td>Lastname</td> 
+				<td>{{item.4}}</td> 
 			</tr>
 			<tr>
 				<th>Ngày ban hành</th>
-				<td>Smith</td>
-			</tr>
-			<tr>
-				<th>Ngày ban hành</th>
-				<td>Smith</td>
+				<td>{{item.5}}</td>
 			</tr>
 			<tr>
 				<th>Ngày hiệu lực</th>
-				<td>Smith</td>
-			</tr>
-			<tr>
-				<th>Ngày ký</th>
-				<td>Smith</td>
+				<td>{{item.6}}</td>
 			</tr>
 			<tr>
 				<th>Trích yếu</th>
-				<td>Smith</td>
+				<td>{{item.7}}</td>
 			</tr>
 			<tr>
 				<th>Cơ quan ban hành</th>
-				<td>Smith</td>
+				<td>{{item.8}}</td>
 			</tr>
 			<tr>
 				<th>Người ký</th>
-				<td>Smith</td>
+				<td>{{item.9}}</td>
 			</tr>
 			<tr>
 				<th>Loại văn bản</th>
-				<td>Smith</td>
+				<td>{{item.10}}</td>
 			</tr>
 			<tr>
 				<th>Tình trạng</th>
-				<td>Smith</td>
+				<td>{{item.11}}</td>
 			</tr>
 			<tr>
 				<th>Link download</th>
-				<td><a href="#">Link</a></td>
+				<td><a href="{{item.12}}" target="_blank">{{item.12}}</a></td>
 			</tr>
 		</table>
 		</div>

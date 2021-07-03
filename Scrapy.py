@@ -30,7 +30,7 @@ class MySpider(scrapy.Spider):
     def getArticleUrl(self):
         category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_id from article_category_info where ministry_id = 1')
         for row in category_page_info:  
-            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = 1 and article_category_type_id = $' + str(row[2]))        
+            page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = $' + str(row[0]) + 'and article_category_type_id = $' + str(row[2]))        
             for page_info in page_param_info:   
                 #if there's no get param link
                 if (page_info[1]==""):
@@ -161,12 +161,12 @@ class MySpider(scrapy.Spider):
         
     
     def getLegislationUrl(self):
-        legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_category_id from legislation_category_info where ministry_id = 1') 
+        legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_category_type_id from legislation_category_info where ministry_id = 1') 
         
-        for row in legislation_page_info:   
-            page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath,ministry_id from ministry_legislation_category_configuration where ministry_id = $'+str(row[0]))
-            
-            for page_info in page_param_info:    
+        for row in legislation_page_info:               
+            page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath,ministry_id, legislation_url_xpath from ministry_legislation_category_configuration where ministry_id = $'+str(row[0]) + ' and legislation_category_type_id = $' + str(row[2]))
+            for page_info in page_param_info: 
+                
                 #if there's no get param link
                 if (page_info[1]==""):
                     print
@@ -184,136 +184,111 @@ class MySpider(scrapy.Spider):
                     ##ministries don't use param
                     if (row[0]==5 or row[0]==2 or row[0]==13 or row[0]==6 or row[0]==7 or row[0]==4 or row[0]==12 or row[0]==14 or row[0]==16 or row[0]==19 or row[0]==21 or row[0]==22):
                         legislationUrl = row[1]
-                        self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0])
+                        self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])
                     else:                         
                         legislationUrl = row[1]+str(i) 
-                    self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0])                    
+                    self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])                    
                     i += page_info[0]
     
     
-    def parseLegislationCategoryResponse(self, response, ministryId): 
-        category_detail = self.connectDB().execute('select ministry_id, legislation_url_xpath from ministry_legislation_category_configuration where ministry_id = $'+str(ministryId))
-        for row in category_detail:            
-            for i in range (len(row)):
-                ## i = 1 for legislation url to save legislation to DB                
-                if (i == 1):                       
-                    legislation_url_xpaths = response.xpath(row[i])
-                    for url_index in range (len(legislation_url_xpaths)):                        
-                        ##bo cong an
-                        if (ministryId == 1):
-                            #print(legislation_url_xpaths[url_index])
-                            legislation_url_xpaths[url_index] = "http://bocongan.gov.vn/van-ban/van-ban-quy-pham.html"+str(legislation_url_xpaths[url_index]) #done
-                        ##bo gddt
-                        elif (ministryId == 4):
-                            legislation_url_xpaths[url_index] = "https://moet.gov.vn"+str(legislation_url_xpaths[url_index]) #done
-                        ##bo noivu
-                        elif (ministryId == 3):
-                            url_noivu = str(legislation_url_xpaths[url_index])
-                            legislation_url_xpaths[url_index] = "https://doc.moha.gov.vn/"+ url_noivu[:-7] + "thuoctinh" #done
-                        ##bo congthuong
-                        elif (ministryId == 2):
-                            legislation_url_xpaths[url_index] = "http://www.moit.gov.vn"+str(legislation_url_xpaths[url_index])  #Failed to establish a new connection: [Errno 11001] getaddrinfo failed')
-                        ##bo gtvt
-                        elif (ministryId == 5):
-                            legislation_url_xpaths[url_index] = "https://mt.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
-                        ##bo ldtbxh
-                        elif (ministryId == 6):                            
-                            legislation_url_xpaths[url_index] = "http://www.mpi.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
-                        #bo khcn
-                        elif (ministryId == 7):                            
-                            legislation_url_xpaths[url_index] = "http://www.most.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
-                        ##bo ldtbxh
-                        elif (ministryId == 8):                            
-                            legislation_url_xpaths[url_index] = "http://www.molisa.gov.vn"+str(legislation_url_xpaths[url_index]) #done                        
-                        ##bo quoc phong
-                        elif (ministryId == 11):
-                            url_quocphong = str(legislation_url_xpaths[url_index])                            
-                            legislation_url_xpaths[url_index] = "http://www.mod.gov.vn"+ url_quocphong[:-32] + str(legislation_url_xpaths[url_index]) #crawl được xíu thì Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
-                        ##bo 
-                        elif (ministryId == 12):                            
-                            legislation_url_xpaths[url_index] = "https://www.mof.gov.vn"+str(legislation_url_xpaths[url_index]) #cannot get xpath
-                        ##bo thong tin truyen thong
-                        elif (ministryId == 14):
-                            url_tttt = str(legislation_url_xpaths[url_index])
-                            url_tttt = url_tttt[:-5]
-                            url_tttt = url_tttt[10:]
-                            legislation_url_xpaths[url_index] = "https://www.mic.gov.vn/" + url_tttt #done
-                        ##bo tu phap
-                        elif (ministryId == 15):
-                            url_tuphap = str(legislation_url_xpaths[url_index])
-                            legislation_url_xpaths[url_index] = "https://moj.gov.vn"+url_tuphap #Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
-                        ##bo vh, tt & dl
-                        elif (ministryId == 16):
-                            legislation_url_xpaths[url_index] = "https://bvhttdl.gov.vn"+str(legislation_url_xpaths[url_index]) #done
-                        ##uy ban dan toc
-                        elif (ministryId == 20):
-                            legislation_url_xpaths[url_index] = "http://csdl.ubdt.gov.vn"+str(legislation_url_xpaths[url_index]) #done
-                        ##ngan hang nnvn
-                        elif (ministryId == 21):
-                            legislation_url_xpaths[url_index] = "http://vbpl.vn/nganhangnhanuoc/Pages/vbpq-thuoctinh.aspx?dvid=326&" + str(legislation_url_xpaths[url_index])[-22:-9] + "&Keyword="  #done
-                        ##bo y te
-                        elif (ministryId == 23):
-                            legislation_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn"+str(legislation_url_xpaths[url_index])
-                        ##uy ban quan ly von dau tu
-                        elif (ministryId == 26):
-                            if(str(legislation_url_xpaths[url_index]).startswith("/doc")):
-                                continue
-                            legislation_url_xpaths[url_index] = str(legislation_url_xpaths[url_index])  #done - cannot get xpath of link download yet
+    def parseLegislationCategoryResponse(self, response, ministryId, legislation_url_xpath): 
+        legislation_url_xpaths = response.xpath(legislation_url_xpath)  
 
-                        self.parseLegislationResponse(legislation_url_xpaths[url_index], ministryId)                    
+        for url_index in range (len(legislation_url_xpaths)):                        
+            ##bo cong an
+            if (ministryId == 1):
+                #print(legislation_url_xpaths[url_index])
+                legislation_url_xpaths[url_index] = "http://bocongan.gov.vn/van-ban/van-ban-quy-pham.html"+str(legislation_url_xpaths[url_index]) #done
+            ##bo gddt
+            elif (ministryId == 4):
+                legislation_url_xpaths[url_index] = "https://moet.gov.vn"+str(legislation_url_xpaths[url_index]) #done
+            ##bo noivu
+            elif (ministryId == 3):
+                url_noivu = str(legislation_url_xpaths[url_index])
+                legislation_url_xpaths[url_index] = "https://doc.moha.gov.vn/"+ url_noivu[:-7] + "thuoctinh" #done
+            ##bo congthuong
+            elif (ministryId == 2):
+                legislation_url_xpaths[url_index] = "http://www.moit.gov.vn"+str(legislation_url_xpaths[url_index])  #Failed to establish a new connection: [Errno 11001] getaddrinfo failed')
+            ##bo gtvt
+            elif (ministryId == 5):
+                legislation_url_xpaths[url_index] = "https://mt.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
+            ##bo ldtbxh
+            elif (ministryId == 6):                            
+                legislation_url_xpaths[url_index] = "http://www.mpi.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
+            #bo khcn
+            elif (ministryId == 7):                            
+                legislation_url_xpaths[url_index] = "http://www.most.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
+            ##bo ldtbxh
+            elif (ministryId == 8):                            
+                legislation_url_xpaths[url_index] = "http://www.molisa.gov.vn"+str(legislation_url_xpaths[url_index]) #done                        
+            ##bo quoc phong
+            elif (ministryId == 11):
+                url_quocphong = str(legislation_url_xpaths[url_index])                            
+                legislation_url_xpaths[url_index] = "http://www.mod.gov.vn"+ url_quocphong[:-32] + str(legislation_url_xpaths[url_index]) #crawl được xíu thì Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
+            ##bo 
+            elif (ministryId == 12):                            
+                legislation_url_xpaths[url_index] = "https://www.mof.gov.vn"+str(legislation_url_xpaths[url_index]) #cannot get xpath
+            ##bo thong tin truyen thong
+            elif (ministryId == 14):
+                url_tttt = str(legislation_url_xpaths[url_index])
+                url_tttt = url_tttt[:-5]
+                url_tttt = url_tttt[10:]
+                legislation_url_xpaths[url_index] = "https://www.mic.gov.vn/" + url_tttt #done
+            ##bo tu phap
+            elif (ministryId == 15):
+                url_tuphap = str(legislation_url_xpaths[url_index])
+                legislation_url_xpaths[url_index] = "https://moj.gov.vn"+url_tuphap #Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
+            ##bo vh, tt & dl
+            elif (ministryId == 16):
+                legislation_url_xpaths[url_index] = "https://bvhttdl.gov.vn"+str(legislation_url_xpaths[url_index]) #done
+            ##uy ban dan toc
+            elif (ministryId == 20):
+                legislation_url_xpaths[url_index] = "http://csdl.ubdt.gov.vn"+str(legislation_url_xpaths[url_index]) #done
+            ##ngan hang nnvn
+            elif (ministryId == 21):
+                legislation_url_xpaths[url_index] = "http://vbpl.vn/nganhangnhanuoc/Pages/vbpq-thuoctinh.aspx?dvid=326&" + str(legislation_url_xpaths[url_index])[-22:-9] + "&Keyword="  #done
+            ##bo y te
+            elif (ministryId == 23):
+                legislation_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn"+str(legislation_url_xpaths[url_index])
+            ##uy ban quan ly von dau tu
+            elif (ministryId == 26):
+                if (str(legislation_url_xpaths[url_index]).startswith("/doc")):
+                    continue
+                legislation_url_xpaths[url_index] = str(legislation_url_xpaths[url_index])  #done - cannot get xpath of link download yet
+
+            self.parseLegislationResponse(legislation_url_xpaths[url_index], ministryId)                    
                         
                         
     def parseLegislationResponse(self, legislation_url, ministryId): 
         legislation_response = self.covertStringToResponse(legislation_url)
         legislation_detail = self.connectDB().execute('select legislation_name_xpath, legislation_so_hieu_van_ban_xpath, legislation_ngay_ban_hanh_xpath, legislation_ngay_hieu_luc_xpath, legislation_trich_yeu_xpath, legislation_co_quan_ban_hanh_xpath, legislation_nguoi_ky_xpath, legislation_loai_van_ban_xpath, legislation_tinh_trang_xpath, legislation_link_download_xpath from ministry_legislation_detail_configuration where ministry_id = $'+str(ministryId))
         for row in legislation_detail:
-            legislation_name = ""
-            legislation_sohieu = ""
-            legislation_ngaybanhanh = ""
-            legislation_ngayhieuluc = ""
-            legislation_trichyeu = ""
-            legislation_coquanbanhanh = ""
-            legislation_nguoiky = ""
-            legislation_loaivanban = ""
-            legislation_tinhtrang = ""
-            legislation_link = ""
-            if (legislation_response.xpath(row[0]) == []):
-                break
-            else:
-                for i in range (len(row)):            
-                    if row[i] and not row[i].isspace():
-                        if (i == 0):
-                            legislation_name = legislation_response.xpath(row[i])
-                            print("Name: "+str(legislation_name))
-                        elif (i == 1):
-                            legislation_sohieu = legislation_response.xpath(row[i])
-                            print("Số hiệu: "+str(legislation_sohieu))
-                        elif (i == 2):
-                            legislation_ngaybanhanh = legislation_response.xpath(row[i])
-                            print("Ngày ban hành: "+str(self.clearSpace(legislation_ngaybanhanh)))
-                        elif (i == 3):                        
-                            legislation_ngayhieuluc =  legislation_response.xpath(row[i])
-                            print("Ngày hiệu lực: "+str(legislation_ngayhieuluc))
-                        elif (i == 4):
-                            legislation_trichyeu = self.clearSpace(legislation_response.xpath(row[i]))
-                            print("Trích yếu: "+str(legislation_trichyeu))
-                        elif (i == 5):
-                            legislation_coquanbanhanh = self.clearSpace(legislation_response.xpath(row[i]))
-                            print("Cơ quan ban hành: "+str(legislation_coquanbanhanh))
-                        elif (i == 6):
-                            legislation_nguoiky = self.clearSpace(legislation_response.xpath(row[i]))
-                            print("Người ký: "+str(legislation_nguoiky))
-                        elif (i == 7):
-                            legislation_loaivanban = self.clearSpace(legislation_response.xpath(row[i]))
-                            print("Loại văn bản: "+str(legislation_loaivanban))
-                        elif (i == 8):
-                            legislation_tinhtrang = self.clearSpace(legislation_response.xpath(row[i]))
-                            print("Tình trạng: "+str(legislation_tinhtrang))
-                        elif (i == 9):
-                            legislation_link = self.clearSpace(legislation_response.xpath(row[i]))
-                            print("Link: "+str(legislation_link))
-            self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
-            print("\n")
+                      
+            legislation_name_xpath = row[0]
+            legislation_sohieu_xpath = row[1]
+            legislation_ngaybanhanh_xpath = row[2]
+            legislation_ngayhieuluc_xpath = row[3]
+            legislation_trichyeu_xpath = row[4]
+            legislation_coquanbanhanh_xpath = row[5]
+            legislation_nguoiky_xpath = row[6]
+            legislation_loaivanban_xpath = row[7]
+            legislation_tinhtrang_xpath = row[8]
+            legislation_link_xpath = row[9]
+            
+        legislation_name = legislation_response.xpath(legislation_name_xpath)
+        legislation_sohieu = legislation_response.xpath(legislation_sohieu_xpath)
+        legislation_ngaybanhanh = legislation_response.xpath(legislation_ngaybanhanh_xpath)
+        legislation_ngayhieuluc = legislation_response.xpath(legislation_ngayhieuluc_xpath)
+        legislation_trichyeu = legislation_response.xpath(legislation_trichyeu_xpath)
+        legislation_coquanbanhanh = legislation_response.xpath(legislation_coquanbanhanh_xpath)
+        legislation_nguoiky = legislation_response.xpath(legislation_nguoiky_xpath)
+        legislation_loaivanban = legislation_response.xpath(legislation_loaivanban_xpath)        
+        legislation_tinhtrang = legislation_response.xpath(legislation_tinhtrang_xpath)
+        legislation_link = legislation_response.xpath(legislation_link_xpath)
+                
+        # if (legislation_response.xpath(row[0]) != []):
+        self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
+        print("\n")           
     
     
     def getParam(self, param_url):
@@ -479,9 +454,7 @@ class MySpider(scrapy.Spider):
                     if (ministryId == 21):
                         nextBtnXpath = '//*[@class="x29y"]'
                     if (ministryId == 23):
-                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
-                        
-                    
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'     
 
                     element = driver.find_element_by_xpath(nextBtnXpath)#tìm nút next                    
                     element.click()# thực hiện click để chuyển trang

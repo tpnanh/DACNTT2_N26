@@ -132,14 +132,6 @@
 		a{
 			font-size: 17px;
 		}
-		.articleUrl{
-			text-decoration: none;
-			overflow-x: hidden;
-			text-overflow: ellipsis;
-			display: block;
-			white-space: nowrap;
-			width: 700px;
-		}
 		.articleUrl:hover{
 			text-decoration: none;
 		}
@@ -162,7 +154,7 @@
 		#articleCategoryField:hover{
 			font-weight: bold;
 		}
-		#legistrationCategoryField:hover{
+		#legislationCategoryField:hover{
 			font-weight: bold;
 		}
 		.dropdown-menu{
@@ -195,7 +187,7 @@
 		.textPage{
 			font-size: 18px;
 		}
-		.legistrationInfo{
+		.legislationInfo{
 			margin-left: 100px;
 			margin-right: 100px;
 			margin-top: 40px;
@@ -203,27 +195,15 @@
 		a{
 			font-size: 17px;
 		}
-		.legistrationUrl{
-			text-decoration: none;
-		}
-		.legistrationUrl:hover{
-			text-decoration: none;
-		}
-		.legistrationTitle{
+		.legislationTitle{
 			font-weight: bold;
 			margin: 0;
 			margin-top: 5px;
+			margin-bottom: 5px;
 			font-size: 24px;
 			display: block;
 			color: black;
 			text-decoration: none;
-		}
-		.legistrationTitle:hover{
-			text-decoration: none;
-			color: black;
-		}
-		.legistrationDescription{
-			line-height:26px;
 		}
 		.findingKeywordLable{
 			margin-left: 100px;
@@ -312,7 +292,7 @@
 				</div>
 				<hr class="secondTitleLine">
 				<div class="btn-group dropright">
-					<h4 class="categoryTitle" id="legistrationCategoryField">Văn bản</h4>
+					<h4 class="categoryTitle" id="legislationCategoryField">Văn bản</h4>
 					<i class="fa fa-angle-right" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-split" aria-hidden="true"></i>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" style="font-weight: bold;" href="#">Tổng Hợp</a>
@@ -395,7 +375,7 @@
 		</div>
 
 		<div class="content">
-			<h1 class="textTitle" style="text-align:center">TIN TỔNG HỢP</h1>
+			<h1 class="textTitle" style="text-align:center">TIN TỨC TỔNG HỢP</h1>
 
 			<form class="form-inline searchingField">
 				<input style="width: 80%" class="form-control searchingBar" type="search" placeholder="What are you looking for?" aria-label="Search" id="inputTextFindView">
@@ -411,12 +391,25 @@
 					<!-- change num in slice for article/page -->
 					{% for i in articleValue|slice:":10" %}	
 						<div class="articleInfo">							
-							<a class="articleUrl" href="{{i.2}}">{{ i.2 }}</a>	
-							<a class="articleTitle" href="{% url 'createArticle' %}?id={{i.0}}&&type=''">{{i.3}}</a>
+							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}&&type=''">{{i.3}}</a>
 							<h4 class="articleDescription">{{i.4}}</h4>
 							<p></p>
 						</div>
 					{% endfor %}
+				{% endif %}
+			{% endfor %}
+
+			{% for legislationKey, legislationValue in legislation.items %}
+				<!-- change num in if for page -->
+				{% if forloop.counter == legislationContacts.number %}
+					<!-- change num in slice for article/page -->
+					{% for i in legislationValue|slice:":10" %}	
+						<div class="legislationInfo">	
+							<h4 class="legislationTitle">{{i.2}}</h4>						
+							<a class="legislationDetail" href="{% url 'getLegislation' %}?id={{i.0}}&&type=''">Xem chi tiết >></a>							
+							<p></p>
+						</div>
+						{% endfor %}
 				{% endif %}
 			{% endfor %}
 
@@ -429,6 +422,18 @@
 				{% if contacts.has_next %}
 					<a href="?page={{ contacts.next_page_number }}" class="pageDirection" >Tiếp</a>
 					<a href="?page={{ contacts.paginator.num_pages }}" class="pageDirection">Trang cuối →</a>
+				{% endif %}
+			</div>
+
+			<div class="pageDirections">
+				{% if legislationContacts.has_previous %}
+					<a href="?page=1" class="pageDirection">← Trang đầu</a>
+					<a href="?page={{ legislationContacts.previous_page_number }}" class="pageDirection">Trước</a>
+				{% endif %}	
+				<p class="pageDirection textPage">﹤ {{ legislationContacts.number  }} ﹥</p>
+				{% if legislationContacts.has_next %}
+					<a href="?page={{ legislationContacts.next_page_number }}" class="pageDirection" >Tiếp</a>
+					<a href="?page={{ legislationContacts.paginator.num_pages }}" class="pageDirection">Trang cuối →</a>
 				{% endif %}
 			</div>
 

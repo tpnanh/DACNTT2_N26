@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>	
@@ -68,7 +70,16 @@
 			float: right;
 			font-size: 17px;
 			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+		.articleSource{
+			font-style: italic;
+			font-size: 16px;
+			display: block;
+			float: right;
 			margin-bottom: 50px;
+			color: #737373;
+			text-align: right;
 		}
 	</style>
 
@@ -77,9 +88,10 @@
 		<img class="imageTime" src="../static/img/time.png" alt="Clock">
 		<p class="articleTime">{{item.5}}</p>
 		<h5 class="articleDes">{{item.4}}</h5>
-		<img class="imageArticle" src={{item.8}} alt={{item.8}}>		
+		<img class="imageArticle" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'; this.style='width:200px' " src={{item.8}} alt={{item.8}}>		
 		<p class="articleContent">{{item.7}}</p>
 		<p class="articleAuthor">{{item.6}}</p>
+		<p class="articleSource">Nguồn: {{item.2}}</p>
 	</div>
 
 </body>

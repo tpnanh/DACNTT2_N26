@@ -1828,7 +1828,7 @@ select * from article_info
 select * from ministry_legislation_category_configuration where ministry_id = 1
 
 use WebDB
-select * from article_info, legislation_info 
+select * from legislation_info 
 
 select * from article_category_info where ministry_id = 1
 

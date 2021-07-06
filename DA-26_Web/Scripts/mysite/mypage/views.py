@@ -8,23 +8,20 @@ from django.template.defaulttags import register
 from django.core.paginator import Paginator
 from django.shortcuts import render
 import math
+import sys
+sys.setrecursionlimit(2000)
 
 def index(request):
     # getArticleUrl()
 
-    legislation_table = showLegislationData()
+    #article
     article_table = showArticleData()
 
     articleResponse = []
     articleSubResponse = []
     articleList = []
 
-    legislationResponse = []
-    legislationSubResponse = []
-    legislationList = []
-
-    count = 0
-    #article
+    count = 0    
     for i in article_table:
         articleSubResponse.append(i)
         articleList.append(i)
@@ -46,8 +43,18 @@ def index(request):
     paginator = Paginator(articleList, 10)
     contacts = paginator.page(page)
 
-    count = 0
+    content = {'article' : article, 'contacts': contacts}
+    return render (request, 'index.html', content)
+
+def index_legislation(request):
     #legislation
+    legislation_table = showLegislationData()
+    
+    legislationResponse = []
+    legislationSubResponse = []
+    legislationList = []
+
+    count = 0
     for i in legislation_table:
         legislationSubResponse.append(i)
         legislationList.append(i)
@@ -69,8 +76,7 @@ def index(request):
     paginatorLegislation = Paginator(legislationList, 10)
     legislationContacts = paginatorLegislation.page(pageLegislation)
 
-
-    content = {'article' : article, 'contacts': contacts, 'legislation':legislation, 'legislationContacts':legislationContacts}
+    content = {'legislation':legislation, 'legislationContacts':legislationContacts}
     return render (request, 'index.html', content)
 
 def getArticle(request):
@@ -88,7 +94,6 @@ def getArticle(request):
 
 def getLegislation(request):
     legislationId = request.GET.get('id')
-    print("ll: "+str(legislationId))
     conn = pyodbc.connect('Driver={SQL Server};'
                               'Server=ANISE-TR\SQLEXPRESS;'
                               'Database=WebDB;'

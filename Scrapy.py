@@ -262,8 +262,7 @@ class MySpider(scrapy.Spider):
     def parseLegislationResponse(self, legislation_url, ministryId): 
         legislation_response = self.covertStringToResponse(legislation_url)
         legislation_detail = self.connectDB().execute('select legislation_name_xpath, legislation_so_hieu_van_ban_xpath, legislation_ngay_ban_hanh_xpath, legislation_ngay_hieu_luc_xpath, legislation_trich_yeu_xpath, legislation_co_quan_ban_hanh_xpath, legislation_nguoi_ky_xpath, legislation_loai_van_ban_xpath, legislation_tinh_trang_xpath, legislation_link_download_xpath from ministry_legislation_detail_configuration where ministry_id = $'+str(ministryId))
-        for row in legislation_detail:
-                      
+        for row in legislation_detail:                      
             legislation_name_xpath = row[0]
             legislation_sohieu_xpath = row[1]
             legislation_ngaybanhanh_xpath = row[2]

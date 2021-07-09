@@ -495,5 +495,5 @@ class MySpider(scrapy.Spider):
         
 
 p = MySpider()
-#p.getLegislationUrl()
+p.getLegislationUrl()
 p.getArticleUrl()

@@ -87,16 +87,16 @@ create table ministry_legislation_detail_configuration (
 )
 
 go
-create table article_info(
+create table article_info(	
 	article_id int identity (1,1) PRIMARY KEY,
 	ministry_id int,
-	article_url varchar(1000),
+	article_url nvarchar(1000),
 	article_title nvarchar(200),
 	article_description nvarchar(500),
-	article_time varchar(10),
+	article_time nvarchar(10),
 	article_author nvarchar(100),
-	article_content nvarchar(max),
-	article_thumbnail varchar(1000)
+	article_content nvarchar(max),	
+	article_thumbnail nvarchar(1000)
 )
 
 go
@@ -104,9 +104,9 @@ create table legislation_info(
 	legislation_id int identity (1,1) PRIMARY KEY,
 	ministry_id int,
 	legislation_name nvarchar(500),	
-	legislation_url varchar(500),	
-	so_hieu_van_ban varchar(20) unique,
-	ngay_ban_hanh varchar(100),
+	legislation_url nvarchar(500),	
+	so_hieu_van_ban nvarchar(20) unique,
+	ngay_ban_hanh nvarchar(100),
 	ngay_hieu_luc nvarchar(100),
 	trich_yeu nvarchar(500),
 	co_quan_ban_hanh nvarchar(100),
@@ -1830,6 +1830,8 @@ select * from ministry_legislation_category_configuration where ministry_id = 1
 use WebDB
 select * from legislation_info 
 
+SELECT MAX(LEN(article_content)) from article_info
+
 select * from article_category_info where ministry_id = 1
 
 select * from ministry_article_category_configuration where ministry_id = 1
@@ -1840,4 +1842,5 @@ delete from legislation_info
 --go
 --use master
 --drop database WebDB
+
 

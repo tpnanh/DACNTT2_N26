@@ -9,72 +9,82 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 import math
 import sys
+from pyspark.sql import SparkSession
+import pandas as pd
+import pyodbc
+from pyspark.sql.types import StructType,StructField, StringType
+import numpy as np
+
+import findspark
+findspark.init("C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python39\\spark\\spark-3.0.3-bin-hadoop2.7")
+
 sys.setrecursionlimit(2000)
+
+
+def displayOnWeb(request,table,isSearch):
+    response = []
+    subResponse = []
+    resultList = []
+
+    count = 0    
+
+    if (len(table) != 0):
+        for i in range(0,len(table)-1):
+            subResponse.append(table[i])        
+            resultList.append(table[i])
+            count += 1  
+            if (count == 10):
+                count = 0
+                response.append(subResponse)            
+                subResponse = []
+                print(subResponse)
+            if (len(table)<10):
+                response.append(subResponse)  
+
+        subResponse.append(table[len(table)-1])
+        resultList.append(table[len(table)-1])
+        response.append(subResponse)
+
+        article = {}
+
+        if (isSearch == False):
+            for i in range (0, len(response)):
+                article['item ' + str (i)] = response[i]
+        else:         
+            # for u in response:
+            #     article['item ' + str (i)] = u
+            for i in range (0, len(response)):
+                article['item ' + str (i)] = response[i]
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(resultList, 10)
+        contacts = paginator.page(page)
+    else:
+        article = {}
+        contacts = {}
+
+    return article, contacts
 
 def index(request):
     # getArticleUrl()
-
-    #article
     article_table = showArticleData()
 
-    articleResponse = []
-    articleSubResponse = []
-    articleList = []
+    result = displayOnWeb(request,article_table,False)
 
-    count = 0    
-    for i in article_table:
-        articleSubResponse.append(i)
-        articleList.append(i)
-        count += 1        
-        if ( (article_table.index(i) == len(article_table) - 1) and (len(articleResponse) + 1) > len(article_table)/10 ):
-            articleResponse.append(articleSubResponse)
-            break
-        if (count == 10):
-            count = 0
-            articleResponse.append(articleSubResponse)
-            articleSubResponse = []
-
-    article = {}
-
-    for i in range (0, len(articleResponse)):
-        article['article ' + str (i)] = articleResponse[i]
-
-    page = request.GET.get('page', 1)
-    paginator = Paginator(articleList, 10)
-    contacts = paginator.page(page)
+    article = result[0]
+    contacts = result[1]
 
     content = {'article' : article, 'contacts': contacts}
     return render (request, 'index.html', content)
 
+
 def index_legislation(request):
     #legislation
     legislation_table = showLegislationData()
-    
-    legislationResponse = []
-    legislationSubResponse = []
-    legislationList = []
+    result = displayOnWeb(request,legislation_table,False)
 
-    count = 0
-    for i in legislation_table:
-        legislationSubResponse.append(i)
-        legislationList.append(i)
-        count += 1      
-        if ( (legislation_table.index(i) == len(legislation_table) - 1) and (len(legislationResponse) + 1) > len(legislation_table)/10 ):
-            legislationResponse.append(legislationSubResponse)
-            break
-        if (count == 10):
-            count = 0
-            legislationResponse.append(legislationSubResponse)
-            legislationSubResponse = []
-
-    legislation = {}
-
-    for i in range (0, len(legislationResponse)):
-        legislation['legislation ' + str (i)] = legislationResponse[i]
-
-    pageLegislation = request.GET.get('page', 1)
-    paginatorLegislation = Paginator(legislationList, 10)
-    legislationContacts = paginatorLegislation.page(pageLegislation)
+    legislation = result[0]
+    legislationContacts = result[1]    
 
     content = {'legislation':legislation, 'legislationContacts':legislationContacts}
     return render (request, 'index.html', content)
@@ -103,6 +113,18 @@ def getLegislation(request):
     item = cursor.fetchone()
     contents = {'item' : item}
     return render (request, 'legislation.html', contents)
+
+def getSearchingResult(request):
+    keyword = request.GET.get('find')
+    listResult = findKeyword(keyword)    
+
+    result = displayOnWeb(request,listResult,True)
+
+    searchResult = result[0]     
+    searchContacts = result[1] 
+
+    results = {'searchResult' : searchResult, 'searchContacts' : searchContacts}
+    return render (request, 'index.html', results)
 
    
 def showArticleData():
@@ -162,7 +184,7 @@ def getArticleUrl():
                         
                     try:
                         for baiviet in list_baiviet:
-                            parseArticleResponse(baiviet, row[0])
+                            parseresponse(baiviet, row[0])
                     except RequestException as e:
                         print(e)
                 else: 
@@ -249,10 +271,10 @@ def parseArticleCategoryResponse(response, ministryId):
                         article_url_xpaths[url_index] = "https://vast.gov.vn"+str(article_url_xpaths[url_index])
 
                     ##article_url_xpaths[url_index] is detail article url
-                    parseArticleResponse(article_url_xpaths[url_index], ministryId)                    
+                    parseresponse(article_url_xpaths[url_index], ministryId)                    
                     
                     
-def parseArticleResponse( article_url, ministryId): 
+def parseresponse( article_url, ministryId): 
     article_response = covertStringToResponse(article_url)
     article_detail = connectDB().execute('select article_title_xpath,article_description_xpath,article_time_xpath,article_author_xpath,article_content_xpath from ministry_article_detail_configuration where ministry_id = $'+str(ministryId))
     for row in article_detail:
@@ -638,10 +660,63 @@ def crawlBySelenium( categoryUrl, detailUrlXpath, ministryId):
                 elif (ministryId == 23):
                     url = "https://www.sbv.gov.vn"+str(url)
 
-                parseArticleResponse(url, ministryId)                
+                parseresponse(url, ministryId)                
             
             list_baiviet.extend(tmp)#thêm vào tập link 
         except Exception as e:#gặp sự cố dừng
             print(e)
             break            
-    return list_baiviet                     
+    return list_baiviet      
+
+def findKeyword(keyword):
+    conn = pyodbc.connect('Driver={SQL Server};'
+                          'Server=ANISE-TR\SQLEXPRESS;'
+                          'Database=WebDB;'
+                          'Trusted_Connection=yes;')
+    resultList = conn.cursor().execute("SELECT * FROM article_info")
+    articleRow = [ row for row in resultList ]
+    articleData = np.array(articleRow)
+    articleDF = pd.DataFrame(articleData)
+
+    legislationList = conn.cursor().execute("SELECT * FROM legislation_info")    
+    legislationRow = [ row for row in legislationList ]    
+    legislationData = np.array(legislationRow)  
+    legislationDF = pd.DataFrame(legislationData)
+
+    articleSchema = StructType([    
+        StructField("Id",StringType(),True), 
+        StructField("Ministry",StringType(),True), 
+        StructField("Url", StringType(), True), 
+        StructField("Title", StringType(), True), 
+        StructField("Description", StringType(), True), 
+        StructField("Time", StringType(), True),
+        StructField("Author",StringType(),True), 
+        StructField("Content",StringType(),True), 
+        StructField("Thumbnail", StringType(), True)
+    ])
+
+    legislationSchema = StructType([    
+        StructField("Id",StringType(),True), 
+        StructField("Ministry",StringType(),True), 
+        StructField("Name", StringType(), True), 
+        StructField("Url", StringType(), True), 
+        StructField("So hieu van ban", StringType(), True), 
+        StructField("Ngay ban hanh", StringType(), True),
+        StructField("Ngay hieu luc",StringType(),True), 
+        StructField("Trich yeu",StringType(),True), 
+        StructField("Co quan ban hanh", StringType(), True),
+        StructField("Nguoi ky", StringType(), True),
+        StructField("Loai van ban",StringType(),True), 
+        StructField("Tinh trang",StringType(),True), 
+        StructField("Link download", StringType(), True)
+    ])
+
+    spark = SparkSession.builder.appName("PySpark").getOrCreate()
+
+    sparkArticleDF = spark.createDataFrame(data = articleDF, schema = articleSchema)
+    listArticleResult = sparkArticleDF.filter("Content like '% "+str(keyword)+" %'").collect()
+
+    output=[i[0:len(i)] for i in listArticleResult]
+
+    conn.close()
+    return output

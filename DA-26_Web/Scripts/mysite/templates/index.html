@@ -22,6 +22,10 @@
 		let pageDirectionsLegislation;
 		let textTitle;
 		let scrollUpBtn;
+		let inputTextFindView;
+		let buttons;
+		let articleBtn;
+		let legislationBtn;
 
 		window.onload = function(){
 			filterMenu = document.getElementById('filterMenu');
@@ -29,15 +33,55 @@
 			legislationInfo = document.getElementsByClassName('legislationInfo')
 			pageDirections = document.getElementsByClassName('pageDirections')
 			pageDirectionsLegislation = document.getElementsByClassName('pageDirectionsLegislation')
+			inputTextFindView = document.getElementById('inputTextFindView')			
+			buttons = document.querySelectorAll('.flex-container > div')
+			articleBtn = document.getElementById('articleBtn')
+			legislationBtn = document.getElementById('legislationBtn')
 
 			filterMenu.style.display = 'none';
 
 			scrollUpBtn = document.getElementById('scrollUpBtn');
 
 			textTitle = document.getElementById('textTitle')
+
+			const listFilter = []
+
+            buttons.forEach((btn) => {
+			  	btn.addEventListener("click", function(){
+			  		if (btn.style.color != 'rgb(230, 57, 0)'){
+			  			// listFilter.push(btn)
+			  			// console.log(list)
+		                btn.style.color = '#e63900';
+		                btn.style.borderColor = '#e63900';
+		            }
+		            else {
+		          //   	for (i = 0; i < argument.length; i++){
+				        //     listFilter[i] !== btn
+				        // }
+			  			console.log(list)
+		            	btn.style.color = 'black';
+		                btn.style.borderColor = '#d9d9d9';
+		            }
+			    });
+			});
+
+			setButton();
 		}
 
 		window.onscroll = function() {scrollFunction()};
+
+		function setButton(){
+			list = window.location.href.split("/");
+			if (list[list.length - 1] == 'legislation'){
+				console.log(list[list.length - 1])
+				disableBtn(legislationBtn)
+				enableBtn(articleBtn)
+			}
+			else {
+				disableBtn(articleBtn)
+				enableBtn(legislationBtn)
+			}
+		}
 
 		function scrollFunction() {
 			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
@@ -68,6 +112,7 @@
 			onDisplayNone(pageDirectionsLegislation)
 			onDisplayShow(articleInfo)
 			onDisplayShow(pageDirections)
+			location.href = "/article"
 		}
 
 		function onDisplayLegislation() {
@@ -75,15 +120,38 @@
 			onDisplayNone(pageDirections)
 			onDisplayShow(legislationInfo)
 			onDisplayShow(pageDirectionsLegislation)
+			location.href = "/legislation"
 		}
 
 		function onOpenFilterMenu(){
 			if (filterMenu.style.display == 'inline-block'){
-				filterMenu.style.display = 'none';
+				// filterMenu.style.display = 'none';
 			}
 			else{
 				filterMenu.style.display = 'inline-block';
 			}			
+		}
+
+		// function onCloseFilterMenu(){
+		// 	filterMenu.style.display = 'inline-block';
+		// }
+
+		function disableBtn(btn){
+			btn.style.pointerEvents = 'none';
+			btn.style.backgroundColor = '#f7f7f7';
+			btn.style.color = '#d9d9d9';
+		}
+
+		function enableBtn(btn){
+			btn.style.pointerEvents = 'auto';
+			btn.style.backgroundColor = 'white';
+			btn.style.color = 'black';
+		}
+
+
+		function onSearchKeyword(){
+			location.href = "{% url 'getSearchingResult' %}?find="+inputTextFindView.value
+			
 		}
 
 		
@@ -331,10 +399,6 @@
     		display: block;
 		}
 		#title{
-			/*text-align: center;
-			font-weight: bold;
-			font-size: 18px;
-			color: #33335c;*/
 			display: block;
 			margin-left: auto;
   			margin-right: auto;
@@ -387,6 +451,21 @@
 			background-color: white;
 			cursor: pointer;
 		}
+		#submitBtn{
+			margin: 5px;
+		  	text-align: center;
+		  	font-size: 16px;
+		  	padding: 2px;
+		  	padding-left: 10px;
+		  	padding-right: 10px;
+			color: white;
+			border: 2px solid #5f91ec;
+			border-radius: 25px ;
+			background-color: #5f91ec;
+			cursor: pointer;
+			display: table;
+			margin: 0 auto;
+		}
 
 	</style>
 	<div class="scrollUpBtnContainer">
@@ -398,7 +477,7 @@
 			<img class="image" src="{% static 'img/newspaper.png' %}" alt="Logo">
 			<h3 class="webTitle">HOT EXPRESS</h3>
 			<hr class="firstTitleLine">
-			<h4 class="textTitle categoryTitle" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-split" onclick="onOpenFilterMenu()" aria-expanded="true">Phân loại</h4>
+			<h4 class="textTitle categoryTitle" data-toggle="dropdown" class="dropdown-toggle dropdown-toggle-split" onclick="onOpenFilterMenu()"  onaria-expanded="true">Phân loại</h4>
 			<div class="dropdown-menu" id="filterMenu">
 				<div class="flex-container">
 	  				  <div>Bộ Công An</div>
@@ -425,9 +504,12 @@
 				</div>
 				<hr style="margin-top: 15px; margin-bottom: 10px; margin-right: 20px;">
 				<div class="flex-container">
-	  				  <div>Tin tức</div>
-					  <div>Văn bản</div>
+	  				  <div id = "articleBtn" onclick="onDisplayArticle()">Tin tức</div>
+					  <div id = "legislationBtn" onclick="onDisplayLegislation()">Văn bản</div>
 				</div>
+				<hr style="margin-top: 15px; margin-bottom: 10px; margin-right: 20px;">
+				<div id = "submitBtn" onclick="onDisplayArticle()">DONE</div>
+				
 			</div>			
 
 		</div>
@@ -459,7 +541,7 @@
 
 			<form class="form-inline searchingField">
 				<input style="width: 30%" class="form-control searchingBar" type="search" placeholder="What are you looking for?" aria-label="Search" id="inputTextFindView">
-				<button class="btn searchingButton" type="submit">Search</button>
+				<div class="btn searchingButton" type="submit" onclick ="onSearchKeyword()">Search</div>
 			</form>
 
 			<div class="findingBox">
@@ -467,16 +549,30 @@
 				<p class="findingKeyword">None</p>
 			</div>
 
-			
-	
+			{% for searchResultKey, searchResultValue in searchResult.items %}
+				<!-- change num in if for page -->
+				{% if forloop.counter == searchContacts.number %}
+					<!-- change num in slice for article/page -->
+					{% for i in searchResultValue|slice:":10" %}	
+						<div class="articleInfo" >		
+							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
+							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
+							<h4 class="articleDescription">{{i.4}}</h4>
+							<p></p>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+
+
 			{% for articleKey, articleValue in article.items %}
 				<!-- change num in if for page -->
 				{% if forloop.counter == contacts.number %}
 					<!-- change num in slice for article/page -->
 					{% for i in articleValue|slice:":10" %}	
 						<div class="articleInfo" >		
-							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>					
-							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}&&?type=article">{{i.3}}</a>
+							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
+							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
 							<h4 class="articleDescription">{{i.4}}</h4>
 							<p></p>
 						</div>

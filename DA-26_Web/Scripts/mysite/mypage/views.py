@@ -21,7 +21,6 @@ findspark.init("C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python39\\spa
 sys.setrecursionlimit(2000)
 
 spark = None
-print("spark: "+str(spark))
 
 def displayOnWeb(request,table,isSearch):
     response = []
@@ -39,7 +38,6 @@ def displayOnWeb(request,table,isSearch):
                 count = 0
                 response.append(subResponse)            
                 subResponse = []
-                print(subResponse)
             if (len(table)<10):
                 response.append(subResponse)  
 
@@ -49,14 +47,12 @@ def displayOnWeb(request,table,isSearch):
 
         article = {}
 
-        if (isSearch == False):
-            for i in range (0, len(response)):
-                article['item ' + str (i)] = response[i]
-        else:         
-            # for u in response:
-            #     article['item ' + str (i)] = u
-            for i in range (0, len(response)):
-                article['item ' + str (i)] = response[i]
+        # if (isSearch == False):
+        #     for i in range (0, len(response)):
+        #         article['item ' + str (i)] = response[i]
+        # else:         
+        for i in range (0, len(response)):
+            article['item ' + str (i)] = response[i]
 
         page = request.GET.get('page', 1)
         paginator = Paginator(resultList, 10)
@@ -86,7 +82,6 @@ def index(request):
 
 
 def index_legislation(request):
-
     global spark
     if(spark is None):        
         spark = SparkSession.builder.appName("PySpark").getOrCreate()
@@ -104,9 +99,9 @@ def index_legislation(request):
 def getArticle(request):
     articleId = request.GET.get('id')
     conn = pyodbc.connect('Driver={SQL Server};'
-                              'Server=ANISE-TR\SQLEXPRESS;'
-                              'Database=WebDB;'
-                              'Trusted_Connection=yes;')    
+                      'Server=ANISE-TR\SQLEXPRESS;'
+                      'Database=WebDB;'
+                      'Trusted_Connection=yes;')    
     cursor = conn.cursor()
     cursor.execute('''SELECT * FROM article_info where article_id = $ ''' + str(articleId))
     item = cursor.fetchone()
@@ -115,19 +110,18 @@ def getArticle(request):
 
 
 def getLegislation(request):
-    legislationId = request.GET.get('id')
     conn = pyodbc.connect('Driver={SQL Server};'
-                              'Server=ANISE-TR\SQLEXPRESS;'
-                              'Database=WebDB;'
-                              'Trusted_Connection=yes;')    
+                      'Server=ANISE-TR\SQLEXPRESS;'
+                      'Database=WebDB;'
+                      'Trusted_Connection=yes;')    
     cursor = conn.cursor()
     cursor.execute('''SELECT * FROM legislation_info where legislation_id = $ ''' + str(legislationId))
     item = cursor.fetchone()
     contents = {'item' : item}
     return render (request, 'legislation.html', contents)
 
-def getSearchingResult(request):
 
+def getSearchingResult(request):
     global spark
     if(spark is None):
         spark = SparkSession.builder.appName("PySpark").getOrCreate()
@@ -143,12 +137,104 @@ def getSearchingResult(request):
     results = {'searchResult' : searchResult, 'searchContacts' : searchContacts}
     return render (request, 'index.html', results)
 
+def getSearchingLegislationResult(request):
+    global spark
+    if(spark is None):
+        spark = SparkSession.builder.appName("PySpark").getOrCreate()
+
+    keyword = request.GET.get('find')
+    listResult = findLegislationKeyword(keyword)    
+
+    result = displayOnWeb(request,listResult,True)
+
+    searchLegislationResult = result[0]     
+    searchLegislationContacts = result[1] 
+
+    results = {'searchLegislationResult' : searchLegislationResult, 'searchLegislationContacts' : searchLegislationContacts}
+    return render (request, 'index.html', results)
+
+def getFilterResult(request):
+    conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=ANISE-TR\SQLEXPRESS;'
+                      'Database=WebDB;'
+                      'Trusted_Connection=yes;')    
+    cursor = conn.cursor()
+
+    newsType = request.GET.get('type')
+    keyword = request.GET.get('filter')
+
+    keyword = keyword.split(",")
+
+    result = []
+    items = []
+
+    if (newsType in 'article'):
+        for i in keyword:
+            cursor.execute('''SELECT * from article_info, ministry_info 
+                where article_info.ministry_id = ministry_info.ministry_id
+                and ministry_info.ministry_name like N'%'''+i+'''' 
+                ''')
+            item = cursor.fetchall()
+            if (len(item) > 0):
+                items.append(item)                         
+    else:
+        for i in keyword:
+            result.append(cursor.execute('''SELECT * from legislation_info, ministry_info 
+                where legislation_info.ministry_id = ministry_info.ministry_id 
+                and ministry_info.ministry_name like N'%i%' '''))
+
+    if (items != []):
+        result = displayOnWeb(request,np.array(items[0]).tolist(),True)
+        filterResult = result[0]   
+        filterContacts = result[1]
+    else:
+        filterResult = {}  
+        filterContacts = {}
+
+    results = {'filterResult' : filterResult, 'filterContacts' : filterContacts}
+    return render (request, 'index.html', results)
+
+def getFilterLegislationResult(request):
+    conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=ANISE-TR\SQLEXPRESS;'
+                      'Database=WebDB;'
+                      'Trusted_Connection=yes;')    
+    cursor = conn.cursor()
+
+    newsType = request.GET.get('type')
+    keyword = request.GET.get('filter')
+
+    keyword = keyword.split(",")
+
+    result = []
+    items = []
+
+    for i in keyword:
+        cursor.execute('''SELECT * from legislation_info, ministry_info 
+            where legislation_info.ministry_id = ministry_info.ministry_id
+            and ministry_info.ministry_name like N'%'''+i+'''' 
+            ''')
+        item = cursor.fetchall()
+        if (len(item) > 0):
+            items.append(item)
+
+    if (items != []):
+        result = displayOnWeb(request,np.array(items[0]).tolist(),True)
+        filterLegislationResult = result[0]   
+        filterLegislationContacts = result[1]
+    else:
+        filterLegislationResult = {}  
+        filterLegislationContacts = {}
+
+    results = {'filterLegislationResult' : filterLegislationResult, 'filterLegislationContacts' : filterLegislationContacts}
+    return render (request, 'index.html', results)
+
    
 def showArticleData():
     conn = pyodbc.connect('Driver={SQL Server};'
-                              'Server=ANISE-TR\SQLEXPRESS;'
-                              'Database=WebDB;'
-                              'Trusted_Connection=yes;')    
+                      'Server=ANISE-TR\SQLEXPRESS;'
+                      'Database=WebDB;'
+                      'Trusted_Connection=yes;')    
     cursor = conn.cursor()
     cursor.execute('''SELECT * FROM article_info order by article_time desc''')
     row = cursor.fetchall()
@@ -157,21 +243,13 @@ def showArticleData():
 
 def showLegislationData():
     conn = pyodbc.connect('Driver={SQL Server};'
-                              'Server=ANISE-TR\SQLEXPRESS;'
-                              'Database=WebDB;'
-                              'Trusted_Connection=yes;')    
+                      'Server=ANISE-TR\SQLEXPRESS;'
+                      'Database=WebDB;'
+                      'Trusted_Connection=yes;')    
     cursor = conn.cursor()
     cursor.execute('''SELECT * FROM legislation_info''')
     row = cursor.fetchall()
     return row 
-
-
-def getArticleDetail (request):    
-    article = request.GET.get('article')
-    connectDB().execute('''SELECT * FROM article_info ''')
-    row = cursor.fetchall()
-    content = {'row' : row}
-    return render (request, 'article.html', content)
 
 def connectDB():    
     conn = pyodbc.connect('Driver={SQL Server};'
@@ -554,7 +632,6 @@ def saveArticleToDb( ministry_id, article_url, article_title,article_description
                           'Database=WebDB;'
                           'Trusted_Connection=yes;')  
         value =  [(ministry_id, article_url, article_title[0],article_description[0],article_time[0],article_author[0], article_content[0])]
-        print ("hu: "+str(value[0]))
         conn.cursor().execute("""                                  
                               INSERT INTO WebDB.dbo.article_info 
                               (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content) 
@@ -569,7 +646,6 @@ def saveArticleToDb( ministry_id, article_url, article_title,article_description
         
 def saveLegislationToDb( ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download):   
     try:            
-        # print ("hu: "+str(value))
         conn = pyodbc.connect('Driver={SQL Server};'
                           'Server=ANISE-TR\SQLEXPRESS;'
                           'Database=WebDB;'
@@ -685,17 +761,11 @@ def crawlBySelenium( categoryUrl, detailUrlXpath, ministryId):
             break            
     return list_baiviet      
 
-def findKeyword(keyword):
-   
+def findKeyword(keyword):   
     resultList = connectDB().execute("SELECT * FROM article_info")
     articleRow = [ row for row in resultList ]
     articleData = np.array(articleRow)
     articleDF = pd.DataFrame(articleData)
-
-    # legislationList = connectDB().execute("SELECT * FROM legislation_info")    
-    # legislationRow = [ row for row in legislationList ]    
-    # legislationData = np.array(legislationRow)  
-    # legislationDF = pd.DataFrame(legislationData)
 
     articleSchema = StructType([    
         StructField("Id",StringType(),True), 
@@ -707,23 +777,7 @@ def findKeyword(keyword):
         StructField("Author",StringType(),True), 
         StructField("Content",StringType(),True), 
         StructField("Thumbnail", StringType(), True)
-    ])
-
-    # legislationSchema = StructType([    
-    #     StructField("Id",StringType(),True), 
-    #     StructField("Ministry",StringType(),True), 
-    #     StructField("Name", StringType(), True), 
-    #     StructField("Url", StringType(), True), 
-    #     StructField("So hieu van ban", StringType(), True), 
-    #     StructField("Ngay ban hanh", StringType(), True),
-    #     StructField("Ngay hieu luc",StringType(),True), 
-    #     StructField("Trich yeu",StringType(),True), 
-    #     StructField("Co quan ban hanh", StringType(), True),
-    #     StructField("Nguoi ky", StringType(), True),
-    #     StructField("Loai van ban",StringType(),True), 
-    #     StructField("Tinh trang",StringType(),True), 
-    #     StructField("Link download", StringType(), True)
-    # ])
+    ])    
 
     sparkArticleDF = spark.createDataFrame(data = articleDF, schema = articleSchema)
     listArticleResult = sparkArticleDF.filter("Content like '% "+str(keyword)+" %'").collect()
@@ -731,10 +785,37 @@ def findKeyword(keyword):
     output=[i[0:len(i)] for i in listArticleResult]
 
     # output = []
-
     # for i in resultList:
     #     if (" "+str(keyword)+" " in i[7]):
     #         output.append(i)
 
     # print("output: "+str(len(output)))
+    return output
+
+def findLegislationKeyword(keyword):  
+    legislationList = connectDB().execute("SELECT * FROM legislation_info")    
+    legislationRow = [ row for row in legislationList ]    
+    legislationData = np.array(legislationRow)  
+    legislationDF = pd.DataFrame(legislationData)
+
+    legislationSchema = StructType([    
+        StructField("Id",StringType(),True), 
+        StructField("Ministry",StringType(),True), 
+        StructField("Name", StringType(), True), 
+        StructField("Url", StringType(), True), 
+        StructField("So hieu van ban", StringType(), True), 
+        StructField("Ngay ban hanh", StringType(), True),
+        StructField("Ngay hieu luc",StringType(),True), 
+        StructField("Trich yeu",StringType(),True), 
+        StructField("Co quan ban hanh", StringType(), True),
+        StructField("Nguoi ky", StringType(), True),
+        StructField("Loai van ban",StringType(),True), 
+        StructField("Tinh trang",StringType(),True), 
+        StructField("Link download", StringType(), True)
+    ])
+
+    sparkLegislationDF = spark.createDataFrame(data = legislationDF, schema = legislationSchema)
+    listLegislationResult = sparkLegislationDF.filter("Name like '% "+str(keyword)+" %'").collect()
+
+    output=[i[0:len(i)] for i in listLegislationResult]
     return output

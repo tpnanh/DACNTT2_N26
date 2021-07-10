@@ -1823,9 +1823,10 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 
 go
 use WebDB
-select * from article_info 
 
-select * from ministry_legislation_category_configuration where ministry_id = 1
+select * from article_info, ministry_info where article_info.ministry_id = ministry_info.ministry_id and ministry_info.ministry_name like N'%Bộ %' and (article_id = 66 or article_id = 126)
+
+select * from ministry_legislation_category_configuration where ministry_id = 1  
 
 use WebDB
 select * from legislation_info 

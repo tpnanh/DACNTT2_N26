@@ -6,5 +6,8 @@ urlpatterns = [
    path('legislation', views.index_legislation),
    path('article/', views.getArticle, name = "getArticle"),
    path('legislation/', views.getLegislation, name = "getLegislation"),
-   path('', views.getSearchingResult, name = "getSearchingResult"),
+   path('searchArticle', views.getSearchingResult, name = "getSearchingResult"),
+   path('searchLegislation', views.getSearchingLegislationResult, name = "getSearchingLegislationResult"),
+   path('findArticle', views.getFilterResult, name = "getFilterResult"),
+   path('findLegislation', views.getFilterLegislationResult, name = "getFilterLegislationResult"),
 ]

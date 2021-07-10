@@ -26,6 +26,10 @@
 		let buttons;
 		let articleBtn;
 		let legislationBtn;
+		let submitBtn;
+		let list = [];
+		let listFilter = [];
+		let type = 'article';
 
 		window.onload = function(){
 			filterMenu = document.getElementById('filterMenu');
@@ -37,6 +41,9 @@
 			buttons = document.querySelectorAll('.flex-container > div')
 			articleBtn = document.getElementById('articleBtn')
 			legislationBtn = document.getElementById('legislationBtn')
+			submitBtn = document.getElementById('submitBtn')
+
+			setButton();
 
 			filterMenu.style.display = 'none';
 
@@ -44,28 +51,27 @@
 
 			textTitle = document.getElementById('textTitle')
 
-			const listFilter = []
-
             buttons.forEach((btn) => {
 			  	btn.addEventListener("click", function(){
 			  		if (btn.style.color != 'rgb(230, 57, 0)'){
-			  			// listFilter.push(btn)
-			  			// console.log(list)
+			  			listFilter.push(btn.innerText)
 		                btn.style.color = '#e63900';
 		                btn.style.borderColor = '#e63900';
 		            }
 		            else {
-		          //   	for (i = 0; i < argument.length; i++){
-				        //     listFilter[i] !== btn
-				        // }
-			  			console.log(list)
+		            	var i = 0;
+		            	while (i < listFilter.length) {
+						    if (btn.innerText === listFilter[i]) {
+						    	listFilter.splice(i, 1);
+						    } else {
+						    	++i;
+						    }
+						}
 		            	btn.style.color = 'black';
 		                btn.style.borderColor = '#d9d9d9';
 		            }
 			    });
-			});
-
-			setButton();
+			});		
 		}
 
 		window.onscroll = function() {scrollFunction()};
@@ -73,13 +79,14 @@
 		function setButton(){
 			list = window.location.href.split("/");
 			if (list[list.length - 1] == 'legislation'){
-				console.log(list[list.length - 1])
 				disableBtn(legislationBtn)
 				enableBtn(articleBtn)
+				type = list[list.length - 1]
 			}
-			else {
+			if (list[list.length - 1] == 'article') {
 				disableBtn(articleBtn)
 				enableBtn(legislationBtn)
+				type = list[list.length - 1]
 			}
 		}
 
@@ -107,34 +114,23 @@
 			}
 		}
 
-		function onDisplayArticle() {
-			onDisplayNone(legislationInfo)
-			onDisplayNone(pageDirectionsLegislation)
-			onDisplayShow(articleInfo)
-			onDisplayShow(pageDirections)
-			location.href = "/article"
+		function onDisplayArticle() {		
+
+			location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter;
 		}
 
 		function onDisplayLegislation() {
-			onDisplayNone(articleInfo)
-			onDisplayNone(pageDirections)
-			onDisplayShow(legislationInfo)
-			onDisplayShow(pageDirectionsLegislation)
-			location.href = "/legislation"
+			location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+listFilter;
 		}
 
 		function onOpenFilterMenu(){
 			if (filterMenu.style.display == 'inline-block'){
-				// filterMenu.style.display = 'none';
+				filterMenu.style.display = 'none';
 			}
 			else{
 				filterMenu.style.display = 'inline-block';
 			}			
 		}
-
-		// function onCloseFilterMenu(){
-		// 	filterMenu.style.display = 'inline-block';
-		// }
 
 		function disableBtn(btn){
 			btn.style.pointerEvents = 'none';
@@ -150,8 +146,18 @@
 
 
 		function onSearchKeyword(){
-			location.href = "{% url 'getSearchingResult' %}?find="+inputTextFindView.value
-			
+			console.log(list[3])
+			if (list[3] == 'article' || list[3] == 'searchArticle' || list[3] == 'findArticle'){
+				location.href = "{% url 'getSearchingResult' %}?find="+inputTextFindView.value
+			}
+			if (list[3] == 'legislation' || list[3] == 'searchLegislation' || list[3] == 'findLegislation') {
+				location.href = "{% url 'getSearchingLegislationResult' %}?find="+inputTextFindView.value
+			}
+						
+		}
+
+		function linkToPage(page){
+			location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter+"&&page="+page
 		}
 
 		
@@ -504,7 +510,7 @@
 				</div>
 				<hr style="margin-top: 15px; margin-bottom: 10px; margin-right: 20px;">
 				<div class="flex-container">
-	  				  <div id = "articleBtn" onclick="onDisplayArticle()">Tin tức</div>
+	  				  <div id = "articleBtn">Tin tức</div>
 					  <div id = "legislationBtn" onclick="onDisplayLegislation()">Văn bản</div>
 				</div>
 				<hr style="margin-top: 15px; margin-bottom: 10px; margin-right: 20px;">
@@ -549,15 +555,53 @@
 				<p class="findingKeyword">None</p>
 			</div>
 
+			{% for filterResultKey, filterResultValue in filterResult.items %}
+				{% if forloop.counter == filterContacts.number %}
+					{% for i in filterResultValue|slice:":10" %}	
+						<div class="articleInfo" >		
+							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
+							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
+							<h4 class="articleDescription">{{i.4}}</h4>
+							<p></p>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+
+			{% for filterLegislationResultKey, filterLegislationResultValue in filterLegislationResult.items %}
+				{% if forloop.counter == filterLegislationContacts.number %}
+					{% for i in filterLegislationResultValue|slice:":10" %}	
+						<div class="legislationInfo" >	
+							<h4 class="legislationTitle">{{i.2}}</h4>						
+							<a class="legislationDetail" href="{% url 'getLegislation' %}?id={{i.0}}">Xem chi tiết >></a>	
+							<hr>						
+							<p></p>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+
 			{% for searchResultKey, searchResultValue in searchResult.items %}
-				<!-- change num in if for page -->
 				{% if forloop.counter == searchContacts.number %}
-					<!-- change num in slice for article/page -->
 					{% for i in searchResultValue|slice:":10" %}	
 						<div class="articleInfo" >		
 							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
 							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
 							<h4 class="articleDescription">{{i.4}}</h4>
+							<p></p>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+
+
+			{% for searchLegislationResultKey, searchLegislationResultValue in searchLegislationResult.items %}
+				{% if forloop.counter == searchLegislationContacts.number %}
+					{% for i in searchLegislationResultValue|slice:":10" %}	
+						<div class="legislationInfo" >	
+							<h4 class="legislationTitle">{{i.2}}</h4>						
+							<a class="legislationDetail" href="{% url 'getLegislation' %}?id={{i.0}}">Xem chi tiết >></a>	
+							<hr>						
 							<p></p>
 						</div>
 					{% endfor %}
@@ -623,6 +667,33 @@
 				</div>
 			{% endif %}
 
+			{% if filterContacts.number %}
+				<div class="pageDirections">
+					{% if filterContacts.has_previous %}
+						<a onclick="linkToPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToPage( {{ filterContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+					{% endif %}	
+					<p class="pageDirection textPage">﹤ {{ filterContacts.number  }} ﹥</p>
+					{% if filterContacts.has_next %}
+						<a onclick="linkToPage( {{ filterContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToPage( {{ filterContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			{% if filterLegislationContacts.number %}
+				<div class="pageDirections">
+					{% if filterLegislationContacts.has_previous %}
+						<a onclick="linkToPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToPage( {{ filterLegislationContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+					{% endif %}	
+					<p class="pageDirection textPage">﹤ {{ filterLegislationContacts.number  }} ﹥</p>
+					{% if filterLegislationContacts.has_next %}
+						<a onclick="linkToPage( {{ filterLegislationContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToPage( {{ filterLegislationContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+					{% endif %}
+				</div>
+			{% endif %}
 
 		</div>
 	</div>

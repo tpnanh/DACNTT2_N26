@@ -20,6 +20,8 @@ findspark.init("C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python39\\spa
 
 sys.setrecursionlimit(2000)
 
+spark = None
+print("spark: "+str(spark))
 
 def displayOnWeb(request,table,isSearch):
     response = []
@@ -65,8 +67,13 @@ def displayOnWeb(request,table,isSearch):
 
     return article, contacts
 
+
 def index(request):
     # getArticleUrl()
+    global spark
+    if(spark is None):
+        spark = SparkSession.builder.appName("PySpark").getOrCreate()
+
     article_table = showArticleData()
 
     result = displayOnWeb(request,article_table,False)
@@ -79,6 +86,11 @@ def index(request):
 
 
 def index_legislation(request):
+
+    global spark
+    if(spark is None):        
+        spark = SparkSession.builder.appName("PySpark").getOrCreate()
+
     #legislation
     legislation_table = showLegislationData()
     result = displayOnWeb(request,legislation_table,False)
@@ -115,6 +127,11 @@ def getLegislation(request):
     return render (request, 'legislation.html', contents)
 
 def getSearchingResult(request):
+
+    global spark
+    if(spark is None):
+        spark = SparkSession.builder.appName("PySpark").getOrCreate()
+
     keyword = request.GET.get('find')
     listResult = findKeyword(keyword)    
 
@@ -669,19 +686,16 @@ def crawlBySelenium( categoryUrl, detailUrlXpath, ministryId):
     return list_baiviet      
 
 def findKeyword(keyword):
-    conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=ANISE-TR\SQLEXPRESS;'
-                          'Database=WebDB;'
-                          'Trusted_Connection=yes;')
-    resultList = conn.cursor().execute("SELECT * FROM article_info")
+   
+    resultList = connectDB().execute("SELECT * FROM article_info")
     articleRow = [ row for row in resultList ]
     articleData = np.array(articleRow)
     articleDF = pd.DataFrame(articleData)
 
-    legislationList = conn.cursor().execute("SELECT * FROM legislation_info")    
-    legislationRow = [ row for row in legislationList ]    
-    legislationData = np.array(legislationRow)  
-    legislationDF = pd.DataFrame(legislationData)
+    # legislationList = connectDB().execute("SELECT * FROM legislation_info")    
+    # legislationRow = [ row for row in legislationList ]    
+    # legislationData = np.array(legislationRow)  
+    # legislationDF = pd.DataFrame(legislationData)
 
     articleSchema = StructType([    
         StructField("Id",StringType(),True), 
@@ -695,28 +709,32 @@ def findKeyword(keyword):
         StructField("Thumbnail", StringType(), True)
     ])
 
-    legislationSchema = StructType([    
-        StructField("Id",StringType(),True), 
-        StructField("Ministry",StringType(),True), 
-        StructField("Name", StringType(), True), 
-        StructField("Url", StringType(), True), 
-        StructField("So hieu van ban", StringType(), True), 
-        StructField("Ngay ban hanh", StringType(), True),
-        StructField("Ngay hieu luc",StringType(),True), 
-        StructField("Trich yeu",StringType(),True), 
-        StructField("Co quan ban hanh", StringType(), True),
-        StructField("Nguoi ky", StringType(), True),
-        StructField("Loai van ban",StringType(),True), 
-        StructField("Tinh trang",StringType(),True), 
-        StructField("Link download", StringType(), True)
-    ])
-
-    spark = SparkSession.builder.appName("PySpark").getOrCreate()
+    # legislationSchema = StructType([    
+    #     StructField("Id",StringType(),True), 
+    #     StructField("Ministry",StringType(),True), 
+    #     StructField("Name", StringType(), True), 
+    #     StructField("Url", StringType(), True), 
+    #     StructField("So hieu van ban", StringType(), True), 
+    #     StructField("Ngay ban hanh", StringType(), True),
+    #     StructField("Ngay hieu luc",StringType(),True), 
+    #     StructField("Trich yeu",StringType(),True), 
+    #     StructField("Co quan ban hanh", StringType(), True),
+    #     StructField("Nguoi ky", StringType(), True),
+    #     StructField("Loai van ban",StringType(),True), 
+    #     StructField("Tinh trang",StringType(),True), 
+    #     StructField("Link download", StringType(), True)
+    # ])
 
     sparkArticleDF = spark.createDataFrame(data = articleDF, schema = articleSchema)
     listArticleResult = sparkArticleDF.filter("Content like '% "+str(keyword)+" %'").collect()
 
     output=[i[0:len(i)] for i in listArticleResult]
 
-    conn.close()
+    # output = []
+
+    # for i in resultList:
+    #     if (" "+str(keyword)+" " in i[7]):
+    #         output.append(i)
+
+    # print("output: "+str(len(output)))
     return output

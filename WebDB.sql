@@ -1837,7 +1837,7 @@ select * from article_category_info where ministry_id = 1
 select * from ministry_article_category_configuration where ministry_id = 1
 
 go
-delete from legislation_info 
+delete from article_info 
 
 --go
 --use master

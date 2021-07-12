@@ -1241,9 +1241,6 @@ insert into ministry_article_detail_configuration(ministry_id,article_title_xpat
 	'//*[@id="testabc"]/div[2]/div/p/text()'
 	)
 
-
-
-
 go
 insert into legislation_category_type (legislation_category_type_name) values
 	(N'Văn bản pháp quy'),
@@ -1271,7 +1268,6 @@ VALUES
 (4,N'Văn bản chỉ đạo, điều hành -  Bộ giáo dục và đào tạo',5,'https://moet.gov.vn/van-ban/vbdh/Pages/default.aspx?Page='),
 
 (5,N'Văn bản chỉ đạo điều hành - Bộ giao thông vận tải',6,'https://mt.gov.vn/vn/Pages/Vanbanphapluat.aspx?TypeVB=0'),
-(5,N'Văn bản pháp luật - Bộ giao thông vận tải',7,'https://mt.gov.vn/vn/Pages/VBPL.aspx?node=VB&item=78'),
 
 (6,N'Văn bản chỉ đạo điều hành - Bộ kế hoạch đầu tư',6,'http://vbqppl.mpi.gov.vn/pages/cddh.aspx'),
 (6,N'Văn bản quy phạm pháp luật - Bộ kế hoạch và đầu tư',4,'http://vbqppl.mpi.gov.vn/Pages/default.aspx'),
@@ -1279,8 +1275,7 @@ VALUES
 (7,N'Văn bản chỉ đạo, điều hành - Bộ khoa học công nghệ',5,'http://www.most.gov.vn/vn/Pages/Vanbanphapluat.aspx'),
 (7,N'Văn bản pháp quy - Bộ giao khoa học công nghệ',1,'https://www.most.gov.vn/vn/Pages/VBPQ.aspx?Machuyende=VB&ChudeID=73'),
 
-(8,N'Văn bản chỉ đạo điều hành - Bộ lao động - thương binh và xã hội',5,'http://www.molisa.gov.vn/Pages/VanBan/ChiDaoDieuHanh.aspx?Page='),
-(8,N'Văn bản quy phạm pháp luật - Bộ lao động - thương binh và xã hội',4,'http://www.molisa.gov.vn/Pages/VanBan/vbpq.aspx'),
+(8,N'Văn bản chỉ đạo điều hành - Bộ lao động - thương binh và xã hội',5,'http://www.molisa.gov.vn/Pages/VanBan/ChiDaoDieuHanh.aspx'),
 
 --bộ ngoại giao không có văn bản
 --bộ nông nghiệp trong có trang văn bản để lấy link
@@ -1301,7 +1296,6 @@ VALUES
 (16,N'Văn bản chỉ đạo điều hành - Bộ văn hóa thể thao và du lịch',5,'https://bvhttdl.gov.vn/van-ban-quan-ly.htm?coquan=0&nhom=2&theloai=0&linhvuc=0&year=0&keyword=&pageIndex=	'),
 (16,N'Văn bản quy phạm pháp luật - Bộ văn hóa thể thao và du lịch',4,'https://bvhttdl.gov.vn/van-ban-quan-ly.htm?coquan=0&nhom=1&theloai=0&linhvuc=0&year=0&keyword=&pageIndex='),
 
-(17,N'Văn bản pháp quy - Bộ xây dựng',1,'http://vbpl.vn/boxaydung/Pages/Home.aspx'),
 (17,N'Văn bản điều hành - Bộ xây dựng',2,'https://moc.gov.vn/vn/Pages/Vanbanphapluat.aspx?TypeVB=1'),
 
 --bộ ý tế không có văn bản
@@ -1355,7 +1349,7 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	'//*[@id="ctl00_ctl24_g_71a175fa_a10b_477d_ab07_a5477af56ca9"]/div/div/div/div/a[6]/@href'),
 	
 	--văn bản điều hành bộ gtvt
-	(5, 2,
+	(5, 6,
 	'//*[@class="CSSTableGenerator"]/table/tr/td/div/a/@href',
 	1,
 	''),
@@ -1373,7 +1367,6 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	1,
 	''),
 
-
 	--văn bản pháp quy bộ khcn
 	(7, 1,
 	'//*[@id="tabVB_lv1_01"]/ul/li/div/p/a/@href',
@@ -1386,36 +1379,16 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	'//*[@class="Paging Paging_Footer_Table_Legal"]/a[2]/@href'),
 
 	--văn bản quy phạm pháp luật bộ lao động
-	(8, 6,
-	'//*[@class="title"]/a/@href',
+	(8, 5,
+	'//*[@id="ctl00_ctl50_g_fca06a59_0cbe_4eec_81f2_15f675d04c66"]/div/div[2]/table/tbody/tr/td[3]/a/@href',
 	1,
-	'//*[@class="pagination"]/ul/li[7]/a/@href'),
-	--văn bản chỉ đạo điều hành bộ lao động
-	(8, 4,
-	'//*[@class="main_vbtable  table-vanban"]/table/tbody/tr/td/a/@href',
-	1,
-	'//*[@class="pagination pull-right"]/li[7]/a/@href'),
-
-	--bộ ngoại giao không có văn bản
+	''),
 
 	--văn bản pháp luật bộ quốc phòng
 	(11, 7,
-	'//*[@class="bgTable"]/td/a/@href',
+	'//*[@class="bgTable"]/td[4]/a[1]/@href',
 	1,
 	'//*[@class="page"]/a/@href'), -- xpath không có trang cuối
-
-	--văn bản quy phạm pháp luật bộ tài chính --không dùng được
-	(12, 4,
-	'//*[@id="showallData"]/div/div/a/h5/@href',
-	1,
-	'//*[@id="showallData"]/div[18]/div[2]/ul/li[9]/a/@href'),
-	--văn bản điều hành bộ tài chính --không dùng được
-	(12, 5,
-	'//*[@id="showallData"]/div/div/a/h5/@href',
-	1,
-	'//*[@id="showallData"]/div[18]/div[2]/ul/li[9]/a'),		
-
-	--bộ tài nguyên môi trường xpath khác nhau
 
 	--văn bản quy phạm pháp luật bộ thông tin truyền thông
 	(14, 4,
@@ -1428,13 +1401,6 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	1,
 	''),
 
-	--văn bản chính sách mới bộ tư pháp
-	(15, 8,
-	'//*[@id="ctl00_ctl35_g_ab713570_0c3c_4d90_9ca3_2ddd2b5fc497"]/div/div/div/div/div/p/a/@href',
-	1,
-	'//*[@id="ctl00_ctl35_g_ab713570_0c3c_4d90_9ca3_2ddd2b5fc497"]/div[2]/div/div[2]/div/div[10]/div/a[5]/@href'),
-
-
 	--văn bản quy phạm pháp luật bộ văn hóa thể thao và du lịch
 	(16, 4,
 	'//*[@class="table-data"]/tr/td/a/@href',
@@ -1446,38 +1412,17 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	1,
 	''), --không có xpath trang cuối
 
-
-	--văn bản pháp quy bộ xây dựng - đang lỗi
-	--(17, 1,
-	--'//*[@id="mainHtml"]/body/div/div/div/table/tbody/tr/td/a/@href',
-	--1,
-	--''), --không có sxpath trang cuối
-
 	--văn bản điều hành bộ xây dựng
 	(17, 2,
 	'//*[@class="link_sokyhieu"]/@href',
 	1,
-	'//*[@id="ctl00_SPWebPartManager1_g_98940a7e_2c09_45ce_b14f_1469576fa0d6_ctl00_lkLast2"]/@href'), 
-
-	--vào mục văn bản bộ y tế cần đăng nhập -> khum lấy được
-	--trang chính phủ khum vô được
+	''), 
 	
 	--văn bản chỉ đạo điều hành ủy ban dân tộc
-	(20, 6,
+	(20, 5,
 	'//*[@id="list-container"]/table/tr/td/a/@href',
 	1,
 	'//*[@id="paging"]/div/div/a[5]/@href'), 
-
-	
-	--văn bản quy phạm pháp luật ngân hàng
-	(21, 6,
-	'//*[@id="tabVB_lv1_01"]/ul/li/div/p/a/@href',
-	1,
-	''), --không có nút trang cuối
-
-
-	--văn phòng chính phủ không có văn bản
-
 
 	--văn bản chỉ đạo của ngành bảo hiểm xã hội
 	(22, 9,
@@ -1532,7 +1477,7 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 
 	--Bộ nội vụ văn bản vi phạm pháp luật --link thuộc tính và link tải khác nhau
 	(3,
-	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[1]/td/text()',
 	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[2]/td[2]/text()',
 	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[2]/td[4]/text()',
 	'//*[@id="dnn_ctr3988_IndexLawDetail_divthuoctinh"]/table/tbody/tr[3]/td[4]/text()',	
@@ -1571,20 +1516,6 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblHieuluc"]/text()',
 	'//*[@id="row_file"]/td[2]/span/strong/a/@href'
 	),
-
-	--Bộ gtvt -- văn bản pháp quy
-	--(5,
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[4]/text()', --không có ngày hiệu lực
-	--'', -- không có trích yếu
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[2]/a/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[4]/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[2]/a/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[9]/td/text()',
-	--'//*[@class="fileAttack"]/@href'
-	--),
 	
 	--Bộ kế họoch và đâu tư, link download và các thuộc tính nằm khác trang
 	(6,
@@ -1613,70 +1544,24 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'', --không có tình trạng
 	'//*[@id="row_file"]/td[2]/strong/a/@href'
 	),
-
-	-- tự nhiên coi không được má :)
-	--Bộ khcn văn bản pháp quy
-	--(7,
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[4]/text()',
-	--'', -- không hiển thị ngày ký
-	--'', -- không có trích yêu
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[2]/a/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[4]/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[2]/a/text()',
-	--'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[1]/ul/li[1]/text()',
-	--'//*[@id="VanBanGoc_282382.pdf"]/@href'	--link tải file không nằm cùng trang
-	--),
-
-	--Bộ lao động văn bản pháp quy -- giống i bộ khcn luôn, nên đâu có lấy xpath đúng được :)
-	(8,
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[4]/text()',
-	'', -- không có trích yêu
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[2]/a/text()',
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[4]/text()',
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[2]/a/text()',
-	'//*[@id="ctl00_ctl36_g_96f2018b_9950_46cb_90cc_c518b29bcf76"]/div[1]/div/div[3]/div/div[1]/ul/li[1]/text()',
-	'//*[@id="VanBanGoc_282382.pdf"]/@href'	--link tải file không nằm cùng trang
-	),
 	
 	----Bộ lao động văn bản chỉ đạo điều hành
-	--(8,
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/ul/li[3]/a/text()',
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[1]/td[2]/text()',
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[3]/td[2]/text()',
-	--'', -- không hiển thị ngày hiệu lực
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[2]/td[2]/text()',
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[6]/td[2]/text()',
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[7]/td[2]/text()',
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[4]/td[2]/text()',
-	--'', --không có tình trạng
-	--'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[10]/td[2]/p/a/@href'
-	--),
-
-	
-
-	----Bộ nông nghiệp văn bản chỉ đạo điều hành
-	--(10,
-	--'//*[@id="main_content"]/div[1]/div/div/div/div/div/div/div[1]/span/text()',
-	--'//*[@id="main_content"]/div[1]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/p/text()',
-	--'//*[@id="ngaybanhanh"]/text()', --không xem ngày được, page source cũng thế
-	--'//*[@id="ngayhieuluc"]/text()', --như trên
-	--'//*[@id="main_content"]/div[1]/div/div/div/div/div/div/div[2]/div/div/div[2]/div/p/text()',
-	--'//*[@id="main_content"]/div[1]/div/div/div/div/div/div/div[2]/div/div/div[8]/div/table/tbody/tr/td[1]/text()',
-	--'//*[@id="main_content"]/div[1]/div/div/div/div/div/div/div[2]/div/div/div[8]/div/table/tbody/tr/td[2]/text()',
-	--'//*[@id="main_content"]/div[1]/div/div/div/div/div/div/div[2]/div/div/div[7]/div/p/text()',
-	--'', --không có tình trạng
-	--'//*[@id="listFile"]/li[1]/a[2]/@href' 
-	--),
+	(8,
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[1]/td[2]/text()',
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[3]/td[2]/text()',
+	'', -- không hiển thị ngày hiệu lực
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[2]/td[2]/text()',
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[6]/td[2]/text()',
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[7]/td[2]/text()',
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[4]/td[2]/text()',
+	'', --không có tình trạng
+	'//*[@id="ctl00_ctl50_g_8dc7adfa_0328_4c6a_b1db_cad679bd14a1"]/div/div/table/tbody/tr[10]/td[2]/p/a/@href'
+	),	
 
 	--Bộ quốc phòng văn bản pháp luật
 	(11,
-	'//*[@id="tabother2"]/table/tr[2]/td[2]/text()',
+	'//*[@id="tabother2"]/table/tr[1]/th[2]/text()',
 	'//*[@id="tabother2"]/table/tr[2]/td[2]/text()',
 	'//*[@id="tabother2"]/table/tr[3]/td[2]/text()', 
 	'//*[@id="tabother2"]/table/tr[4]/td[2]/text()',
@@ -1688,21 +1573,6 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'' --không có link download
 	),
 
-	--Bộ tài chính văn bản quy phạm pháp luật -- không có lấy data được luôn á, trong page source cũng thế
-	--(12,
-	--'//*[@id="content"]/div/div[2]/div[1]/em/a/text()',
-	--'//*[@id="thuoctinh"]/table/tbody/tr[1]/td[2]/text()',
-	--'//*[@id="thuoctinh"]/table/tbody/tr[1]/td[4]/text()',
-	--'//*[@id="thuoctinh"]/table/tbody/tr[2]/td[4]/text()',	
-	--'', -- không hiển thị ngày ký
-	--'', -- không có trích yếu
-	--'//*[@id="thuoctinh"]/table/tbody/tr[6]/td[2]/div/text()',
-	--'//*[@id="thuoctinh"]/table/tbody/tr[6]/td[4]/text()',
-	--'//*[@id="thuoctinh"]/table/tbody/tr[2]/td[2]/text()',
-	--'//*[@id="thuoctinh"]/table/tbody/tr[9]/td[2]/text()',
-	--'--//*[@id="taive"]/table/tbody/tr/td/a/@href' 
-	--),
-	--Bộ quốc phòng không có văn bản chỉ đạo điều hành
 	--Bộ thông tin truyền thông văn bản qppl
 	(14,
 	'//*[@class="main_vbtable"]/table/tr[1]/td[2]/text()',
@@ -1717,21 +1587,6 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@class="main_vbtable"]/table/tr/td/p/a/@href' 
 	),
 
-	----Bộ thông tin truyền thông văn bản chỉ đạo điều hành giống văn bản qppl
-	--(14,
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146_ctl00_lbTieuDe"]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[1]/td[2]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[3]/td[2]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[4]/td[2]/text()',	
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[2]/td[2]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[8]/td[2]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[9]/td[2]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[6]/td[2]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[5]/text()',
-	--'//*[@id="ctl00_ctl46_g_291fb6cc_d347_4bbc_b299_461301d6f146"]/div[2]/table/tr[12]/td[2]/p/a/@href' 
-	--),
-
-	--Bộ tư pháp phải đăng nhập với lỗi link khum vô được
 	--Bộ thể thao du lịch vb qppl
 	(16,
 	'//*[@id="mainHtml"]/body/div[3]/div[1]/div[2]/h3/text()',
@@ -1746,50 +1601,34 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'' --khong lấy link tải được, có xpath
 	),
 
-	--Bộ xây dựng khum vào được :<
-	--Bộ y tế văn bản - phải đăng nhập
-	--(18,
-	--'//*[@id="mask-cover"]/div/div[1]/span/text()',
-	--'//*[@id="details-content-meta"]/ul/li[2]/text()',
-	--'//*[@id="details-content-meta"]/ul/li[12]/text()',
-	--'',	-- không có ngày hiệu lực
-	--'', -- không hiển thị ngày ký
-	--'//*[@id="details-content-meta"]/ul/li[4]/text()',
-	--'//*[@id="details-content-meta"]/ul/li[10]/text()',
-	--'//*[@id="details-content-meta"]/ul/li[6]/text()',
-	--'//*[@id="details-content-meta"]/ul/li[14]/text()',
-	--'', --không có tình trạng
-	--'//*[@id="details-content-meta"]/div[6]/table/tbody/tr/td[2]/a/@href' 
-	--),
-	--không vào trang của chính phủ đượt :<
+	--Bộ XD
+	(17,
+	'//*[@id="ctl00_SPWebPartManager1_g_23baf01f_6230_4016_9ca4_72fe577b3490_ctl00_lblNoiDung"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_23baf01f_6230_4016_9ca4_72fe577b3490_ctl00_lblSoKyHieu"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_23baf01f_6230_4016_9ca4_72fe577b3490_ctl00_lblNgayBanHanh"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_23baf01f_6230_4016_9ca4_72fe577b3490_ctl00_lblNgayHieuLuc"]/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_23baf01f_6230_4016_9ca4_72fe577b3490_ctl00_lblNoiDung"]/text()',
+	'//*[@id="row_donvibanhanh_chinh"]/td[2]/text()',
+	'//*[@id="row_donvibanhanh_chinh"]/td[3]/text()',
+	'',
+	'', --không có tình trạng
+	'//*[@id="row_file"]/td[2]/span/strong/a/@href' --khong lấy link tải được, có xpath
+	),
 
 	--Ủy ban dân tộc văn bản
 	(20,
-	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[1]/td[2]/p/text()',
+	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[5]/td[2]/text()',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[1]/td[2]/p/text()',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[3]/td[2]/text()',
-	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[4]/td[2]/text()',
+	'',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[5]/td[2]/text()',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[6]/td[2]/ul/li/text()',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[8]/td[2]/ul/li/text()',
-	'//*[@id="details-content-meta"]/ul/li[14]/text()',
+	'',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[1]/tr[2]/td[2]/text()',
 	'//*[@id="ctl00_m_g_6f9eabc6_a015_44fc_a1e5_288b6473100a"]/div[1]/table[2]/tr/td[2]/a/@href' 
 	),
 
-	-- Ngân hàng
-	(21,
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[2]/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[2]/td[4]/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[4]/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[1]/td/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[2]/a/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[6]/td[4]/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[3]/td[2]/a/text()',
-	'//*[@id="ctl00_ctl37_g_2a08c712_7797_4f03_95bb_8591d8123d8f"]/div[1]/div/div[3]/div/div[2]/table/tbody/tr[9]/td/text()',
-	'//*[@id="divShowDialogDownload"]/ul/li[2]/span/a/@href' 
-	),
 	-- Bảo hiểm xã hội vb nói chung
 	(22,
 	'//*[@id="ctl00_ctl39_g_527b57c5_f302_441a_826e_adb1bd203d1e"]/div[2]/div/div[1]/div/div[2]/div/div/div[1]/div[1]/text()',
@@ -1804,8 +1643,6 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@id="ctl00_ctl39_g_527b57c5_f302_441a_826e_adb1bd203d1e"]/div[2]/div/div[1]/div/div[2]/div/div/div[1]/div[2]/div[1]/div[4]/div[2]/div/a/@href' 
 	),
 
-	-- Viện hàn lâm KHCN khum hiện ngày ký
-	-- Viện hàn lâm KHXH khum hiện ngày ký
 	-- Ủy ban quản lý vốn nhà nước văn bản nói chung
 	(25,
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[1]/div/h1/text()',
@@ -1826,19 +1663,19 @@ use WebDB
 
 select * from article_info, ministry_info where article_info.ministry_id = ministry_info.ministry_id and ministry_info.ministry_name like N'%Bộ %' and (article_id = 66 or article_id = 126)
 
-select * from ministry_legislation_category_configuration where ministry_id = 1  
-
-use WebDB
-select * from legislation_info 
+select * from legislation_info
 
 SELECT MAX(LEN(article_content)) from article_info
 
-select * from article_category_info where ministry_id = 1
-
 select * from ministry_article_category_configuration where ministry_id = 1
+
+select page_rule, legislation_param_xpath,ministry_id, legislation_url_xpath from ministry_legislation_category_configuration where ministry_id = 5 and legislation_category_type_id = 6
 
 go
 delete from article_info 
+
+go
+delete from legislation_info 
 
 --go
 --use master

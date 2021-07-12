@@ -110,6 +110,7 @@ def getArticle(request):
 
 
 def getLegislation(request):
+    legislationId = request.GET.get('id')
     conn = pyodbc.connect('Driver={SQL Server};'
                       'Server=ANISE-TR\SQLEXPRESS;'
                       'Database=WebDB;'
@@ -241,7 +242,7 @@ def showLegislationData():
                       'Database=WebDB;'
                       'Trusted_Connection=yes;')    
     cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM legislation_info''')
+    cursor.execute('''SELECT * FROM legislation_info order by ngay_hieu_luc desc''')
     row = cursor.fetchall()
     return row 
 

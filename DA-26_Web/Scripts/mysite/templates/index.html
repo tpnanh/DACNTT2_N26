@@ -738,6 +738,20 @@
 				</div>
 			{% endif %}
 
+			{% if searchLegislationContacts.number %}
+				<div class="pageDirections">
+					{% if searchLegislationContacts.has_previous %}
+						<a onclick="linkToSearchPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+					{% endif %}	
+					<p class="pageDirection textPage">﹤ {{ searchLegislationContacts.number  }} ﹥</p>
+					{% if searchLegislationContacts.has_next %}
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+					{% endif %}
+				</div>
+			{% endif %}
+
 		</div>
 	</div>
 

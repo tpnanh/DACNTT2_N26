@@ -28,20 +28,20 @@ class MySpider(scrapy.Spider):
     
     
     def getArticleUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_id from article_category_info where ministry_id = 1')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_id from article_category_info where ministry_id = 6')
         for row in category_page_info:  
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = $' + str(row[0]) + 'and article_category_type_id = $' + str(row[2]))        
             for page_info in page_param_info:   
                 #if there's no get param link
                 if (page_info[1]==""):
                     try:
-                        list_baiviet = self.crawlBySelenium(row[1],page_info[2], row[0])
+                        list_baiviet = self.crawlBySelenium(row[1],page_info[2], row[0], page_info[3])
                     except RequestException as e:
                         print(e)
                         
                     try:
                         for baiviet in list_baiviet:
-                            self.parseArticleResponse(baiviet, row[0])
+                            self.parseArticleResponse(baiviet,page_info[2], row[0])
                     except RequestException as e:
                         print(e)
                 else: 
@@ -148,6 +148,11 @@ class MySpider(scrapy.Spider):
         article_author = article_response.xpath(article_author_xpath)
         article_content = article_response.xpath(article_content_xpath)
         
+        if (article_author == []):
+            article_author = ['']
+            
+        print(article_url)
+        
         content = ""
         
         for i in article_content:
@@ -161,12 +166,12 @@ class MySpider(scrapy.Spider):
         
     
     def getLegislationUrl(self):
-        legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_category_type_id from legislation_category_info where ministry_id = 25') 
+        legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_category_type_id from legislation_category_info where ministry_id = 2') 
         
         for row in legislation_page_info:     
             
             page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath,ministry_id, legislation_url_xpath from ministry_legislation_category_configuration where ministry_id = $'+str(row[0]) + ' and legislation_category_type_id = $' + str(row[2]))
-            print (row)
+            
             for page_info in page_param_info:  
                 #if there's no get param linkon a
                 if (page_info[1]==""):
@@ -174,7 +179,6 @@ class MySpider(scrapy.Spider):
                 else:
                     #get url with param
                     url = self.covertStringToResponse(row[1]).xpath(page_info[1])
-                    
                     if (row[0]==2 or row[0]==12 or row[0]==13 or row[0]==11 or row[0]==14 or row[0]==21 or row[0]==22):
                         param = 0
                     else:
@@ -183,11 +187,12 @@ class MySpider(scrapy.Spider):
                 for i in range (2,5):                     
                     ##ministries don't use param
                     if (row[0]==5 or row[0]==2 or row[0]==17 or row[0]==11 or row[0]==8 or row[0]==13 or row[0]==6 or row[0]==7 or row[0]==4 or row[0]==12 or row[0]==14 or row[0]==16 or row[0]==19 or row[0]==21 or row[0]==22):
-                        legislationUrl = row[1]
+                        legislationUrl = row[1]                        
                         sleep(2)
                         self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])                       
                     else:                         
                         legislationUrl = row[1]+str(i) 
+                
                     self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])                    
                     i += page_info[0]
     
@@ -212,13 +217,10 @@ class MySpider(scrapy.Spider):
                 legislation_url_xpaths[url_index] = "http://www.moit.gov.vn"+str(legislation_url_xpaths[url_index])  #Failed to establish a new connection: [Errno 11001] getaddrinfo failed')
             ##bo gtvt
             elif (ministryId == 5):
-                legislation_url_xpaths[url_index] = "https://mt.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
-            ##bo ldtbxh
-            elif (ministryId == 6):                            
-                legislation_url_xpaths[url_index] = "http://www.mpi.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
+                legislation_url_xpaths[url_index] = "https://mt.gov.vn/vn/Pages/"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
             #bo khcn
             elif (ministryId == 7):                            
-                legislation_url_xpaths[url_index] = "http://www.most.gov.vn"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
+                legislation_url_xpaths[url_index] = "http://www.most.gov.vn/vn/Pages/"+str(legislation_url_xpaths[url_index]) #Failed to establish a new connection: [Errno 11001] getaddrinfo failed
             ##bo ldtbxh
             elif (ministryId == 8):                            
                 legislation_url_xpaths[url_index] = "http://www.molisa.gov.vn"+str(legislation_url_xpaths[url_index]) #done                        
@@ -252,7 +254,7 @@ class MySpider(scrapy.Spider):
             elif (ministryId == 22):
                 legislation_url_xpaths[url_index] = "https://baohiemxahoi.gov.vn"+str(legislation_url_xpaths[url_index])
             ##uy ban quan ly von dau tu
-            elif (ministryId == 26):
+            elif (ministryId == 25):
                 if (str(legislation_url_xpaths[url_index]).startswith("/doc")):
                     continue
                 legislation_url_xpaths[url_index] = str(legislation_url_xpaths[url_index])  #done - cannot get xpath of link download yet
@@ -261,6 +263,7 @@ class MySpider(scrapy.Spider):
                         
                         
     def parseLegislationResponse(self, legislation_url, ministryId): 
+        print(legislation_url)
         legislation_response = self.covertStringToResponse(legislation_url)
         legislation_detail = self.connectDB().execute('select legislation_name_xpath, legislation_so_hieu_van_ban_xpath, legislation_ngay_ban_hanh_xpath, legislation_ngay_hieu_luc_xpath, legislation_trich_yeu_xpath, legislation_co_quan_ban_hanh_xpath, legislation_nguoi_ky_xpath, legislation_loai_van_ban_xpath, legislation_tinh_trang_xpath, legislation_link_download_xpath from ministry_legislation_detail_configuration where ministry_id = $'+str(ministryId))
         for row in legislation_detail:                      
@@ -329,6 +332,9 @@ class MySpider(scrapy.Spider):
         if (ministryId == 17 or ministryId == 20):
             legislation_loaivanban = ['']
         
+        print(legislation_url)
+        
+        
         self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
         print("\n -----------------")          
     
@@ -388,8 +394,12 @@ class MySpider(scrapy.Spider):
                     
     def covertStringFromArticleToSqlFormat (self, dateString):
         #from 28/02/2021 to 2021/02/28
-        dt = datetime.datetime.strptime(dateString, '%d/%m/%Y')
-        return '{2}/{1:02}/{0:02}'.format(dt.day, dt.month, dt.year)
+        try:
+            dt = datetime.datetime.strptime(dateString, '%d/%m/%Y')
+            return '{2}/{1:02}/{0:02}'.format(dt.day, dt.month, dt.year)
+        except:
+            dateString = dateString.split(' ')
+            self.covertStringFromArticleToSqlFormat(dateString[1])        
         
 
     def covertStringFromSqlToArticleFormat (self, dateString):
@@ -458,20 +468,26 @@ class MySpider(scrapy.Spider):
         if (data == []):
             return ""
         else:
+            if (ministryId == 5):
+                data[0]  = "https://mt.gov.vn/" +str(data[0]) 
+            if (ministryId == 7):
+                data[0]  = "http://www.most.gov.vn" +str(data[0])
             if (ministryId == 8):
                 data[0]  = "http://www.molisa.gov.vn" +str(data[0])
             if (ministryId == 17):
-                data[0]  = "https://moc.gov.vn/vn" +str(data[0])    
+                data[0]  = "https://moc.gov.vn/vn" +str(data[0])   
+            if (ministryId == 25):
+                data[0]  = "http://cmsc.gov.vn" +str(data[0])   
             return data[0] 
             
     def read_config(self):
     	chrome_options = webdriver.ChromeOptions()
     	chrome_options.add_argument('--no-sandbox')
     	chrome_options.add_argument('--headless')
-    	driver = webdriver.Chrome('chromedriver', options=chrome_options)
+    	driver = webdriver.Chrome('E:\STUDY\DACNTT2_N26\DA-26_Web\Scripts\mysite\chromedriver', options=chrome_options)
     	return driver
             
-    def crawlBySelenium(self, categoryUrl, detailUrlXpath, ministryId):
+    def crawlBySelenium(self, categoryUrl, detailUrlXpath, ministryId, thumbnailUrl):
         driver = self.read_config()
         driver.get(categoryUrl)#link tin chứa tức
         WebDriverWait(driver,5)
@@ -532,18 +548,16 @@ class MySpider(scrapy.Spider):
                         url = "http://www.mod.gov.vn/wps/portal/!ut/p/b1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLdHP2CLJwMHQ38zT0sDDyNnZ1NjcOMDQ2CzIEKIoEKDHAARwNC-sP1o8BKnN0dPUzMfQwMLHzcTQ08HT1CgywDjY0NHI2hCvBY4eeRn5uqX5AbYZBl4qgIANgfRb4!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/"+str(url)
                     elif (ministryId == 12):                            
                         url = "https://www.mof.gov.vn"+str(url)
-                        print("ur2: "+str(url))
                     elif (ministryId == 16):
                         url = "https://bvhttdl.gov.vn"+str(url)
                     elif (ministryId == 20):
                         url = "http://cema.gov.vn"+str(url)
                     elif (ministryId == 21):
                         url = "https://www.sbv.gov.vn"+str(url)
-                        print("ur: "+str(url))
                     elif (ministryId == 23):
                         url = "https://www.sbv.gov.vn"+str(url)
 
-                    self.parseArticleResponse(url, ministryId)                
+                    self.parseArticleResponse(url,thumbnailUrl, ministryId)                
                 
                 list_baiviet.extend(tmp)#thêm vào tập link 
             except Exception as e:#gặp sự cố dừng
@@ -553,5 +567,5 @@ class MySpider(scrapy.Spider):
         
 
 p = MySpider()
-p.getLegislationUrl()
-#p.getArticleUrl()
+# p.getLegislationUrl()
+p.getArticleUrl()

@@ -1355,18 +1355,6 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	''),
 	--văn bản pháp quy bộ gtvt xpath url khác nhau
 
-
-	--văn bản quy phạm phát luật bộ kế hoạch đầu tư
-	(6, 4,
-	'//*[@class="css-vanban"]/a/@href',
-	1,
-	''),
-	--văn bản chỉ đạo điều hành bộ bộ kế hoạch đầu tư
-	(6, 6,
-	'//*[@id="latestItem"]/li/a/@href',
-	1,
-	''),
-
 	--văn bản pháp quy bộ khcn
 	(7, 1,
 	'//*[@id="tabVB_lv1_01"]/ul/li/div/p/a/@href',
@@ -1436,7 +1424,7 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	'//*[@id="ctl00_ctl39_g_527b57c5_f302_441a_826e_adb1bd203d1e"]/div/div/div/div/ul/li[7]/a/@href'),
 
 	--văn bản ngoài ủy ban quản lý vốn nhà nước
-	(25, 10,
+	(25, 7,
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div/div/table/tbody/tr/td/a/@href',
 	1,
 	'//*[@id="_dsvanbanphapquy_WAR_vnpteportalappportlet_ocerSearchContainerPageIterator"]/div/ul/li[4]/a/@href')
@@ -1517,27 +1505,13 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@id="row_file"]/td[2]/span/strong/a/@href'
 	),
 	
-	--Bộ kế họoch và đâu tư, link download và các thuộc tính nằm khác trang
-	(6,
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_lblTenVanBan"]/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_lblSH"]/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_lblNgayBH"]/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_lblNgayHL"]/text()',
-	'', -- không có trích yêu
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_divDetails"]/div[2]/table/tr[1]/td/table/tr[6]/td[2]/table/tr/td/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_divDetails"]/div[2]/table/tr[1]/td/table/tr[7]/td[2]/table/tr/td/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_lblLVB"]/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_lblTrangThai"]/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_b2db5875_034d_426d_b939_7d77cef045d2_ctl00_hlDownload"]/@href' --sao không lấy được ta ơi haiz
-	),
-	
 	--Bộ khcn văn bản chỉ đạo điều hành
 	(7,
-	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_pnInfo"]/div/div[1]/table/tr[1]/td/text()',
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNoiDung"]/text()',
 	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblSoKyHieu"]/text()',
 	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNgayBanHanh"]/text()',
 	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNgayHieuLuc"]/text()',
-	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNoiDung"]',
+	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblNoiDung"]/text()',
 	'//*[@id="row_donvibanhanh_chinh"]/td[2]/text()',
 	'//*[@id="row_donvibanhanh_chinh"]/td[3]/text()',
 	'//*[@id="ctl00_SPWebPartManager1_g_e110b351_5abc_4e84_8b93_9040a3dbe6c4_ctl00_lblLoaiVanBan"]/text()',
@@ -1654,7 +1628,7 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[4]/td[2]/text()',
 	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[7]/td[2]/text()',
 	'', -- không hiển thị tình trạng
-	'//*[@id="p_p_id_dsvanbanphaspquy_WAR_vnpteportalappportlet_"]/div/div/div[2]/table/tr[8]/td[2]/a/@href' 
+	'//tr[8]//a/@href' 
 	)
 	-- mở ra cửa sổ như drive -> nhấn nút tải
 

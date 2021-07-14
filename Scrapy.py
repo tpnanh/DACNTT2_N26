@@ -28,8 +28,9 @@ class MySpider(scrapy.Spider):
     
     
     def getArticleUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_id from article_category_info')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info where ministry_id = 16')
         for row in category_page_info:  
+            print(row[1])
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = $' + str(row[0]) + 'and article_category_type_id = $' + str(row[2]))        
             for page_info in page_param_info:   
                 #if there's no get param link
@@ -38,10 +39,10 @@ class MySpider(scrapy.Spider):
                         list_baiviet = self.crawlBySelenium(row[1],page_info[2], row[0], page_info[3])
                     except RequestException as e:
                         print(e)
-                        
+                    
                     try:
                         for baiviet in list_baiviet:
-                            self.parseArticleResponse(baiviet,page_info[2], row[0])
+                            self.parseArticleResponse(baiviet,page_info[3], row[0],self.covertStringToResponse(row[1]))
                     except RequestException as e:
                         print(e)
                 else: 
@@ -51,35 +52,49 @@ class MySpider(scrapy.Spider):
                     if (row[0]==7):    
                         param = int(url[len(url)-1])
                     elif (row[0]==14):
-                        param = self.getMicParam(str(url[len(url)-1]))  
+                        try:
+                            param = self.getMicParam(str(url[len(url)-1]))  
+                        except:
+                            continue
                     elif (row[0]==24):
                         param = self.getVassParam(str(url[len(url)-1]))  
                     else:
-                        param = self.getParam(str(url[len(url)-1]))
-                    for i in range (1,param): 
-                        if param == 1000:                     
+                        try:
+                            param = self.getParam(str(url[len(url)-1]))
+                        except:
+                            continue
+                    param = int(param)
+                    for i in range (1,param):
+                        tempRow = row[1]                        
+                        if param == 2:                     
                             break
                         ##ministry doesn't use param
-                        if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):
+                        if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):                            
                             articleUrl = row[1]                        
-                        else:
+                        else:                            
                             ##ministry 8, 14 need to be removed default last param before crawl by param
-                            if (row[0]==8 or row[0]==24):
-                                row[1] = row[1][:-1]                            
+                            if (row[0] == 8 or row[0] == 15 or row[0]==24):
+                                row[1] = row[1][:-1]
+                                articleUrl = row[1]+str(i)                                 
+                                # break
                             if (row[0]==14):
                                 startPoint = self.getMicStartpoint(str(url))
                                 endPoint = self.getMicEndpoint(str(url))
                                 articleUrl = startPoint + str(i) + endPoint
                                 articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]       
                             else: 
-                                articleUrl = row[1]+str(i) 
-                    self.parseArticleCategoryResponse(self.covertStringToResponse(articleUrl), row[0], page_info[2], page_info[3])                    
-
+                                articleUrl = row[1]+str(i)
+                            print(articleUrl)    
+                        row[1] = tempRow
+                        try:  
+                            self.parseArticleCategoryResponse(self.covertStringToResponse(articleUrl), row[0], page_info[2], page_info[3])                    
+                        except:
+                            continue
     
-    def parseArticleCategoryResponse(self, response, ministryId, article_url_xpath, article_thumbnail_xpath): 
+    def parseArticleCategoryResponse(self, response, ministryId, article_url_xpath, article_thumbnail_xpath):         
         article_url_xpaths = response.xpath(article_url_xpath)
         article_thumbnail_url = response.xpath(article_thumbnail_xpath)
-        
+
         startPoint = ""
         
         for url_index in range (len(article_url_xpaths)):                        
@@ -111,43 +126,81 @@ class MySpider(scrapy.Spider):
             elif (ministryId == 22):
                 startPoint = "https://baohiemxahoi.gov.vn/tintuc/Pages/linh-vuc-bao-hiem-y-te.aspx"
                 
-            article_url_xpaths[url_index] = startPoint + str(article_url_xpaths[url_index])
-            article_thumbnail_url[url_index] = startPoint + str(article_thumbnail_url[url_index])
+            if (ministryId == 15 and str(article_url_xpaths[url_index]).startswith("http")):
+                article_url_xpaths[url_index] 
+                article_thumbnail_url[url_index]
+            else:
+                article_url_xpaths[url_index] = startPoint + str(article_url_xpaths[url_index])   
+                article_thumbnail_url[url_index] = startPoint + str(article_thumbnail_url[url_index])
 
             ##article_url_xpaths[url_index] is detail article url
-            self.parseArticleResponse(article_url_xpaths[url_index], article_thumbnail_url[url_index], ministryId)                    
+            self.parseArticleResponse(article_url_xpaths[url_index], article_thumbnail_url[url_index], ministryId, response)                    
                         
                         
-    def parseArticleResponse(self, article_url, article_thumbnail, ministryId):         
+    def parseArticleResponse(self, article_url, article_thumbnail, ministryId, response): 
         article_response = self.covertStringToResponse(article_url)
         article_detail = self.connectDB().execute('select article_title_xpath,article_description_xpath,article_time_xpath,article_author_xpath,article_content_xpath from ministry_article_detail_configuration where ministry_id = $'+str(ministryId))
         
-        for row in article_detail:
+        for row in article_detail:            
             article_title_xpath = row[0]
             article_description_xpath = row[1]
             article_time_xpath = row[2]
             article_author_xpath = row[3]
             article_content_xpath = row[4]
             
-        article_title = article_response.xpath(article_title_xpath)
-        article_description = article_response.xpath(article_description_xpath)
-        article_time = article_response.xpath(article_time_xpath)
-        article_author = article_response.xpath(article_author_xpath)
+        try:
+            article_title = article_response.xpath(article_title_xpath)
+        except: 
+            article_title = ['']
+            
+        try:
+            article_description = article_response.xpath(article_description_xpath)
+        except:
+            article_description = ['']
+        
+        try:
+            article_time = article_response.xpath(article_time_xpath)
+        except:
+            article_time = ['']
+        
+        try: 
+            article_author = article_response.xpath(article_author_xpath)
+        except:
+             article_author = ['']
+             
         article_content = article_response.xpath(article_content_xpath)
         
-        if (article_author == []):
-            article_author = ['']
-        
-        content = ""
+        content = ""   
+                
+        if (ministryId == 5):
+            article_thumbnail = "https://mt.gov.vn"+str(response.xpath(article_thumbnail)[0])
+        if (ministryId == 7):
+            try:
+                article_thumbnail = "https://www.most.gov.vn"+str(response.xpath(article_thumbnail)[0])
+            except:
+                article_thumbnail = ""
+        if (ministryId == 11):
+            article_thumbnail = "http://www.mod.gov.vn"+str(response.xpath(article_thumbnail)[0])        
+        if (ministryId == 17):
+            article_thumbnail = "https://moc.gov.vn/"+str(response.xpath(article_thumbnail)[0])   
+        if (ministryId == 18):
+            article_thumbnail = "https://moh.gov.vn"+str(response.xpath(article_thumbnail)[0])
+        if (ministryId == 25):
+            article_thumbnail = "http://cmsc.gov.vn"+str(article_thumbnail)
+        if (ministryId == 16 or ministryId == 19 or ministryId == 20):
+            article_thumbnail = str(response.xpath(article_thumbnail)[0])
         
         for i in article_content:
             if ("\t" not in i or "\0" not in i or "\xa0" not in i):
                 content = content + i
 
-        if (article_title != [] and len(content) > 10):  
+        content = content.strip()
+        
+        if (article_title != [''] and len(content) > 10):           
             content = content.replace("  ", "\n")
             self.saveArticleToDb(ministryId,article_url, article_title,article_description,article_time,article_author,content, article_thumbnail)
-        print("\n -----------------")
+        
+        print("\n -----------------")        
         
     
     def getLegislationUrl(self):
@@ -371,14 +424,45 @@ class MySpider(scrapy.Spider):
         return [string for string in listString if string != ' ']
                 
                     
-    def covertStringFromArticleToSqlFormat (self, dateString):
+    def covertStringFromArticleToSqlFormat (self, dateString, ministryId):
         #from 28/02/2021 to 2021/02/28
         try:
-            dt = datetime.datetime.strptime(dateString, '%d/%m/%Y')
-            return '{2}/{1:02}/{0:02}'.format(dt.day, dt.month, dt.year)
-        except:
-            dateString = dateString.split(' ')
-            self.covertStringFromArticleToSqlFormat(dateString[1])        
+            dt = datetime.datetime.strptime(str(dateString), '%d/%m/%Y')
+            newDate = '{2}/{1:02}/{0:02}'.format(dt.day, dt.month, dt.year)         
+            return newDate            
+        except Exception as e:
+            print(e)
+            if (ministryId == 5):
+                dateString = dateString.split(' ')
+                try:
+                    date = str(dateString[1][5:].strip())            
+                except Exception as e:
+                    print(e)
+                    date = str(dateString[1][4:].strip())
+            if (ministryId == 7):
+                 dateString = dateString.split(',')
+                 date = str(dateString[1][4:].strip())
+            if (ministryId == 11):
+                dateString = dateString.split(' | ')
+                date = str(dateString[1].strip())
+            if (ministryId == 14 or ministryId == 22):
+                dateString = dateString.split(' ')
+                date = str(dateString[0])
+            if (ministryId == 16 or ministryId == 18):
+                dateString = dateString.split(' | ')
+                date = str(dateString[0].strip())
+            if (ministryId == 17):
+                 dateString = dateString.split(',')
+                 date = str(dateString[1][1:11].strip())
+            if (ministryId == 19):
+                dateString = dateString.split(',')
+                date = str(dateString[1].strip())
+            if (ministryId == 20):
+                dateString = dateString.split(' ')
+                date = str(dateString[2].strip())
+            dt = datetime.datetime.strptime(date, '%d/%m/%Y')
+            newDate = '{2}/{1:02}/{0:02}'.format(dt.day, dt.month, dt.year)      
+            return newDate
         
 
     def covertStringFromSqlToArticleFormat (self, dateString):
@@ -393,9 +477,15 @@ class MySpider(scrapy.Spider):
                               'Server=ANISE-TR\SQLEXPRESS;'
                               'Database=WebDB;'
                               'Trusted_Connection=yes;')  
-
-            value =  [(ministry_id, article_url, article_title[0],article_description[0],self.covertStringFromArticleToSqlFormat(article_time[0]),article_author[0], article_content, article_thumbnail)]
-          
+            if (ministry_id == 8 or ministry_id == 18 or ministry_id == 19 or ministry_id == 20):
+                article_author = [""]
+            if (ministry_id == 11):    
+                article_description = ["".join(article_description)]
+            if (ministry_id == 25):
+                article_time = [article_time[1]]                
+            
+            value =  [(ministry_id, article_url, article_title[0].strip(),article_description[0],str(self.covertStringFromArticleToSqlFormat(article_time[0].strip(), ministry_id)),article_author[0], article_content, article_thumbnail)]
+            print(value[0])
             conn.cursor().execute("""                                  
                                   INSERT INTO WebDB.dbo.article_info 
                                   (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content, article_thumbnail) 
@@ -459,6 +549,7 @@ class MySpider(scrapy.Spider):
     	return driver
             
     def crawlBySelenium(self, categoryUrl, detailUrlXpath, ministryId, thumbnailUrl):
+        response = self.covertStringToResponse(categoryUrl)
         driver = self.read_config()
         driver.get(categoryUrl)#link tin chứa tức
         WebDriverWait(driver,5)
@@ -481,17 +572,16 @@ class MySpider(scrapy.Spider):
                     if (ministryId == 11):    
                         nextBtnXpath = '//*[@class="page"]/a[6]'                        
                     if (ministryId == 16):
-                        nextBtnXpath = '//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div[22]/ul/li[5]/a'
+                        nextBtnXpath = '//*[@id="mainHtml"]/body/div[3]/div[1]/div[2]/div[2]/div/ul/li[5]/a'
                     if (ministryId == 17):
                         nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_98940a7e_2c09_45ce_b14f_1469576fa0d6_ctl00_lkNext2"]'
                     if (ministryId == 18):
-                        nextBtnXpath = '//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div[23]/ul/li[4]'
+                        nextBtnXpath = '//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div[23]/ul/li[4]/a'
                     if (ministryId == 19):
-                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+                        nextBtnXpath = '//*[@id="tinkhac"]/div/table/tbody/tr/td/div/a[1]'
                     if (ministryId == 20):
                         nextBtnXpath = '//*[@id="BodyContent_ctl00_leftPanel"]/div/div/div/div[3]/div[3]/ul/li[6]/a'
-                        nextBtnXpath = '//*[@class="x29y"]'
-                    
+                  
                     element = driver.find_element_by_xpath(nextBtnXpath)#tìm nút next                    
                     element.click()# thực hiện click để chuyển trang
                     sleep(2)# ngủ 2s để load bài mới
@@ -499,7 +589,7 @@ class MySpider(scrapy.Spider):
                     print(e)
                     break
                 count += 1
-                if count == 3:#crawl 2 lần, tắt đi để crawl hết
+                if count == 1:#crawl 2 lần, tắt đi để crawl hết
                     break
                 
                 html = HTML(html=driver.page_source)#page thành HTML để xpath                
@@ -513,15 +603,15 @@ class MySpider(scrapy.Spider):
                     elif (ministryId == 20):
                         url = "http://cema.gov.vn"+str(url)
 
-                    self.parseArticleResponse(url,thumbnailUrl, ministryId)                
+                    self.parseArticleResponse(url,thumbnailUrl, ministryId, response)                
                 
                 list_baiviet.extend(tmp)#thêm vào tập link 
-            except Exception as e:#gặp sự cố dừng
+            except Exception as e:
                 print(e)
                 break            
         return list_baiviet                
         
 
 p = MySpider()
-p.getLegislationUrl()
-#p.getArticleUrl()
+#p.getLegislationUrl()
+p.getArticleUrl()

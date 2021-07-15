@@ -29,27 +29,31 @@
 		let submitBtn;
 		let list = [];
 		let listFilter = [];
-		let type = 'article';
+		let findingKeyword;
+		let searchingButton;
+		let keyWord = 'None';
 
 		window.onload = function(){
+
 			filterMenu = document.getElementById('filterMenu');
-			articleInfo = document.getElementsByClassName('articleInfo')
-			legislationInfo = document.getElementsByClassName('legislationInfo')
-			pageDirections = document.getElementsByClassName('pageDirections')
-			pageDirectionsLegislation = document.getElementsByClassName('pageDirectionsLegislation')
-			inputTextFindView = document.getElementById('inputTextFindView')			
-			buttons = document.querySelectorAll('.flex-container > div')
-			articleBtn = document.getElementById('articleBtn')
-			legislationBtn = document.getElementById('legislationBtn')
-			submitBtn = document.getElementById('submitBtn')
+			articleInfo = document.getElementsByClassName('articleInfo');
+			legislationInfo = document.getElementsByClassName('legislationInfo');
+			pageDirections = document.getElementsByClassName('pageDirections');
+			pageDirectionsLegislation = document.getElementsByClassName('pageDirectionsLegislation');
+			inputTextFindView = document.getElementById('inputTextFindView');			
+			buttons = document.querySelectorAll('.flex-container > div');
+			articleBtn = document.getElementById('articleBtn');
+			legislationBtn = document.getElementById('legislationBtn');
+			submitBtn = document.getElementById('submitBtn');
+			list = window.location.href.split("/");
+			findingKeyword = document.getElementById('findingKeyword');
+			searchingButton = document.getElementById('searchingButton');
+			scrollUpBtn = document.getElementById('scrollUpBtn');
+			textTitle = document.getElementById('textTitle');
 
 			setButton();
 
 			filterMenu.style.display = 'none';
-
-			scrollUpBtn = document.getElementById('scrollUpBtn');
-
-			textTitle = document.getElementById('textTitle')
 
             buttons.forEach((btn) => {
 			  	btn.addEventListener("click", function(){
@@ -71,28 +75,34 @@
 		                btn.style.borderColor = '#d9d9d9';
 		            }
 			    });
-			});		
+			});	
+
+			inputTextFindView.addEventListener("keypress", function(event) {
+			  	if (event.keyCode === 13) {
+				   event.preventDefault();
+				   searchingButton.click();
+			  	}
+			}, false);	
+
+			findingKeyword.innerHTML = localStorage.getItem("keyWord");
 		}
 
 		window.onscroll = function() {scrollFunction()};
 
-		function setButton(){
-			list = window.location.href.split("/");
-			if (list[list.length - 1] == 'legislation'){
-				disableBtn(legislationBtn)
-				enableBtn(articleBtn)
-				type = list[list.length - 1]
+		function setButton(){			
+			if (list[3].includes('egislation')){
+				disableBtn(legislationBtn);
+				enableBtn(articleBtn);
 			}
-			if (list[list.length - 1] == 'article') {
-				disableBtn(articleBtn)
-				enableBtn(legislationBtn)
-				type = list[list.length - 1]
+			if (list[3].includes('rticle')) {
+				disableBtn(articleBtn);
+				enableBtn(legislationBtn);
 			}
 		}
 
 		function scrollFunction() {
 			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-		    	scrollUpBtn.style.display = 'block';
+		    	scrollUpBtn.style.display = 'inline-block';
 		  	} else {
 		    	scrollUpBtn.style.display = 'none';
 		  	}
@@ -114,20 +124,41 @@
 			}
 		}
 
-		function onDisplayArticle() {		
-
-			location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter;
-		}
-
-		function onDisplayLegislation() {
-			location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+listFilter;
+		function onDisplayNews() {	
+			console.log(list[3].includes('rticle'));	
+			if (listFilter.includes('Tin tức')){
+				if (listFilter.length == 1){
+					location.href = "{% url 'index' %}";
+				}
+				else {
+					location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter;
+				}
+			}
+			else if (listFilter.includes('Văn bản')) {
+				if (listFilter.length == 1){
+					location.href = "{% url 'index_legislation' %}";
+				}
+				else {
+					location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+listFilter;
+				}				
+			}
+			else {
+				if (list[3].includes('rticle')){					
+					location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter;
+				}
+				if (list[3].includes('egislation')){
+					location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+listFilter;
+				}
+			}
+			localStorage.setItem("keyWord", 'None');
+			localStorage.setItem("filter", listFilter);
 		}
 
 		function onOpenFilterMenu(){
 			if (filterMenu.style.display == 'inline-block'){
 				filterMenu.style.display = 'none';
 			}
-			else{
+			else {
 				filterMenu.style.display = 'inline-block';
 			}			
 		}
@@ -145,20 +176,38 @@
 		}
 
 
-		function onSearchKeyword(){
-			console.log(list[3])
-			if (list[3] == 'article' || list[3] == 'searchArticle' || list[3] == 'findArticle'){
-				location.href = "{% url 'getSearchingResult' %}?find="+inputTextFindView.value
+		function onSearchKeyword(){			
+			if (list[3].includes('rticle')){
+				location.href = "{% url 'getSearchingResult' %}?find="+inputTextFindView.value;
+				keyWord = inputTextFindView.value;
 			}
-			if (list[3] == 'legislation' || list[3] == 'searchLegislation' || list[3] == 'findLegislation') {
-				location.href = "{% url 'getSearchingLegislationResult' %}?find="+inputTextFindView.value
+			if (list[3].includes('egislation')) {
+				location.href = "{% url 'getSearchingLegislationResult' %}?find="+inputTextFindView.value;
+				keyWord = inputTextFindView.value;				
 			}
-						
+			localStorage.setItem("keyWord", keyWord);						
 		}
 
-		function linkToPage(page){
-			location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter+"&&page="+page
+		function linkToFilterPage(page){
+			let filter = localStorage.getItem("filter");
+			if (list[3].includes('rticle')){
+				location.href = "{% url 'getFilterResult' %}?type=article&&filter="+filter+"&&page="+page;				
+			}
+			if (list[3].includes('egislation')) {
+				location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+filter+"&&page="+page;
+			}
+			localStorage.setItem("keyWord", 'None');
 		}
+
+		function linkToSearchPage(page){			
+			if (list[3].includes('rticle')){
+				location.href = "{% url 'getSearchingResult' %}?find="+localStorage.getItem("keyWord")+"&&page="+page;
+			}
+			if (list[3].includes('egislation')) {
+				location.href = "{% url 'getSearchingLegislationResult' %}?find="+localStorage.getItem("keyWord")+"&&page="+page;
+			}
+		}
+
 
 		
 	</script>
@@ -334,6 +383,9 @@
 			margin-bottom: 40px;
 			margin-right: 30px;
 		}
+		.pageDirections > a {
+			cursor: pointer;
+		}
 		.pageDirection{
 			display: inline-block;
 			float: left;
@@ -413,13 +465,13 @@
 			margin-bottom: 30px;
 		}
 		#scrollUpBtn {
-			display: none; /* Hidden by default */
-			position: fixed; /* Fixed/sticky position */
-			bottom: 90px; /* Place the button at the bottom of the page */
-			right: 15px; /* Place the button 30px from the right */
-			z-index: 99; /* Make sure it does not overlap */
-			color: white; /* Text color */
-			cursor: pointer; /* Add a mouse pointer on hover */
+			display: none;
+			position: fixed; 
+			bottom: 90px;
+			right: 15px;
+			z-index: 99;
+			color: white; 
+			cursor: pointer;
 			width: 55px;
 		}
 		.scrollUpBtnContainer{
@@ -487,23 +539,18 @@
 			<div class="dropdown-menu" id="filterMenu">
 				<div class="flex-container">
 	  				  <div>Bộ Công An</div>
-					  <div>Bộ Công Thương</div>
+					  <div>Bộ Nội vụ</div>
 					  <div>Bộ Giáo dục và Đào tạo</div>  
 					  <div>Bộ Giao thông vận tải</div>
-					  <div>Bộ Kế hoạch và Đầu tư</div>
 					  <div>Bộ Khoa học và Công nghệ</div>  
-					  <div>Bộ Tài nguyên và Môi trường</div>
 					  <div>Bộ Lao động - Thương Binh và Xã hội</div>
-					  <div>Bộ Quốc phòng</div>  
-					  <div>Bộ Tài chính</div>					  
+					  <div>Bộ Quốc phòng</div>  					  
 					  <div>Bộ Thông tin và Truyền thông</div>  
-					  <div>Bộ Tư pháp</div>
 					  <div>Bộ Văn hóa - Thể thao và Du lịch</div>
 					  <div>Bộ Xây dựng</div>
 					  <div>Bộ Y tế</div>
 					  <div>Chính phủ</div>
 					  <div>Ủy ban Dân tộc</div>
-					  <div>Ngân hàng Nhà nước Việt Nam</div>
 					  <div>Bảo hiểm Xã hội Việt Nam</div>
 					  <div>Viện Hàn lâm Khoa học Xã hội Việt Nam</div>
 					  <div>Ủy ban quản lý vốn nhà nước tại doanh nghiệp</div>
@@ -511,48 +558,27 @@
 				<hr style="margin-top: 15px; margin-bottom: 10px; margin-right: 20px;">
 				<div class="flex-container">
 	  				  <div id = "articleBtn">Tin tức</div>
-					  <div id = "legislationBtn" onclick="onDisplayLegislation()">Văn bản</div>
+					  <div id = "legislationBtn">Văn bản</div>
 				</div>
 				<hr style="margin-top: 15px; margin-bottom: 10px; margin-right: 20px;">
-				<div id = "submitBtn" onclick="onDisplayArticle()">DONE</div>
+				<div id = "submitBtn" onclick="onDisplayNews()">DONE</div>
 				
 			</div>			
 
 		</div>
 
-		<div class="modal" tabindex="-1" role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Modal title</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<p>Modal body text goes here.</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary">Save changes</button>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<div class="content">
-
 			<!-- <h1 id = "title" style="text-align:center">NEWS DAILY</h1> -->
 			<img id = "title"  src="{% static 'img/daily_news.jpg' %}" alt="Logo">
 
 			<form class="form-inline searchingField">
 				<input style="width: 30%" class="form-control searchingBar" type="search" placeholder="What are you looking for?" aria-label="Search" id="inputTextFindView">
-				<div class="btn searchingButton" type="submit" onclick ="onSearchKeyword()">Search</div>
+				<div class="btn searchingButton" id = "searchingButton" type="submit" onclick ="onSearchKeyword()">Search</div>
 			</form>
 
 			<div class="findingBox">
 				<p class="findingKeywordLable">Tìm kiếm: &nbsp</p>
-				<p class="findingKeyword">None</p>
+				<p id="findingKeyword" class="findingKeyword">None</p>
 			</div>
 
 			{% for filterResultKey, filterResultValue in filterResult.items %}
@@ -670,13 +696,13 @@
 			{% if filterContacts.number %}
 				<div class="pageDirections">
 					{% if filterContacts.has_previous %}
-						<a onclick="linkToPage(1)" class="pageDirection">← Trang đầu</a>
-						<a onclick="linkToPage( {{ filterContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+						<a onclick="linkToFilterPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToFilterPage( {{ filterContacts.previous_page_number }} )" class="pageDirection">Trước</a>
 					{% endif %}	
 					<p class="pageDirection textPage">﹤ {{ filterContacts.number  }} ﹥</p>
 					{% if filterContacts.has_next %}
-						<a onclick="linkToPage( {{ filterContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
-						<a onclick="linkToPage( {{ filterContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+						<a onclick="linkToFilterPage( {{ filterContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToFilterPage( {{ filterContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
 					{% endif %}
 				</div>
 			{% endif %}
@@ -684,13 +710,41 @@
 			{% if filterLegislationContacts.number %}
 				<div class="pageDirections">
 					{% if filterLegislationContacts.has_previous %}
-						<a onclick="linkToPage(1)" class="pageDirection">← Trang đầu</a>
-						<a onclick="linkToPage( {{ filterLegislationContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+						<a onclick="linkToFilterPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToFilterPage( {{ filterLegislationContacts.previous_page_number }} )" class="pageDirection">Trước</a>
 					{% endif %}	
 					<p class="pageDirection textPage">﹤ {{ filterLegislationContacts.number  }} ﹥</p>
 					{% if filterLegislationContacts.has_next %}
-						<a onclick="linkToPage( {{ filterLegislationContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
-						<a onclick="linkToPage( {{ filterLegislationContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+						<a onclick="linkToFilterPage( {{ filterLegislationContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToFilterPage( {{ filterLegislationContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			{% if searchContacts.number %}
+				<div class="pageDirections">
+					{% if searchContacts.has_previous %}
+						<a onclick="linkToSearchPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToSearchPage( {{ searchContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+					{% endif %}	
+					<p class="pageDirection textPage">﹤ {{ searchContacts.number  }} ﹥</p>
+					{% if searchContacts.has_next %}
+						<a onclick="linkToSearchPage( {{ searchContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToSearchPage( {{ searchContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			{% if searchLegislationContacts.number %}
+				<div class="pageDirections">
+					{% if searchLegislationContacts.has_previous %}
+						<a onclick="linkToSearchPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+					{% endif %}	
+					<p class="pageDirection textPage">﹤ {{ searchLegislationContacts.number  }} ﹥</p>
+					{% if searchLegislationContacts.has_next %}
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
 					{% endif %}
 				</div>
 			{% endif %}

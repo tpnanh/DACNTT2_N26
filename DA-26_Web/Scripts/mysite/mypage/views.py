@@ -110,6 +110,7 @@ def getArticle(request):
 
 
 def getLegislation(request):
+    legislationId = request.GET.get('id')
     conn = pyodbc.connect('Driver={SQL Server};'
                       'Server=ANISE-TR\SQLEXPRESS;'
                       'Database=WebDB;'
@@ -143,6 +144,7 @@ def getSearchingLegislationResult(request):
         spark = SparkSession.builder.appName("PySpark").getOrCreate()
 
     keyword = request.GET.get('find')
+
     listResult = findLegislationKeyword(keyword)    
 
     result = displayOnWeb(request,listResult,True)
@@ -163,28 +165,25 @@ def getFilterResult(request):
     newsType = request.GET.get('type')
     keyword = request.GET.get('filter')
 
+
     keyword = keyword.split(",")
 
     result = []
     items = []
 
-    if (newsType in 'article'):
-        for i in keyword:
-            cursor.execute('''SELECT * from article_info, ministry_info 
-                where article_info.ministry_id = ministry_info.ministry_id
-                and ministry_info.ministry_name like N'%'''+i+'''' 
-                ''')
-            item = cursor.fetchall()
-            if (len(item) > 0):
-                items.append(item)                         
-    else:
-        for i in keyword:
-            result.append(cursor.execute('''SELECT * from legislation_info, ministry_info 
-                where legislation_info.ministry_id = ministry_info.ministry_id 
-                and ministry_info.ministry_name like N'%i%' '''))
+    for i in keyword:
+        cursor.execute('''SELECT * from article_info, ministry_info 
+            where article_info.ministry_id = ministry_info.ministry_id
+            and ministry_info.ministry_name like N'%'''+i+'''' ''')
+        item = cursor.fetchall()
+        if (len(item) > 0):
+            items.append(item)
+
+    for i in items:
+        result += i
 
     if (items != []):
-        result = displayOnWeb(request,np.array(items[0]).tolist(),True)
+        result = displayOnWeb(request,np.array(result).tolist(),True)
         filterResult = result[0]   
         filterContacts = result[1]
     else:
@@ -209,17 +208,20 @@ def getFilterLegislationResult(request):
     result = []
     items = []
 
-    for i in keyword:
+    for i in keyword:        
         cursor.execute('''SELECT * from legislation_info, ministry_info 
             where legislation_info.ministry_id = ministry_info.ministry_id
-            and ministry_info.ministry_name like N'%'''+i+'''' 
-            ''')
-        item = cursor.fetchall()
+            and ministry_info.ministry_name like N'%'''+i+'''' ''')
+        item = cursor.fetchall()    
         if (len(item) > 0):
+            print(len(item))
             items.append(item)
 
+    for i in items:
+        result += i
+
     if (items != []):
-        result = displayOnWeb(request,np.array(items[0]).tolist(),True)
+        result = displayOnWeb(request,np.array(result).tolist(),True)
         filterLegislationResult = result[0]   
         filterLegislationContacts = result[1]
     else:
@@ -247,7 +249,7 @@ def showLegislationData():
                       'Database=WebDB;'
                       'Trusted_Connection=yes;')    
     cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM legislation_info''')
+    cursor.execute('''SELECT * FROM legislation_info order by ngay_hieu_luc desc''')
     row = cursor.fetchall()
     return row 
 
@@ -780,7 +782,7 @@ def findKeyword(keyword):
     ])    
 
     sparkArticleDF = spark.createDataFrame(data = articleDF, schema = articleSchema)
-    listArticleResult = sparkArticleDF.filter("Content like '% "+str(keyword)+" %'").collect()
+    listArticleResult = sparkArticleDF.filter("LOWER(Content) like LOWER('% "+str(keyword)+" %')").collect()
 
     output=[i[0:len(i)] for i in listArticleResult]
 
@@ -815,7 +817,7 @@ def findLegislationKeyword(keyword):
     ])
 
     sparkLegislationDF = spark.createDataFrame(data = legislationDF, schema = legislationSchema)
-    listLegislationResult = sparkLegislationDF.filter("Name like '% "+str(keyword)+" %'").collect()
+    listLegislationResult = sparkLegislationDF.filter("LOWER(Name) like LOWER('% "+str(keyword)+" %')").collect()
 
     output=[i[0:len(i)] for i in listLegislationResult]
     return output

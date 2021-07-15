@@ -28,7 +28,7 @@ class MySpider(scrapy.Spider):
     
     
     def getArticleUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info where ministry_id = 16')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info')
         for row in category_page_info:  
             print(row[1])
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = $' + str(row[0]) + 'and article_category_type_id = $' + str(row[2]))        
@@ -66,7 +66,7 @@ class MySpider(scrapy.Spider):
                     param = int(param)
                     for i in range (1,param):
                         tempRow = row[1]                        
-                        if param == 2:                     
+                        if i > 3:                     
                             break
                         ##ministry doesn't use param
                         if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):                            

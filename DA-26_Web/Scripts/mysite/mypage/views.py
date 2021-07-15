@@ -144,6 +144,7 @@ def getSearchingLegislationResult(request):
         spark = SparkSession.builder.appName("PySpark").getOrCreate()
 
     keyword = request.GET.get('find')
+
     listResult = findLegislationKeyword(keyword)    
 
     result = displayOnWeb(request,listResult,True)
@@ -176,11 +177,13 @@ def getFilterResult(request):
             and ministry_info.ministry_name like N'%'''+i+'''' ''')
         item = cursor.fetchall()
         if (len(item) > 0):
-            items.append(item)                       
-    
+            items.append(item)
+
+    for i in items:
+        result += i
 
     if (items != []):
-        result = displayOnWeb(request,np.array(items[0]).tolist(),True)
+        result = displayOnWeb(request,np.array(result).tolist(),True)
         filterResult = result[0]   
         filterContacts = result[1]
     else:
@@ -205,16 +208,20 @@ def getFilterLegislationResult(request):
     result = []
     items = []
 
-    for i in keyword:
+    for i in keyword:        
         cursor.execute('''SELECT * from legislation_info, ministry_info 
             where legislation_info.ministry_id = ministry_info.ministry_id
             and ministry_info.ministry_name like N'%'''+i+'''' ''')
-        item = cursor.fetchall()
+        item = cursor.fetchall()    
         if (len(item) > 0):
+            print(len(item))
             items.append(item)
 
+    for i in items:
+        result += i
+
     if (items != []):
-        result = displayOnWeb(request,np.array(items[0]).tolist(),True)
+        result = displayOnWeb(request,np.array(result).tolist(),True)
         filterLegislationResult = result[0]   
         filterLegislationContacts = result[1]
     else:

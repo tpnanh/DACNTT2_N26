@@ -225,7 +225,9 @@ class MySpider(scrapy.Spider):
                             param = self.getParam(str(url[len(url)-1]))                        
                         except:
                             continue
-                for i in range (1,2):                     
+                for i in range (1,param):
+                    if (i > 3):
+                        break
                     ##ministries don't use param
                     if (row[0]==5 or row[0]==17 or row[0]==11 or row[0]==8 or row[0]==7 or row[0]==4 or row[0]==14 or row[0]==16 or row[0]==22):
                         legislationUrl = row[1]                        

@@ -151,6 +151,7 @@
 				}
 			}
 			localStorage.setItem("keyWord", 'None');
+			localStorage.setItem("filter", listFilter);
 		}
 
 		function onOpenFilterMenu(){
@@ -188,11 +189,12 @@
 		}
 
 		function linkToFilterPage(page){
+			let filter = localStorage.getItem("filter");
 			if (list[3].includes('rticle')){
-				location.href = "{% url 'getFilterResult' %}?type=article&&filter="+listFilter+"&&page="+page;				
+				location.href = "{% url 'getFilterResult' %}?type=article&&filter="+filter+"&&page="+page;				
 			}
 			if (list[3].includes('egislation')) {
-				location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+listFilter+"&&page="+page;
+				location.href = "{% url 'getFilterLegislationResult' %}?type=legislation&&filter="+filter+"&&page="+page;
 			}
 			localStorage.setItem("keyWord", 'None');
 		}
@@ -537,23 +539,18 @@
 			<div class="dropdown-menu" id="filterMenu">
 				<div class="flex-container">
 	  				  <div>Bộ Công An</div>
-					  <div>Bộ Công Thương</div>
+					  <div>Bộ Nội vụ</div>
 					  <div>Bộ Giáo dục và Đào tạo</div>  
 					  <div>Bộ Giao thông vận tải</div>
-					  <div>Bộ Kế hoạch và Đầu tư</div>
 					  <div>Bộ Khoa học và Công nghệ</div>  
-					  <div>Bộ Tài nguyên và Môi trường</div>
 					  <div>Bộ Lao động - Thương Binh và Xã hội</div>
-					  <div>Bộ Quốc phòng</div>  
-					  <div>Bộ Tài chính</div>					  
+					  <div>Bộ Quốc phòng</div>  					  
 					  <div>Bộ Thông tin và Truyền thông</div>  
-					  <div>Bộ Tư pháp</div>
 					  <div>Bộ Văn hóa - Thể thao và Du lịch</div>
 					  <div>Bộ Xây dựng</div>
 					  <div>Bộ Y tế</div>
 					  <div>Chính phủ</div>
 					  <div>Ủy ban Dân tộc</div>
-					  <div>Ngân hàng Nhà nước Việt Nam</div>
 					  <div>Bảo hiểm Xã hội Việt Nam</div>
 					  <div>Viện Hàn lâm Khoa học Xã hội Việt Nam</div>
 					  <div>Ủy ban quản lý vốn nhà nước tại doanh nghiệp</div>
@@ -734,6 +731,20 @@
 					{% if searchContacts.has_next %}
 						<a onclick="linkToSearchPage( {{ searchContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
 						<a onclick="linkToSearchPage( {{ searchContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			{% if searchLegislationContacts.number %}
+				<div class="pageDirections">
+					{% if searchLegislationContacts.has_previous %}
+						<a onclick="linkToSearchPage(1)" class="pageDirection">← Trang đầu</a>
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.previous_page_number }} )" class="pageDirection">Trước</a>
+					{% endif %}	
+					<p class="pageDirection textPage">﹤ {{ searchLegislationContacts.number  }} ﹥</p>
+					{% if searchLegislationContacts.has_next %}
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.next_page_number }} )" class="pageDirection" >Tiếp</a>
+						<a onclick="linkToSearchPage( {{ searchLegislationContacts.paginator.num_pages }} )" class="pageDirection">Trang cuối →</a>
 					{% endif %}
 				</div>
 			{% endif %}

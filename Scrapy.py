@@ -28,7 +28,7 @@ class MySpider(scrapy.Spider):
     
     
     def getArticleUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info where ministry_id = 25')
         for row in category_page_info:  
             print(row[1])
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = $' + str(row[0]) + 'and article_category_type_id = $' + str(row[2]))        
@@ -83,8 +83,7 @@ class MySpider(scrapy.Spider):
                                 articleUrl = startPoint + str(i) + endPoint
                                 articleUrl = "https://www.mic.gov.vn"+articleUrl[2:-2]       
                             else: 
-                                articleUrl = row[1]+str(i)
-                            print(articleUrl)    
+                                articleUrl = row[1]+str(i)    
                         row[1] = tempRow
                         try:  
                             self.parseArticleCategoryResponse(self.covertStringToResponse(articleUrl), row[0], page_info[2], page_info[3])                    
@@ -222,8 +221,10 @@ class MySpider(scrapy.Spider):
                     if (row[0]==11 or row[0]==14 or row[0]==22):
                         param = 0
                     else:
-                        param = self.getParam(str(url[len(url)-1]))                        
-                
+                        try:
+                            param = self.getParam(str(url[len(url)-1]))                        
+                        except:
+                            continue
                 for i in range (1,2):                     
                     ##ministries don't use param
                     if (row[0]==5 or row[0]==17 or row[0]==11 or row[0]==8 or row[0]==7 or row[0]==4 or row[0]==14 or row[0]==16 or row[0]==22):
@@ -432,16 +433,17 @@ class MySpider(scrapy.Spider):
             return newDate            
         except Exception as e:
             print(e)
+            print(ministryId)
+            if (ministryId == 3):
+                dateString = dateString.split(' ')
+                date = str(dateString[1].strip())
             if (ministryId == 5):
                 dateString = dateString.split(' ')
                 try:
-                    date = str(dateString[1][5:].strip())            
+                    date = str(dateString[1][5:].strip())  
                 except Exception as e:
-                    print(e)
+                    print(e)                    
                     date = str(dateString[1][4:].strip())
-            if (ministryId == 7):
-                 dateString = dateString.split(',')
-                 date = str(dateString[1][4:].strip())
             if (ministryId == 11):
                 dateString = dateString.split(' | ')
                 date = str(dateString[1].strip())
@@ -451,7 +453,7 @@ class MySpider(scrapy.Spider):
             if (ministryId == 16 or ministryId == 18):
                 dateString = dateString.split(' | ')
                 date = str(dateString[0].strip())
-            if (ministryId == 17):
+            if (ministryId == 17 or ministryId == 7):
                  dateString = dateString.split(',')
                  date = str(dateString[1][1:11].strip())
             if (ministryId == 19):
@@ -477,15 +479,15 @@ class MySpider(scrapy.Spider):
                               'Server=ANISE-TR\SQLEXPRESS;'
                               'Database=WebDB;'
                               'Trusted_Connection=yes;')  
-            if (ministry_id == 8 or ministry_id == 18 or ministry_id == 19 or ministry_id == 20):
+            if (ministry_id == 3 or ministry_id == 8 or ministry_id == 18 or ministry_id == 19 or ministry_id == 20):
                 article_author = [""]
             if (ministry_id == 11):    
                 article_description = ["".join(article_description)]
             if (ministry_id == 25):
-                article_time = [article_time[1]]                
+                article_time = [article_time[1]]   
             
             value =  [(ministry_id, article_url, article_title[0].strip(),article_description[0],str(self.covertStringFromArticleToSqlFormat(article_time[0].strip(), ministry_id)),article_author[0], article_content, article_thumbnail)]
-            print(value[0])
+            # print(value[0])
             conn.cursor().execute("""                                  
                                   INSERT INTO WebDB.dbo.article_info 
                                   (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content, article_thumbnail) 
@@ -507,7 +509,7 @@ class MySpider(scrapy.Spider):
             
             value =  [(ministry_id, legislation_url, legislation_name[0].replace("\r\n","").strip().capitalize(),so_hieu_van_ban[0].replace("\r\n","").strip(),ngay_ban_hanh[0].replace("\r\n","").strip(),self.returnNullData(ngay_hieu_luc).replace("\r\n","").strip(),self.returnNullData(trich_yeu).replace("\r\n","").strip(), co_quan_ban_hanh[0].replace("\r\n","").strip(), nguoi_ky[0].replace("\r\n","").strip(), loai_van_ban[0].replace("\r\n","").strip(), self.returnNullData(tinh_trang), self.returnNullLink(link_download, ministry_id))]
             
-            print(value[0])
+            # print(value[0])
             conn.cursor().execute("""                                  
                                   INSERT INTO WebDB.dbo.legislation_info 
                                   (ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download) 
@@ -613,5 +615,5 @@ class MySpider(scrapy.Spider):
         
 
 p = MySpider()
-#p.getLegislationUrl()
-p.getArticleUrl()
+p.getLegislationUrl()
+#p.getArticleUrl()

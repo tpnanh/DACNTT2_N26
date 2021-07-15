@@ -1222,7 +1222,9 @@ use WebDB
 
 select * from article_info, ministry_info where article_info.ministry_id = ministry_info.ministry_id and ministry_info.ministry_name like N'%Bộ %' and (article_id = 66 or article_id = 126)
 
-select * from article_info order by article_time desc
+select * from article_info where ministry_id = 25
+
+select * from legislation_info
 
 SELECT MAX(LEN(article_content)) from article_info
 

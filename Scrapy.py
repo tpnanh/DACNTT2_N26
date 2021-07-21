@@ -8,6 +8,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from time import sleep
 from requests_html import HTML
 from requests.exceptions import RequestException
+import schedule
+import time
 
 class MySpider(scrapy.Spider):    
     name = "crawl_news"         
@@ -28,11 +30,12 @@ class MySpider(scrapy.Spider):
     
     
     def getArticleUrl(self):
-        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info where ministry_id = 25')
+        category_page_info = self.connectDB().execute('select ministry_id,category_link_root, article_category_type_id from article_category_info')
         for row in category_page_info:  
-            print(row[1])
             page_param_info = self.connectDB().execute('select page_rule,article_param_xpath,article_url_xpath, article_thumbnail_xpath from ministry_article_category_configuration where ministry_id = $' + str(row[0]) + 'and article_category_type_id = $' + str(row[2]))        
-            for page_info in page_param_info:   
+            for page_info in page_param_info: 
+                param = 2
+                list_baiviet = ['']
                 #if there's no get param link
                 if (page_info[1]==""):
                     try:
@@ -66,7 +69,7 @@ class MySpider(scrapy.Spider):
                     param = int(param)
                     for i in range (1,param):
                         tempRow = row[1]                        
-                        if i > 3:                     
+                        if i > 50:                     
                             break
                         ##ministry doesn't use param
                         if (row[0]==6 or row[0]==11 or row[0]==16 or row[0]==19 or row[0] == 21):                            
@@ -132,7 +135,6 @@ class MySpider(scrapy.Spider):
                 article_url_xpaths[url_index] = startPoint + str(article_url_xpaths[url_index])   
                 article_thumbnail_url[url_index] = startPoint + str(article_thumbnail_url[url_index])
 
-            ##article_url_xpaths[url_index] is detail article url
             self.parseArticleResponse(article_url_xpaths[url_index], article_thumbnail_url[url_index], ministryId, response)                    
                         
                         
@@ -197,47 +199,45 @@ class MySpider(scrapy.Spider):
         
         if (article_title != [''] and len(content) > 10):           
             content = content.replace("  ", "\n")
-            self.saveArticleToDb(ministryId,article_url, article_title,article_description,article_time,article_author,content, article_thumbnail)
-        
-        print("\n -----------------")        
+            self.saveArticleToDb(ministryId,article_url, article_title,article_description,article_time,article_author,content, article_thumbnail)   
         
     
     def getLegislationUrl(self):
         legislation_page_info = self.connectDB().execute('select ministry_id,legislation_link_root, legislation_category_type_id from legislation_category_info') 
-        
         for row in legislation_page_info:
             page_param_info = self.connectDB().execute('select page_rule, legislation_param_xpath,ministry_id, legislation_url_xpath from ministry_legislation_category_configuration where ministry_id = $'+str(row[0]) + ' and legislation_category_type_id = $' + str(row[2]))            
-            for page_info in page_param_info:  
+            for page_info in page_param_info: 
+                param = 2
                 #if there's no get param link
                 if (page_info[1]==""):
                     print
-                    # try:
-                    #     list_baiviet = self.crawlBySelenium(row[1],page_info[3], row[0], '')
-                    # except RequestException as e:
-                    #     print(e)
                 else:
-                    #get url with param
-                    url = self.covertStringToResponse(row[1]).xpath(page_info[3])
+                    #get url with param         
+                    
+                    url = self.covertStringToResponse(row[1]).xpath(page_info[1])
+                    
                     if (row[0]==11 or row[0]==14 or row[0]==22):
-                        param = 0
+                        param = 2
                     else:
-                        try:
-                            param = self.getParam(str(url[len(url)-1]))                        
+                        try:                            
+                            param = self.getParam(str(url[len(url)-1])) 
                         except:
                             continue
-                for i in range (1,param):
-                    if (i > 3):
+                
+                for i in range (1,int(param)):
+                    if (i > 50):
                         break
                     ##ministries don't use param
-                    if (row[0]==5 or row[0]==17 or row[0]==11 or row[0]==8 or row[0]==7 or row[0]==4 or row[0]==14 or row[0]==16 or row[0]==22):
-                        legislationUrl = row[1]                        
+                    if (row[0]==1 or row[0]==5 or row[0]==17 or row[0]==11 or row[0]==8 or row[0]==7 or row[0]==4 or row[0]==14 or row[0]==16 or row[0]==22):
+                        legislationUrl = row[1]    
                         sleep(2)
                         self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])                       
                     else:                         
                         legislationUrl = row[1]+str(i) 
                 
-                    self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])                    
-    
+                    result = self.parseLegislationCategoryResponse(self.covertStringToResponse(legislationUrl), row[0], page_info[3])                    
+                    if (result == "duplicate"):
+                        break
     
     def parseLegislationCategoryResponse(self, response, ministryId, legislation_url_xpath): 
         legislation_url_xpaths = response.xpath(legislation_url_xpath)  
@@ -245,7 +245,6 @@ class MySpider(scrapy.Spider):
         for url_index in range (len(legislation_url_xpaths)):                        
             ##bo cong an
             if (ministryId == 1):
-                #print(legislation_url_xpaths[url_index])
                 legislation_url_xpaths[url_index] = "http://bocongan.gov.vn/van-ban/van-ban-quy-pham.html"+str(legislation_url_xpaths[url_index]) #done
             ##bo gddt
             elif (ministryId == 4):
@@ -295,8 +294,9 @@ class MySpider(scrapy.Spider):
                     continue
                 legislation_url_xpaths[url_index] = str(legislation_url_xpaths[url_index])  #done - cannot get xpath of link download yet
 
-            self.parseLegislationResponse(legislation_url_xpaths[url_index], ministryId)                    
-                        
+            result = self.parseLegislationResponse(legislation_url_xpaths[url_index], ministryId)                    
+            if (result == "duplicate"):
+                return result            
                         
     def parseLegislationResponse(self, legislation_url, ministryId): 
         legislation_response = self.covertStringToResponse(legislation_url)
@@ -367,7 +367,9 @@ class MySpider(scrapy.Spider):
         if (ministryId == 1 or ministryId == 17 or ministryId == 20):
             legislation_loaivanban = ['']     
         
-        self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
+        result = self.saveLegislationToDb(ministryId, legislation_url, legislation_name, legislation_sohieu,legislation_ngaybanhanh,legislation_ngayhieuluc, legislation_trichyeu, legislation_coquanbanhanh, legislation_nguoiky, legislation_loaivanban, legislation_tinhtrang, legislation_link)
+        if (result == "duplicate"):
+            return result
         print("\n -----------------")          
     
     
@@ -435,7 +437,6 @@ class MySpider(scrapy.Spider):
             return newDate            
         except Exception as e:
             print(e)
-            print(ministryId)
             if (ministryId == 3):
                 dateString = dateString.split(' ')
                 date = str(dateString[1].strip())
@@ -489,7 +490,7 @@ class MySpider(scrapy.Spider):
                 article_time = [article_time[1]]   
             
             value =  [(ministry_id, article_url, article_title[0].strip(),article_description[0],str(self.covertStringFromArticleToSqlFormat(article_time[0].strip(), ministry_id)),article_author[0], article_content, article_thumbnail)]
-            # print(value[0])
+
             conn.cursor().execute("""                                  
                                   INSERT INTO WebDB.dbo.article_info 
                                   (ministry_id, article_url , article_title,article_description,article_time,article_author, article_content, article_thumbnail) 
@@ -511,14 +512,14 @@ class MySpider(scrapy.Spider):
             
             value =  [(ministry_id, legislation_url, legislation_name[0].replace("\r\n","").strip().capitalize(),so_hieu_van_ban[0].replace("\r\n","").strip(),ngay_ban_hanh[0].replace("\r\n","").strip(),self.returnNullData(ngay_hieu_luc).replace("\r\n","").strip(),self.returnNullData(trich_yeu).replace("\r\n","").strip(), co_quan_ban_hanh[0].replace("\r\n","").strip(), nguoi_ky[0].replace("\r\n","").strip(), loai_van_ban[0].replace("\r\n","").strip(), self.returnNullData(tinh_trang), self.returnNullLink(link_download, ministry_id))]
             
-            # print(value[0])
             conn.cursor().execute("""                                  
                                   INSERT INTO WebDB.dbo.legislation_info 
                                   (ministry_id, legislation_url, legislation_name, so_hieu_van_ban,ngay_ban_hanh,ngay_hieu_luc, trich_yeu, co_quan_ban_hanh, nguoi_ky, loai_van_ban, tinh_trang, link_download) 
                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", value[0])
             conn.commit()
         except Exception as e:
-            print(e)        
+            print(e)       
+            return "duplicate"
         finally:
             conn.cursor().close()
             conn.close()
@@ -555,13 +556,13 @@ class MySpider(scrapy.Spider):
     def crawlBySelenium(self, categoryUrl, detailUrlXpath, ministryId, thumbnailUrl):
         response = self.covertStringToResponse(categoryUrl)
         driver = self.read_config()
-        driver.get(categoryUrl)#link tin chứa tức
+        driver.get(categoryUrl)
         WebDriverWait(driver,5)
         
-        list_baiviet = []#danh sách bài viết
+        list_baiviet = []
         count = 1
         html = HTML(html=driver.page_source)
-        list_baiviet = html.xpath(detailUrlXpath)#crawl đầu tiên
+        list_baiviet = html.xpath(detailUrlXpath)
 
         while True:
             try:
@@ -572,7 +573,8 @@ class MySpider(scrapy.Spider):
                     if (ministryId == 5):    
                         nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
                     if (ministryId == 7):
-                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_0623dffd_eff8_4f9c_bf6d_2cdf2561adec_ctl00_lkNext2"]'
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_569fbeb1_01d4_4873_8b11_a35db6593460_ctl00_lkNext2"]'
+
                     if (ministryId == 11):    
                         nextBtnXpath = '//*[@class="page"]/a[6]'                        
                     if (ministryId == 16):
@@ -586,18 +588,20 @@ class MySpider(scrapy.Spider):
                     if (ministryId == 20):
                         nextBtnXpath = '//*[@id="BodyContent_ctl00_leftPanel"]/div/div/div/div[3]/div[3]/ul/li[6]/a'
                   
-                    element = driver.find_element_by_xpath(nextBtnXpath)#tìm nút next                    
-                    element.click()# thực hiện click để chuyển trang
-                    sleep(2)# ngủ 2s để load bài mới
-                except Exception as e:#nếu crawl hết dừng
+                    element = driver.find_element_by_xpath(nextBtnXpath)                   
+                    element.click()
+                    sleep(2)
+                except Exception as e:
                     print(e)
                     break
                 count += 1
-                if count == 1:#crawl 2 lần, tắt đi để crawl hết
+                if count == 1:
                     break
                 
-                html = HTML(html=driver.page_source)#page thành HTML để xpath                
-                tmp = html.xpath(detailUrlXpath)#lấy bài mới
+                html = HTML(html=driver.page_source)          
+                tmp = html.xpath(detailUrlXpath)
+                
+                
                 
                 for url in tmp:                    
                     if (ministryId==11):                        
@@ -609,13 +613,22 @@ class MySpider(scrapy.Spider):
 
                     self.parseArticleResponse(url,thumbnailUrl, ministryId, response)                
                 
-                list_baiviet.extend(tmp)#thêm vào tập link 
+                list_baiviet.extend(tmp)
             except Exception as e:
                 print(e)
                 break            
-        return list_baiviet                
+        return list_baiviet               
         
 
 p = MySpider()
-p.getLegislationUrl()
-#p.getArticleUrl()
+p.getArticleUrl()
+# p.getLegislationUrl()
+
+# def job():
+#     p.getLegislationUrl()
+#     p.getArticleUrl()
+
+# schedule.every().day.at("11:45").do(job)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)

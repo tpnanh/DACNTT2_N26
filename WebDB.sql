@@ -987,11 +987,10 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	(5, 6,'//*[@class="CSSTableGenerator"]/table/tr/td/div/a/@href',1,''),
 
 	--văn bản pháp quy bộ khcn
-	(7, 1,'//*[@id="tabVB_lv1_01"]/ul/li/div/p/a/@href',1,''),
+	(7, 1,'//*[@class="CSSTableGenerator"]/table/tr/td/div/a/@href',1,''),
 
 	--văn bản chỉ đạo, điều hành bộ khcn 
-	(7, 5,'//*[@class="CSSTableGenerator"]/table/tr/td/div/a/@href',1,
-	'//*[@class="Paging Paging_Footer_Table_Legal"]/a[2]/@href'),
+	(7, 5,'//*[@class="CSSTableGenerator"]/table/tr/td/div/a/@href',1,''),
 
 	--văn bản quy phạm pháp luật bộ lao động
 	(8, 5,'//*[@id="ctl00_ctl50_g_fca06a59_0cbe_4eec_81f2_15f675d04c66"]/div/div[2]/table/tbody/tr/td[3]/a/@href',
@@ -1027,7 +1026,7 @@ insert into ministry_legislation_category_configuration (ministry_id, legislatio
 	1,'//*[@id="ctl00_ctl39_g_527b57c5_f302_441a_826e_adb1bd203d1e"]/div/div/div/div/ul/li[7]/a/@href'),
 
 	--văn bản ngoài ủy ban quản lý vốn nhà nước
-	(25, 7,	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div/div/table/tbody/tr/td/a/@href',
+	(25, 7,	'//*[@id="p_p_id_dsvanbanphapquy_WAR_vnpteportalappportlet_"]/div/div/div[1]/div[2]/table/tbody/tr/td[3]/a/@href',
 	1,'//*[@id="_dsvanbanphapquy_WAR_vnpteportalappportlet_ocerSearchContainerPageIterator"]/div/ul/li[4]/a/@href')
 
 go
@@ -1220,17 +1219,11 @@ insert into ministry_legislation_detail_configuration(ministry_id, legislation_n
 go
 use WebDB
 
-select * from article_info, ministry_info where article_info.ministry_id = ministry_info.ministry_id and ministry_info.ministry_name like N'%Bộ Công an%'
-
-select * from article_info where ministry_id = 1
+select * from article_info
 
 select * from legislation_info
 
 SELECT MAX(LEN(article_content)) from article_info
-
-select * from ministry_article_category_configuration where ministry_id = 1
-
-select page_rule, legislation_param_xpath,ministry_id, legislation_url_xpath from ministry_legislation_category_configuration where ministry_id = 5 and legislation_category_type_id = 6
 
 go
 delete from article_info 

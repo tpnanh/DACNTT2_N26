@@ -273,11 +273,6 @@ insert into article_category_info(ministry_id,category_name,article_category_typ
 (17,N'Tin cải cách hành chính - Bộ Xây dựng',26,'https://moc.gov.vn/vn/chuyen-muc/1166/tin-cai-cach-hanh-chinh.aspx?page='),
 (17,N'Giới thiệu văn bản mới - Bộ Xây dựng',24,'https://moc.gov.vn/vn/chuyen-muc/1196/Gioi-thieu-van-ban-moi.aspx?page='),
 
-(18,N'Tin hoạt động - Bộ y tế',2,'https://moh.gov.vn/hoat-dong-cua-lanh-dao-bo?p_p_id=101_INSTANCE_TW6LTp1ZtwaN&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=row-0-column-2&p_p_col_count=2&_101_INSTANCE_TW6LTp1ZtwaN_delta=20&_101_INSTANCE_TW6LTp1ZtwaN_keywords=&_101_INSTANCE_TW6LTp1ZtwaN_advancedSearch=false&_101_INSTANCE_TW6LTp1ZtwaN_andOperator=true&p_r_p_564233524_resetCur=false&_101_INSTANCE_TW6LTp1ZtwaN_cur='),
-(18,N'Tin tổng hợp - Bộ y tế',1,'https://moh.gov.vn/tin-tong-hop?p_p_id=101_INSTANCE_k206Q9qkZOqn&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=row-0-column-2&p_p_col_count=1&_101_INSTANCE_k206Q9qkZOqn_delta=20&_101_INSTANCE_k206Q9qkZOqn_keywords=&_101_INSTANCE_k206Q9qkZOqn_advancedSearch=false&_101_INSTANCE_k206Q9qkZOqn_andOperator=true&p_r_p_564233524_resetCur=false&_101_INSTANCE_k206Q9qkZOqn_cur='),
-(18,N'Tin địa phương - Bộ y tế',8,'https://moh.gov.vn/hoat-dong-cua-dia-phuong?p_p_id=101_INSTANCE_gHbla8vOQDuS&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=row-0-column-2&p_p_col_count=2&_101_INSTANCE_gHbla8vOQDuS_delta=20&_101_INSTANCE_gHbla8vOQDuS_keywords=&_101_INSTANCE_gHbla8vOQDuS_advancedSearch=false&_101_INSTANCE_gHbla8vOQDuS_andOperator=true&p_r_p_564233524_resetCur=false&_101_INSTANCE_gHbla8vOQDuS_cur='),
-(18,N'Tin liên quan - Bộ y tế',27,'https://moh.gov.vn/tin-lien-quan?p_p_id=101_INSTANCE_vjYyM7O9aWnX&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=row-0-column-2&p_p_col_count=1&_101_INSTANCE_vjYyM7O9aWnX_delta=20&_101_INSTANCE_vjYyM7O9aWnX_keywords=&_101_INSTANCE_vjYyM7O9aWnX_advancedSearch=false&_101_INSTANCE_vjYyM7O9aWnX_andOperator=true&p_r_p_564233524_resetCur=false&_101_INSTANCE_vjYyM7O9aWnX_cur='),
-
 (19,N'Tin nổi bật - Chính phủ',1,'http://chinhphu.vn/portal/page/portal/chinhphu/trangchu/tinnoibat'),
 
 (20,N'Hoạt động của Bộ trưởng, Chủ nhiệm - Ủy ban Dân tộc',2,'http://cema.gov.vn/tin-tuc/tin-hoat-dong/hoat-dong-cua-bo-truong.htm?p='),
@@ -657,24 +652,6 @@ insert into ministry_article_category_configuration(ministry_id, article_categor
 	'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_pnListNews"]/div/ul/li/div/a/img/@src',
 	1,	'//*[@id="ctl00_SPWebPartManager1_g_de91b401_0988_4be6_a806_fd5b21858b5f_ctl00_PhanTrang_D"]/div/a/@href'),
 
-	----hoạt động lãnh đạo bộ y tế
-	(18, 2,
-	'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div[2]/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div/div/div/div/div[1]/a/img/@src',1,
-	''),
-	----tin tổng hợp bộ y tế
-	(18, 1,
-	'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div[2]/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_k206Q9qkZOqn_"]/div/div/div/div/div/div/div[1]/a/img/@src',1,''),
-	----thông tin chỉ đạo điều hành bộ y tế
-	(18,8,
-	'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div[2]/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_DOHhlnDN87WZ_"]/div/div/div/div/div/div/div[1]/a/img/@src',1,''),
-	----hoạt động của địa phương bộ y tế
-	(18,27,
-	'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div[2]/h3/a/@href',	
-	'//*[@id="p_p_id_101_INSTANCE_gHbla8vOQDuS_"]/div/div/div/div/div/div/div[1]/a/img/@src',1,''),
-
 	---chinh phu
 	(19,1,
 	'//*[@id="tinkhac"]/table/tbody/tr/td/a/@href',	
@@ -877,13 +854,6 @@ insert into ministry_article_detail_configuration(ministry_id,article_title_xpat
 	'//*[@id="ctl00_SPWebPartManager1_g_9c0a5a28_df68_408d_abaa_1ef0666cf35c_ctl00_pnHide"]/div[2]/span/text()',
 	'//*[@id="ctl00_SPWebPartManager1_g_9c0a5a28_df68_408d_abaa_1ef0666cf35c_ctl00_pnNguontin"]/p/font/text()',
 	'//*[@id="divArticleDescription2"]/p/text()'),	
-	--Bộ y tế
-	(18,
-	'//*[@class="contentDetail"]/div[1]/h3/text()',
-	'//*[@class="sapo"]/strong/text()',
-	'//*[@class="contentDetail"]/div[2]/div/p/text()',
-	'//*[@class="journal-content-article"]/h2[20]/span/em/span/text()',
-	'//*[@class="journal-content-article"]/h2/span//text()'),	
 	--chính phủ
 	(19,
 	'//*[@id="aspnetForm"]/div[9]/div[1]/div[1]/h1/text()',
@@ -1222,8 +1192,6 @@ use WebDB
 select * from article_info
 
 select * from legislation_info
-
-SELECT MAX(LEN(article_content)) from article_info
 
 go
 delete from article_info 

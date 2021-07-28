@@ -326,7 +326,7 @@
 			margin-left: 100px;
 			margin-right: 100px;
 			margin-bottom: 40px;
-			display: block;
+			width: 90%;
 			float: left;
 		}
 		a{
@@ -382,6 +382,7 @@
 			margin-top: 20px;
 			margin-bottom: 40px;
 			margin-right: 30px;
+
 		}
 		.pageDirections > a {
 			cursor: pointer;
@@ -398,7 +399,7 @@
 			margin-left: 100px;
 			font-size: 18px;
 			margin-top: 10px;
-			margin-bottom: 0px;
+			margin-bottom: 0px;		
 			float: left;
 			font-style: italic;
 		}
@@ -485,8 +486,8 @@
 			margin-top: 30px;
 		}
 		.flex-container {
-		  display: flex;
-		  flex-wrap: wrap;
+		    display: flex;
+		    flex-wrap: wrap;
 		}
 		.flex-container > div {
 		  	margin: 5px;
@@ -500,7 +501,6 @@
 			border-radius: 25px ;
 			background-color: white;
 			cursor: pointer;
-			/*#e63900*/
 		}
 		.flex-container > div:hover {
 		  	color: #e63900;
@@ -548,7 +548,6 @@
 					  <div>Bộ Thông tin và Truyền thông</div>  
 					  <div>Bộ Văn hóa - Thể thao và Du lịch</div>
 					  <div>Bộ Xây dựng</div>
-					  <div>Bộ Y tế</div>
 					  <div>Chính phủ</div>
 					  <div>Ủy ban Dân tộc</div>
 					  <div>Bảo hiểm Xã hội Việt Nam</div>
@@ -568,7 +567,6 @@
 		</div>
 
 		<div class="content">
-			<!-- <h1 id = "title" style="text-align:center">NEWS DAILY</h1> -->
 			<img id = "title"  src="{% static 'img/daily_news.jpg' %}" alt="Logo">
 
 			<form class="form-inline searchingField">
@@ -585,7 +583,7 @@
 				{% if forloop.counter == filterContacts.number %}
 					{% for i in filterResultValue|slice:":10" %}	
 						<div class="articleInfo" >		
-							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
+							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt='images' src={{i.8}}>		
 							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
 							<h4 class="articleDescription">{{i.4}}</h4>
 							<p></p>
@@ -611,7 +609,7 @@
 				{% if forloop.counter == searchContacts.number %}
 					{% for i in searchResultValue|slice:":10" %}	
 						<div class="articleInfo" >		
-							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
+							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt='images' src={{i.8}}>		
 							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
 							<h4 class="articleDescription">{{i.4}}</h4>
 							<p></p>
@@ -641,7 +639,7 @@
 					<!-- change num in slice for article/page -->
 					{% for i in articleValue|slice:":10" %}	
 						<div class="articleInfo" >		
-							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt={{i.8}} src={{i.8}}>		
+							<img class="articleImg" onerror="this.onerror=null; this.src='{% static 'img/no_image.png' %}'" alt='images'src={{i.8}}>		
 							<a class="articleTitle" href="{% url 'getArticle' %}?id={{i.0}}">{{i.3}}</a>
 							<h4 class="articleDescription">{{i.4}}</h4>
 							<p></p>

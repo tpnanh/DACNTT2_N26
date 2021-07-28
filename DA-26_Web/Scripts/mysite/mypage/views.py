@@ -1,5 +1,5 @@
-import findspark
-findspark.init("C:\\spark\\spark-3.0.3-bin-hadoop2.7")
+#import findspark
+#findspark.init("C:/spark/spark-3.0.3-bin-hadoop2.7")
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -440,8 +440,6 @@ class MySpider(scrapy.Spider):
             article_thumbnail = "http://www.mod.gov.vn"+str(response.xpath(article_thumbnail)[0])        
         if (ministryId == 17):
             article_thumbnail = "https://moc.gov.vn/"+str(response.xpath(article_thumbnail)[0])   
-        if (ministryId == 18):
-            article_thumbnail = "https://moh.gov.vn"+str(response.xpath(article_thumbnail)[0])
         if (ministryId == 25):
             article_thumbnail = "http://cmsc.gov.vn"+str(article_thumbnail)
         if (ministryId == 16 or ministryId == 19 or ministryId == 20):
@@ -709,7 +707,7 @@ class MySpider(scrapy.Spider):
             if (ministryId == 14 or ministryId == 22):
                 dateString = dateString.split(' ')
                 date = str(dateString[0])
-            if (ministryId == 16 or ministryId == 18):
+            if (ministryId == 16):
                 dateString = dateString.split(' | ')
                 date = str(dateString[0].strip())
             if (ministryId == 17 or ministryId == 7):
@@ -738,7 +736,7 @@ class MySpider(scrapy.Spider):
                               'Server=ANISE-TR\SQLEXPRESS;'
                               'Database=WebDB;'
                               'Trusted_Connection=yes;')  
-            if (ministry_id == 3 or ministry_id == 8 or ministry_id == 18 or ministry_id == 19 or ministry_id == 20):
+            if (ministry_id == 3 or ministry_id == 8 or ministry_id == 19 or ministry_id == 20):
                 article_author = [""]
             if (ministry_id == 11):    
                 article_description = ["".join(article_description)]
@@ -836,9 +834,7 @@ class MySpider(scrapy.Spider):
                     if (ministryId == 16):
                         nextBtnXpath = '//*[@id="mainHtml"]/body/div[3]/div[1]/div[2]/div[2]/div/ul/li[5]/a'
                     if (ministryId == 17):
-                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_98940a7e_2c09_45ce_b14f_1469576fa0d6_ctl00_lkNext2"]'
-                    if (ministryId == 18):
-                        nextBtnXpath = '//*[@id="p_p_id_101_INSTANCE_TW6LTp1ZtwaN_"]/div/div/div[23]/ul/li[4]/a'
+                        nextBtnXpath = '//*[@id="ctl00_SPWebPartManager1_g_98940a7e_2c09_45ce_b14f_1469576fa0d6_ctl00_lkNext2"]'                 
                     if (ministryId == 19):
                         nextBtnXpath = '//*[@id="tinkhac"]/div/table/tbody/tr/td/div/a[1]'
                     if (ministryId == 20):
